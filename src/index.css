@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1C231F;
+    background-color: #FDFBF7;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+
+  /* Accessibility Focus Rings */
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F0E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #3D614A;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #233F2E;
+}
+
+/* --- Premium Subtle 3D Design Tokens --- */
+
+/* 3D Elevated Card */
+.card-3d {
+  background: #FFFFFF;
+  box-shadow: 0 10px 30px -5px rgba(23, 46, 32, 0.05), 0 20px 40px -10px rgba(212, 175, 55, 0.08);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.card-3d:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 45px -8px rgba(23, 46, 32, 0.12), 0 30px 60px -12px rgba(212, 175, 55, 0.16);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* Product Platform Shadow Stage */
+.product-platform {
+  position: relative;
+  background: linear-gradient(180deg, #FDFBF7 0%, #F5F0E6 100%);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9), 0 12px 24px -8px rgba(23, 46, 32, 0.08);
+}
+
+.product-platform-shadow {
+  position: absolute;
+  bottom: 12px;
+  left: 20%;
+  right: 20%;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(23, 46, 32, 0.22) 0%, rgba(23, 46, 32, 0) 75%);
+  filter: blur(5px);
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.group:hover .product-platform-shadow {
+  transform: scaleX(1.15) translateY(2px);
+  opacity: 0.85;
+}
+
+/* Subtle 3D Buttons */
+.btn-whatsapp-3d {
+  background: linear-gradient(180deg, #28E16D 0%, #20BA5A 100%);
+  box-shadow: 0 6px 18px -4px rgba(37, 211, 102, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.btn-whatsapp-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -4px rgba(37, 211, 102, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn-botanical-3d {
+  background: linear-gradient(180deg, #284733 0%, #1A3323 100%);
+  box-shadow: 0 6px 20px -4px rgba(23, 46, 32, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.btn-botanical-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(23, 46, 32, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Glassmorphism Luxury Card */
+.glass-card {
+  background: rgba(253, 251, 247, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 12px 32px -8px rgba(23, 46, 32, 0.08);
+}
+
+/* Slow Floating Hero Composition */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* Soft Gold Divider */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
