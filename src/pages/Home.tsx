@@ -1,18 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, MessageCircle, Phone, Gift } from 'lucide-react';
 import { productsData } from '../data/products';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
 import { socialAccounts } from '../data/social';
 import { ProductCard } from '../components/ProductCard';
 import { WhatsAppButton } from '../components/WhatsAppButton';
+import { RakshaBandhanSection } from '../components/RakshaBandhanSection';
 
 export const Home: React.FC = () => {
   const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 4);
 
   return (
-    <div className="space-y-20 md:space-y-28 pb-16">
+    <div className="space-y-16 md:space-y-24 pb-16">
       
       {/* Hero Banner Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-cream-100 via-cream-50 to-white py-16 md:py-24 border-b border-cream-200">
@@ -20,9 +21,20 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100 text-botanical-800 text-xs font-semibold uppercase tracking-wider">
-                <Leaf className="w-3.5 h-3.5 text-botanical-600" />
-                <span>100% Handcrafted Cold Process Skincare</span>
+              
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100 text-botanical-800 text-xs font-semibold uppercase tracking-wider">
+                  <Leaf className="w-3.5 h-3.5 text-botanical-600" />
+                  <span>100% Handcrafted Cold Process Skincare</span>
+                </div>
+
+                <Link
+                  to="/customize-combo"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-xs font-bold uppercase tracking-wider hover:bg-[#C85A32]/20 transition-colors shadow-xs"
+                >
+                  <Gift className="w-3.5 h-3.5" />
+                  <span>Raksha Bandhan Special (19–28 Aug)</span>
+                </Link>
               </div>
 
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-botanical-950 leading-[1.15]">
@@ -36,16 +48,24 @@ export const Home: React.FC = () => {
 
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Link
-                  to="/products"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-botanical-800 hover:bg-botanical-900 text-cream-50 font-semibold text-sm shadow-md hover:shadow-lg transition-all text-center"
+                  to="/customize-combo"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl btn-botanical-3d text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
                 >
-                  <span>Explore Products</span>
+                  <Gift className="w-4 h-4 text-gold-400" />
+                  <span>Customize Festive Combos</span>
+                </Link>
+
+                <Link
+                  to="/products"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-cream-100 transition-colors text-center"
+                >
+                  <span>Explore All Products</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 
                 <WhatsAppButton
                   variant="outline"
-                  label="Inquire on WhatsApp"
+                  label="WhatsApp Inquiry"
                   className="py-4"
                 />
               </div>
@@ -91,6 +111,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* RAKSHA BANDHAN 2026 SPECIAL OFFER CAMPAIGN SECTION */}
+      <RakshaBandhanSection />
 
       {/* About Lavanya Summary */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,7 +168,7 @@ export const Home: React.FC = () => {
             to="/products"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-botanical-800 hover:text-white transition-colors"
           >
-            <span>View All 12 Products</span>
+            <span>View All 13 Products</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -351,6 +374,32 @@ export const Home: React.FC = () => {
               </a>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Brand Craft Guarantee Box */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-botanical-950 text-cream-50 rounded-3xl p-8 sm:p-12 text-center max-w-4xl mx-auto space-y-6 border border-botanical-800">
+          <Leaf className="w-10 h-10 text-gold-400 mx-auto" />
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+            Handcrafted Fresh in Small Batches
+          </h2>
+          <p className="text-warmgray-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+            We take pride in absolute transparency and craftsmanship. Every product you order is made with pure plant oils and real flower infusions without synthetic shortcuts.
+          </p>
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="tel:+919726739515"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-cream-200 text-cream-50 font-semibold text-sm hover:bg-cream-50 hover:text-botanical-950 transition-all"
+            >
+              <Phone className="w-4 h-4" />
+              <span>Call Us: +91 97267 39515</span>
+            </a>
+            <WhatsAppButton
+              label="Order via WhatsApp"
+              className="py-3"
+            />
+          </div>
         </div>
       </section>
 
