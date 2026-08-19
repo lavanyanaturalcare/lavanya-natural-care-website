@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Gift, Check, Clock, ShieldCheck, Heart, MessageCircle, ArrowRight, Plus, Minus, Tag, ExternalLink } from 'lucide-react';
+import { Sparkles, Gift, Check, ShieldCheck, Heart, MessageCircle, ArrowRight, Plus, Minus, Tag, ExternalLink } from 'lucide-react';
 import { RAKSHA_BANDHAN_CAMPAIGN, ComboOffer, isCampaignActive, generateWhatsAppOrderUrl } from '../data/campaign';
 import { ComboVisual } from './ComboVisual';
+import { CountdownTimer } from './CountdownTimer';
 
 export const RakshaBandhanSection: React.FC = () => {
   const [activeComboId, setActiveComboId] = useState<string>('combo-1');
@@ -14,31 +15,6 @@ export const RakshaBandhanSection: React.FC = () => {
     'Hibiscus Soap': 1
   });
   const [selectedBodyWash, setSelectedBodyWash] = useState<string>('Kesuda');
-
-  // Countdown timer state
-  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
-  const [isExpired, setIsExpired] = useState<boolean>(false);
-
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      const difference = new Date(RAKSHA_BANDHAN_CAMPAIGN.endDate).getTime() - new Date().getTime();
-      if (difference <= 0) {
-        setIsExpired(true);
-        setTimeLeft(null);
-        return;
-      }
-      setTimeLeft({
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
-      });
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const activeCombo = RAKSHA_BANDHAN_CAMPAIGN.combos.find((c) => c.id === activeComboId) || RAKSHA_BANDHAN_CAMPAIGN.combos[0];
 
@@ -144,36 +120,10 @@ export const RakshaBandhanSection: React.FC = () => {
             {RAKSHA_BANDHAN_CAMPAIGN.hook} Handcrafted cold-process combinations curated for heartfelt festive gifting.
           </p>
 
-          {/* Countdown Timer */}
-          {!isExpired && timeLeft && (
-            <div className="pt-4 flex flex-col items-center justify-center space-y-2">
-              <span className="text-xs font-bold text-warmgray-500 uppercase tracking-widest flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#C85A32]" />
-                <span>OFFER ENDS IN</span>
-              </span>
-              <div className="flex items-center gap-3 text-botanical-950 font-serif">
-                <div className="bg-white px-3.5 py-2 rounded-xl border border-cream-200 shadow-xs min-w-[58px] text-center">
-                  <span className="text-2xl font-bold block">{timeLeft.days}</span>
-                  <span className="text-[10px] text-warmgray-500 uppercase tracking-wider font-sans font-semibold">Days</span>
-                </div>
-                <span className="text-lg font-bold text-gold-600">:</span>
-                <div className="bg-white px-3.5 py-2 rounded-xl border border-cream-200 shadow-xs min-w-[58px] text-center">
-                  <span className="text-2xl font-bold block">{String(timeLeft.hours).padStart(2, '0')}</span>
-                  <span className="text-[10px] text-warmgray-500 uppercase tracking-wider font-sans font-semibold">Hours</span>
-                </div>
-                <span className="text-lg font-bold text-gold-600">:</span>
-                <div className="bg-white px-3.5 py-2 rounded-xl border border-cream-200 shadow-xs min-w-[58px] text-center">
-                  <span className="text-2xl font-bold block">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                  <span className="text-[10px] text-warmgray-500 uppercase tracking-wider font-sans font-semibold">Mins</span>
-                </div>
-                <span className="text-lg font-bold text-gold-600">:</span>
-                <div className="bg-white px-3.5 py-2 rounded-xl border border-cream-200 shadow-xs min-w-[58px] text-center">
-                  <span className="text-2xl font-bold text-[#C85A32] block">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                  <span className="text-[10px] text-warmgray-500 uppercase tracking-wider font-sans font-semibold">Secs</span>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Professional Luxury Countdown Timer */}
+          <div className="pt-3">
+            <CountdownTimer variant="luxury-banner" />
+          </div>
 
         </div>
 

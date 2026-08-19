@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { RAKSHA_BANDHAN_CAMPAIGN, ComboOffer, isCampaignActive, generateWhatsAppOrderUrl } from '../data/campaign';
 import { ComboVisual } from '../components/ComboVisual';
+import { CountdownTimer } from '../components/CountdownTimer';
 
 export const CustomizeCombo: React.FC = () => {
   const { comboId } = useParams<{ comboId?: string }>();
@@ -144,6 +145,14 @@ export const CustomizeCombo: React.FC = () => {
         });
       }
     }
+
+    // Auto smooth scroll down to Step 2
+    setTimeout(() => {
+      const step2 = document.getElementById('customize-step-2');
+      if (step2) {
+        step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 60);
   };
 
   // Build flattened array of selected soaps for WhatsApp message
@@ -184,31 +193,36 @@ export const CustomizeCombo: React.FC = () => {
   };
 
   return (
-    <div className="py-10 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pb-28 lg:pb-16">
+    <div className="py-8 sm:py-12 md:py-16 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-8 sm:space-y-12 pb-36 lg:pb-16">
       
       {/* Breadcrumbs Navigation */}
-      <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs sm:text-sm text-warmgray-500">
+      <nav aria-label="Breadcrumbs" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-warmgray-500">
         <Link to="/" className="hover:text-botanical-900 transition-colors">Home</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
+        <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         <Link to="/products" className="hover:text-botanical-900 transition-colors">Products</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
+        <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         <span className="text-botanical-950 font-semibold truncate">Raksha Bandhan Combos</span>
       </nav>
 
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-cream-100 via-[#FDF9F2] to-cream-100 rounded-3xl p-8 sm:p-12 border border-cream-300 shadow-sm relative overflow-hidden text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-xs font-bold uppercase tracking-wider shadow-xs">
-          <Gift className="w-3.5 h-3.5" />
+      <div className="bg-gradient-to-r from-cream-100 via-[#FDF9F2] to-cream-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 border border-cream-300 shadow-sm relative overflow-hidden text-center space-y-3 sm:space-y-4">
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
+          <Gift className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
           <span>{RAKSHA_BANDHAN_CAMPAIGN.campaignName} • {RAKSHA_BANDHAN_CAMPAIGN.validityDisplay}</span>
         </div>
 
-        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-botanical-950">
+        <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold text-botanical-950 leading-tight">
           Customize Your Raksha Bandhan Combo
         </h1>
 
-        <p className="text-warmgray-700 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+        <p className="text-warmgray-700 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
           {RAKSHA_BANDHAN_CAMPAIGN.tagline} — Personalize your natural skincare gifting box by choosing your favorite handcrafted soap and wash variants below.
         </p>
+
+        {/* Luxury Countdown Timer in Header */}
+        <div className="pt-2">
+          <CountdownTimer variant="luxury-banner" showLabel={false} />
+        </div>
       </div>
 
       {/* Step 1: Select Combo Offer Tier */}
@@ -216,14 +230,14 @@ export const CustomizeCombo: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-gold-700 block">Step 01</span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-botanical-950">
+            <h2 className="font-serif text-xl sm:text-3xl font-bold text-botanical-950">
               Select Your Combo Tier
             </h2>
           </div>
           <span className="text-xs text-warmgray-500 hidden sm:inline font-medium">Click any combo to customize</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {RAKSHA_BANDHAN_CAMPAIGN.combos.map((combo) => {
             const isSelected = activeComboId === combo.id;
 
@@ -231,44 +245,44 @@ export const CustomizeCombo: React.FC = () => {
               <div
                 key={combo.id}
                 onClick={() => handleComboSwitch(combo.id)}
-                className={`cursor-pointer rounded-3xl p-6 transition-all duration-300 relative border-2 flex flex-col justify-between ${
+                className={`cursor-pointer rounded-2xl sm:rounded-3xl p-5 sm:p-6 transition-all duration-300 relative border-2 flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-white border-botanical-800 shadow-xl scale-[1.02] ring-4 ring-gold-400/20'
+                    ? 'bg-white border-botanical-800 shadow-xl scale-[1.01] ring-4 ring-gold-400/20'
                     : 'bg-white/80 border-cream-200 hover:border-gold-400 hover:bg-white shadow-xs'
                 }`}
               >
                 {/* Discount Badge */}
-                <div className="absolute top-4 right-4 bg-[#C85A32] text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                <div className="absolute top-3.5 right-3.5 bg-[#C85A32] text-white text-[10px] sm:text-[11px] font-extrabold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-xs uppercase tracking-wider">
                   {combo.discountLabel}
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-5 h-5 rounded-full bg-botanical-800 text-gold-400 text-xs font-serif font-bold flex items-center justify-center">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-5 h-5 rounded-full bg-botanical-800 text-gold-400 text-[11px] font-serif font-bold flex items-center justify-center">
                       {combo.number}
                     </span>
-                    <span className="text-[11px] font-bold text-gold-700 uppercase tracking-wider">
+                    <span className="text-[10px] sm:text-[11px] font-bold text-gold-700 uppercase tracking-wider">
                       Combo 0{combo.number}
                     </span>
                   </div>
 
-                  <h3 className="font-serif text-xl font-bold text-botanical-950 mb-1 leading-snug">
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-botanical-950 mb-1 leading-snug">
                     {combo.title}
                   </h3>
 
-                  <p className="text-xs text-[#A03D1A] font-semibold uppercase tracking-wider mb-4">
+                  <p className="text-[11px] sm:text-xs text-[#A03D1A] font-semibold uppercase tracking-wider mb-3">
                     {combo.tagline}
                   </p>
 
-                  <ComboVisual comboNumber={combo.number} size="sm" className="mb-4" />
+                  <ComboVisual comboNumber={combo.number} size="sm" className="mb-3" />
                 </div>
 
                 <div className="pt-3 border-t border-cream-100 flex items-baseline justify-between">
                   <div>
-                    <span className="text-[11px] text-warmgray-500 line-through block font-medium">MRP ₹{combo.mrp}</span>
-                    <span className="font-serif text-2xl font-bold text-botanical-950">₹{combo.specialPrice}</span>
+                    <span className="text-[10px] sm:text-[11px] text-warmgray-500 line-through block font-medium">MRP ₹{combo.mrp}</span>
+                    <span className="font-serif text-xl sm:text-2xl font-bold text-botanical-950">₹{combo.specialPrice}</span>
                   </div>
-                  <span className="text-xs bg-botanical-50 text-botanical-800 border border-botanical-200 font-bold px-2.5 py-1 rounded-lg">
+                  <span className="text-[11px] sm:text-xs bg-botanical-50 text-botanical-800 border border-botanical-200 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg">
                     SAVE ₹{combo.saving}
                   </span>
                 </div>
@@ -279,18 +293,18 @@ export const CustomizeCombo: React.FC = () => {
       </div>
 
       {/* Main Builder Grid: Customizer (Left) + Sticky Summary (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
         
         {/* Left Column: Soap & Body Wash Customizer */}
-        <div className="lg:col-span-8 space-y-10">
+        <div className="lg:col-span-8 space-y-6 sm:space-y-10">
           
           {/* Soap Customization Section */}
-          <div id="customize-step-2" className="scroll-mt-28 bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm space-y-6">
+          <div id="customize-step-2" className="scroll-mt-24 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-cream-200 shadow-sm space-y-4 sm:space-y-6">
             
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-cream-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-cream-100">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-gold-700 block">Step 02</span>
-                <h3 className="font-serif text-2xl font-bold text-botanical-950">
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-botanical-950">
                   Select {activeCombo.rules.requiredSoaps} Soap Variants
                 </h3>
                 <p className="text-xs sm:text-sm text-warmgray-600">
@@ -298,7 +312,7 @@ export const CustomizeCombo: React.FC = () => {
                 </p>
               </div>
 
-              <div className={`self-start sm:self-auto px-4 py-2 rounded-full text-xs font-bold transition-colors ${
+              <div className={`self-start sm:self-auto px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
                 isSoapRequirementMet
                   ? 'bg-botanical-800 text-white shadow-xs'
                   : 'bg-cream-100 text-warmgray-800 border border-cream-300'
@@ -308,34 +322,34 @@ export const CustomizeCombo: React.FC = () => {
             </div>
 
             {/* Quick 1-Click Preset Options */}
-            <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-botanical-950 uppercase tracking-wider">
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-botanical-950 uppercase tracking-wider">
                 <Zap className="w-3.5 h-3.5 text-gold-600" />
-                <span>Quick Assortment Presets:</span>
+                <span>1-Click Presets:</span>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 {activeCombo.rules.requiredSoaps === 5 ? (
                   <>
                     <button
                       type="button"
                       onClick={() => applyPreset('all5')}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-[11px] sm:text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-all active:scale-95"
                     >
-                      ✨ 1 of Each (All 5 Assortment)
+                      ✨ 1 of Each (All 5)
                     </button>
                     <button
                       type="button"
                       onClick={() => applyPreset('purifying')}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-[11px] sm:text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-all active:scale-95"
                     >
-                      🌿 Purifying Pack (2 Neem + 2 Charcoal + 1 Kesuda)
+                      🌿 Purifying Pack
                     </button>
                     <button
                       type="button"
                       onClick={() => applyPreset('glow')}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-[11px] sm:text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-all active:scale-95"
                     >
-                      🌸 Royal Glow Pack (2 Ubtan + 2 Hibiscus + 1 Kesuda)
+                      🌸 Royal Glow Pack
                     </button>
                   </>
                 ) : (
@@ -343,14 +357,14 @@ export const CustomizeCombo: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => applyPreset('cooling')}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-[11px] sm:text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-all active:scale-95"
                     >
                       🌿 Neem Tulsi + Kesuda
                     </button>
                     <button
                       type="button"
                       onClick={() => applyPreset('glow')}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg bg-white border border-cream-300 hover:border-botanical-800 text-[11px] sm:text-xs font-medium text-botanical-950 shadow-xs hover:bg-cream-100 transition-all active:scale-95"
                     >
                       🌸 Ubtan + Hibiscus
                     </button>
@@ -359,8 +373,8 @@ export const CustomizeCombo: React.FC = () => {
               </div>
             </div>
 
-            {/* Soap Items List with Detailed Information */}
-            <div className="space-y-4">
+            {/* Soap Items List with Mobile-Friendly Horizontal Rows */}
+            <div className="space-y-3 sm:space-y-4">
               {RAKSHA_BANDHAN_CAMPAIGN.allowedSoaps.map((soap) => {
                 const count = selectedSoaps[soap.name] || 0;
                 const details = soapDetails[soap.name];
@@ -368,36 +382,36 @@ export const CustomizeCombo: React.FC = () => {
                 return (
                   <div
                     key={soap.id}
-                    className={`rounded-2xl p-4 sm:p-5 border-2 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                    className={`rounded-2xl p-3 sm:p-5 border-2 transition-all flex items-center justify-between gap-3 sm:gap-4 ${
                       count > 0
                         ? 'bg-cream-50/90 border-botanical-800 shadow-xs'
                         : 'bg-white border-cream-200 hover:border-cream-300'
                     }`}
                   >
                     {/* Soap Image & Details */}
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-white p-2 border border-cream-100 shrink-0 flex items-center justify-center">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                      <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-white p-1 sm:p-1.5 border border-cream-100 shrink-0 flex items-center justify-center">
                         <img src={soap.image} alt={soap.name} className="w-full h-full object-contain" />
                       </div>
 
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-serif text-lg sm:text-xl font-bold text-botanical-950">
+                      <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h4 className="font-serif text-base sm:text-xl font-bold text-botanical-950 truncate">
                             {soap.name}
                           </h4>
-                          <span className="text-[10px] text-warmgray-500 bg-cream-100 px-2 py-0.5 rounded-md font-semibold">
-                            100g Bar
+                          <span className="text-[9px] sm:text-[10px] text-warmgray-500 bg-cream-100 px-1.5 py-0.2 rounded font-semibold">
+                            100g
                           </span>
                         </div>
 
                         {details && (
-                          <p className="text-xs text-warmgray-600 leading-snug line-clamp-2">
+                          <p className="text-[11px] sm:text-xs text-warmgray-600 leading-snug line-clamp-1 sm:line-clamp-2">
                             {details.description}
                           </p>
                         )}
 
                         {details && (
-                          <div className="flex flex-wrap gap-x-3 gap-y-1 pt-1">
+                          <div className="hidden sm:flex flex-wrap gap-x-3 gap-y-1 pt-0.5">
                             {details.benefits.map((b, bIdx) => (
                               <span key={bIdx} className="text-[11px] text-botanical-900 flex items-center gap-1 font-medium">
                                 <CheckCircle2 className="w-3 h-3 text-gold-600 shrink-0" />
@@ -409,14 +423,14 @@ export const CustomizeCombo: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Quantity Control Buttons */}
-                    <div className="flex items-center gap-3 self-end sm:self-center bg-white p-1.5 rounded-xl border border-cream-200 shadow-xs">
+                    {/* Touch-Friendly Finger Buttons (38px touch zone) */}
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0 bg-white p-1 sm:p-1.5 rounded-xl border border-cream-200 shadow-xs">
                       <button
                         type="button"
                         onClick={() => handleRemoveSoap(soap.name)}
                         disabled={count <= 0}
                         aria-label={`Decrease ${soap.name}`}
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                        className={`w-9 h-9 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all active:scale-95 ${
                           count > 0
                             ? 'bg-cream-100 hover:bg-cream-200 text-botanical-900'
                             : 'bg-cream-50 text-warmgray-300 cursor-not-allowed'
@@ -425,7 +439,7 @@ export const CustomizeCombo: React.FC = () => {
                         <Minus className="w-4 h-4" />
                       </button>
 
-                      <span className="font-serif text-lg font-bold text-botanical-950 w-6 text-center">
+                      <span className="font-serif text-base sm:text-lg font-bold text-botanical-950 w-5 sm:w-6 text-center">
                         {count}
                       </span>
 
@@ -434,7 +448,7 @@ export const CustomizeCombo: React.FC = () => {
                         onClick={() => handleAddSoap(soap.name)}
                         disabled={totalSelectedSoaps >= activeCombo.rules.requiredSoaps}
                         aria-label={`Increase ${soap.name}`}
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                        className={`w-9 h-9 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all active:scale-95 ${
                           totalSelectedSoaps < activeCombo.rules.requiredSoaps
                             ? 'bg-botanical-800 hover:bg-botanical-900 text-white shadow-xs'
                             : 'bg-cream-100 text-warmgray-300 cursor-not-allowed'
@@ -452,10 +466,10 @@ export const CustomizeCombo: React.FC = () => {
 
           {/* Body Wash Customization Section (For Combo 2 & 3) */}
           {activeCombo.rules.requiresBodyWash && (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm space-y-6">
-              <div className="pb-4 border-b border-cream-100">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-cream-200 shadow-sm space-y-4 sm:space-y-6">
+              <div className="pb-3 border-b border-cream-100">
                 <span className="text-xs font-bold uppercase tracking-wider text-gold-700 block">Step 03</span>
-                <h3 className="font-serif text-2xl font-bold text-botanical-950">
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-botanical-950">
                   Select Face & Body Wash (300ml)
                 </h3>
                 <p className="text-xs sm:text-sm text-warmgray-600">
@@ -463,7 +477,7 @@ export const CustomizeCombo: React.FC = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
                 {RAKSHA_BANDHAN_CAMPAIGN.allowedBodyWashes.map((bw) => {
                   const isSelected = selectedBodyWash === bw.name;
 
@@ -471,24 +485,22 @@ export const CustomizeCombo: React.FC = () => {
                     <div
                       key={bw.id}
                       onClick={() => setSelectedBodyWash(bw.name)}
-                      className={`cursor-pointer rounded-2xl p-5 border-2 transition-all flex flex-col justify-between space-y-4 ${
+                      className={`cursor-pointer rounded-xl sm:rounded-2xl p-4 sm:p-5 border-2 transition-all flex flex-col justify-between space-y-3 ${
                         isSelected
                           ? 'bg-cream-50/90 border-botanical-800 shadow-sm ring-2 ring-botanical-800/10'
                           : 'bg-white border-cream-200 hover:border-cream-300'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-white p-1.5 border border-cream-100 shrink-0 flex items-center justify-center">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-14 h-14 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-white p-1 border border-cream-100 shrink-0 flex items-center justify-center">
                           <img src={bw.image} alt={bw.fullName} className="w-full h-full object-contain" />
                         </div>
 
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-serif text-lg font-bold text-botanical-950">
-                              {bw.fullName}
-                            </h4>
-                          </div>
-                          <span className="text-xs text-warmgray-600 block">
+                        <div className="space-y-0.5">
+                          <h4 className="font-serif text-base sm:text-lg font-bold text-botanical-950 leading-snug">
+                            {bw.fullName}
+                          </h4>
+                          <span className="text-[11px] sm:text-xs text-warmgray-600 block line-clamp-2">
                             {bw.name === 'Kesuda' 
                               ? 'Infused with cooling Palash flower water for soothing cleansing.'
                               : 'Infused with pure Neem and Tulsi for gentle purifying care.'}
@@ -515,38 +527,38 @@ export const CustomizeCombo: React.FC = () => {
 
           {/* Lip Balm Spotlight (For Combo 2) */}
           {activeCombo.rules.includesLipBalm && (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-cream-50 p-2 border border-cream-100 flex items-center justify-center shrink-0">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-cream-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-14 h-14 rounded-xl bg-cream-50 p-1.5 border border-cream-100 flex items-center justify-center shrink-0">
                   <img src={RAKSHA_BANDHAN_CAMPAIGN.lipBalm.image} alt="Lip Balm" className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-bold text-gold-700 uppercase tracking-widest block">Festive Add-on</span>
-                  <h4 className="font-serif text-xl font-bold text-botanical-950">
+                  <span className="text-[10px] font-bold text-gold-700 uppercase tracking-widest block">Festive Add-on</span>
+                  <h4 className="font-serif text-base sm:text-xl font-bold text-botanical-950">
                     {RAKSHA_BANDHAN_CAMPAIGN.lipBalm.name}
                   </h4>
-                  <p className="text-xs text-warmgray-600">
-                    Made with nourishing Almond Oil, Coconut Oil, Shea Butter, and pure Beeswax.
+                  <p className="text-[11px] sm:text-xs text-warmgray-600">
+                    Made with nourishing Almond Oil, Coconut Oil, Shea Butter, and Beeswax.
                   </p>
                 </div>
               </div>
 
-              <span className="bg-botanical-800 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-xs shrink-0">
+              <span className="bg-botanical-800 text-white text-[11px] sm:text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs shrink-0">
                 Included Free in Combo 2
               </span>
             </div>
           )}
 
           {/* Festive Eco-Packaging Highlight */}
-          <div className="bg-cream-100/70 rounded-3xl p-6 sm:p-8 border border-cream-300 flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-14 h-14 rounded-2xl bg-botanical-800 text-gold-400 flex items-center justify-center shrink-0 shadow-xs">
-              <Package className="w-7 h-7" />
+          <div className="bg-cream-100/70 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-cream-300 flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-botanical-800 text-gold-400 flex items-center justify-center shrink-0 shadow-xs">
+              <Package className="w-6 h-6" />
             </div>
-            <div className="space-y-1">
-              <h4 className="font-serif text-lg font-bold text-botanical-950">
+            <div className="space-y-0.5 text-center sm:text-left">
+              <h4 className="font-serif text-base sm:text-lg font-bold text-botanical-950">
                 Festive Eco-Conscious Gift Packaging
               </h4>
-              <p className="text-xs text-warmgray-700 leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-warmgray-700 leading-relaxed">
                 Every Raksha Bandhan combo comes hand-wrapped in eco-friendly packaging designed to protect botanical aroma, preserve freshness, and make gifting effortless.
               </p>
             </div>
@@ -554,9 +566,9 @@ export const CustomizeCombo: React.FC = () => {
 
         </div>
 
-        {/* Right Column: Sticky Order Summary Card */}
+        {/* Right Column: Sticky Order Summary Card (Desktop) */}
         <div className="lg:col-span-4 sticky top-24 space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-400/40 shadow-xl space-y-6">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border-2 border-gold-400/40 shadow-xl space-y-5">
             
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -571,6 +583,9 @@ export const CustomizeCombo: React.FC = () => {
                 {activeCombo.title}
               </h3>
             </div>
+
+            {/* Sidebar Countdown Timer */}
+            <CountdownTimer variant="sidebar" />
 
             {/* Price Breakdown */}
             <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
@@ -680,10 +695,12 @@ export const CustomizeCombo: React.FC = () => {
 
       </div>
 
-      {/* Floating Sticky Bottom Bar on Mobile Screens for Effortless Ordering */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-cream-300 p-4 shadow-2xl flex items-center justify-between gap-4">
-        <div>
-          <span className="text-[10px] text-warmgray-500 block">
+      {/* High-Contrast Sticky Bottom Bar on Mobile Screens */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-lg border-t border-cream-300 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <span className={`text-[10px] font-bold block truncate ${
+            isComboComplete ? 'text-emerald-700' : 'text-amber-700'
+          }`}>
             {isComboComplete ? '✓ Ready to Order' : `Select ${remainingSoaps} more soap(s)`}
           </span>
           <div className="flex items-baseline gap-1.5">
@@ -702,13 +719,13 @@ export const CustomizeCombo: React.FC = () => {
               alert(`Please select exactly ${activeCombo.rules.requiredSoaps} soaps to complete your combo.`);
             }
           }}
-          className={`px-6 py-3 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md transition-all ${
+          className={`px-5 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all shrink-0 active:scale-95 ${
             isComboComplete
               ? 'btn-whatsapp-3d text-white'
-              : 'bg-warmgray-300 text-warmgray-500 cursor-not-allowed'
+              : 'bg-warmgray-300 text-warmgray-500 cursor-not-allowed opacity-80'
           }`}
         >
-          <MessageCircle className="w-4 h-4 fill-current" />
+          <MessageCircle className="w-4 h-4 fill-current shrink-0" />
           <span>ORDER ON WHATSAPP</span>
         </a>
       </div>
