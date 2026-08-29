@@ -8,6 +8,7 @@
     color: #1C231F;
     background-color: #FDFBF7;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, .font-serif {
@@ -36,84 +37,146 @@
   background: #233F2E;
 }
 
-/* --- Premium Subtle 3D Design Tokens --- */
+/* --- Premium Luxury 3D Design Tokens --- */
 
-/* 3D Elevated Card */
+/* 3D Perspective Card Container */
 .card-3d {
   background: #FFFFFF;
-  box-shadow: 0 10px 30px -5px rgba(23, 46, 32, 0.05), 0 20px 40px -10px rgba(212, 175, 55, 0.08);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  box-shadow: 
+    0 10px 30px -5px rgba(23, 46, 32, 0.06), 
+    0 20px 40px -10px rgba(212, 175, 55, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .card-3d:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 45px -8px rgba(23, 46, 32, 0.12), 0 30px 60px -12px rgba(212, 175, 55, 0.16);
-  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-8px) rotateX(1.5deg) scale(1.01);
+  box-shadow: 
+    0 26px 50px -10px rgba(23, 46, 32, 0.15), 
+    0 35px 70px -15px rgba(212, 175, 55, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(212, 175, 55, 0.6);
 }
 
-/* Product Platform Shadow Stage */
+/* 3D Elevated Feature Box */
+.box-3d {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FAF6EE 100%);
+  box-shadow: 
+    0 14px 28px -6px rgba(23, 46, 32, 0.07),
+    0 6px 12px -4px rgba(212, 175, 55, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.box-3d:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 22px 40px -8px rgba(23, 46, 32, 0.12),
+    0 10px 20px -5px rgba(212, 175, 55, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+}
+
+/* Product Platform Stage & Ground Shadow */
 .product-platform {
   position: relative;
-  background: linear-gradient(180deg, #FDFBF7 0%, #F5F0E6 100%);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9), 0 12px 24px -8px rgba(23, 46, 32, 0.08);
+  background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #F5EFE3 100%);
+  box-shadow: 
+    inset 0 2px 5px rgba(255, 255, 255, 1), 
+    0 14px 28px -8px rgba(23, 46, 32, 0.09),
+    inset 0 -2px 4px rgba(212, 175, 55, 0.15);
+  transform-style: preserve-3d;
 }
 
 .product-platform-shadow {
   position: absolute;
-  bottom: 12px;
-  left: 20%;
-  right: 20%;
-  height: 16px;
-  background: radial-gradient(ellipse at center, rgba(23, 46, 32, 0.22) 0%, rgba(23, 46, 32, 0) 75%);
-  filter: blur(5px);
+  bottom: 10px;
+  left: 15%;
+  right: 15%;
+  height: 18px;
+  background: radial-gradient(ellipse at center, rgba(23, 46, 32, 0.28) 0%, rgba(23, 46, 32, 0) 75%);
+  filter: blur(6px);
   pointer-events: none;
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  transition: transform 0.45s ease, opacity 0.45s ease;
 }
 
-.group:hover .product-platform-shadow {
-  transform: scaleX(1.15) translateY(2px);
-  opacity: 0.85;
+.group:hover .product-platform-shadow,
+.group\/img:hover .product-platform-shadow {
+  transform: scaleX(1.2) translateY(3px);
+  opacity: 0.9;
 }
 
-/* Subtle 3D Buttons */
+/* 3D Gold Gradient Text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 40%, #8B6508 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.15));
+}
+
+/* Luxury 3D WhatsApp Button */
 .btn-whatsapp-3d {
-  background: linear-gradient(180deg, #28E16D 0%, #20BA5A 100%);
-  box-shadow: 0 6px 18px -4px rgba(37, 211, 102, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  background: linear-gradient(180deg, #2BE672 0%, #1EAE54 100%);
+  box-shadow: 
+    0 8px 20px -4px rgba(37, 211, 102, 0.4), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
 .btn-whatsapp-3d:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px -4px rgba(37, 211, 102, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 28px -4px rgba(37, 211, 102, 0.55), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+.btn-whatsapp-3d:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -2px rgba(37, 211, 102, 0.3);
+}
+
+/* Luxury 3D Botanical Button */
 .btn-botanical-3d {
-  background: linear-gradient(180deg, #284733 0%, #1A3323 100%);
-  box-shadow: 0 6px 20px -4px rgba(23, 46, 32, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  background: linear-gradient(180deg, #2D503A 0%, #1B3626 100%);
+  box-shadow: 
+    0 8px 22px -4px rgba(23, 46, 32, 0.35), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
 .btn-botanical-3d:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -4px rgba(23, 46, 32, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 14px 32px -4px rgba(23, 46, 32, 0.45), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Glassmorphism Luxury Card */
+.btn-botanical-3d:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px -2px rgba(23, 46, 32, 0.25);
+}
+
+/* Glassmorphism Luxury Card with 3D Bevel Highlight */
 .glass-card {
-  background: rgba(253, 251, 247, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  box-shadow: 0 12px 32px -8px rgba(23, 46, 32, 0.08);
+  background: rgba(253, 251, 247, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 
+    0 16px 36px -8px rgba(23, 46, 32, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-/* Slow Floating Hero Composition */
+/* Smooth 3D Floating Animation */
 @keyframes floatSlow {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-8px) rotate(0.4deg);
+    transform: translateY(-10px) rotate(0.6deg);
   }
 }
 

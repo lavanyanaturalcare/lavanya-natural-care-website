@@ -8,9 +8,11 @@ import { socialAccounts } from '../data/social';
 import { ProductCard } from '../components/ProductCard';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { RakshaBandhanSection } from '../components/RakshaBandhanSection';
+import { isCampaignActive } from '../data/campaign';
 
 export const Home: React.FC = () => {
   const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 4);
+  const campaignActive = isCampaignActive();
 
   return (
     <div className="space-y-16 md:space-y-24 pb-16">
@@ -23,18 +25,20 @@ export const Home: React.FC = () => {
             <div className="lg:col-span-7 space-y-6">
               
               <div className="flex flex-wrap items-center gap-2.5">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100 text-botanical-800 text-xs font-semibold uppercase tracking-wider">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100 text-botanical-800 text-xs font-semibold uppercase tracking-wider shadow-xs">
                   <Leaf className="w-3.5 h-3.5 text-botanical-600" />
                   <span>100% Handcrafted Cold Process Skincare</span>
                 </div>
 
-                <Link
-                  to="/customize-combo"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-xs font-bold uppercase tracking-wider hover:bg-[#C85A32]/20 transition-colors shadow-xs"
-                >
-                  <Gift className="w-3.5 h-3.5" />
-                  <span>Raksha Bandhan Special (19–28 Aug)</span>
-                </Link>
+                {campaignActive && (
+                  <Link
+                    to="/customize-combo"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-xs font-bold uppercase tracking-wider hover:bg-[#C85A32]/20 transition-colors shadow-xs"
+                  >
+                    <Gift className="w-3.5 h-3.5" />
+                    <span>Raksha Bandhan Special (19–28 Aug)</span>
+                  </Link>
+                )}
               </div>
 
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-botanical-950 leading-[1.15]">
@@ -48,19 +52,19 @@ export const Home: React.FC = () => {
 
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Link
-                  to="/customize-combo"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl btn-botanical-3d text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
-                >
-                  <Gift className="w-4 h-4 text-gold-400" />
-                  <span>Customize Festive Combos</span>
-                </Link>
-
-                <Link
                   to="/products"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-cream-100 transition-colors text-center"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl btn-botanical-3d text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
                 >
                   <span>Explore All Products</span>
                   <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  to="/process"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-cream-100 transition-colors text-center"
+                >
+                  <span>Our Cold Process</span>
+                  <ArrowRight className="w-4 h-4 text-gold-700" />
                 </Link>
                 
                 <WhatsAppButton

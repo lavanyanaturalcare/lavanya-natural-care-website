@@ -8,7 +8,9 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const navLinks = [
+  const campaignActive = isCampaignActive();
+
+  const allNavLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
     { name: 'Festive Combos 🎁', path: '/customize-combo', isFestive: true },
@@ -17,6 +19,8 @@ export const Navbar: React.FC = () => {
     { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
+
+  const navLinks = campaignActive ? allNavLinks : allNavLinks.filter(l => !l.isFestive);
 
   const isActive = (path: string) => location.pathname === path || (path === '/customize-combo' && location.pathname.startsWith('/customize-combo'));
 

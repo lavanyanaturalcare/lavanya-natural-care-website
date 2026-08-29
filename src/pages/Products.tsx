@@ -6,7 +6,9 @@ import { ProductCard } from '../components/ProductCard';
 import { RAKSHA_BANDHAN_CAMPAIGN, isCampaignActive } from '../data/campaign';
 
 export const Products: React.FC = () => {
-  const categories = [
+  const campaignActive = isCampaignActive();
+
+  const allCategories = [
     'All Products',
     '🎁 Festive Combos',
     'Handmade Cold Process Soap',
@@ -16,6 +18,10 @@ export const Products: React.FC = () => {
     'Body Care',
     'Lip Care'
   ] as const;
+
+  const categories = useMemo(() => {
+    return campaignActive ? allCategories : allCategories.filter(c => c !== '🎁 Festive Combos');
+  }, [campaignActive]);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All Products');
   const [searchQuery, setSearchQuery] = useState<string>('');

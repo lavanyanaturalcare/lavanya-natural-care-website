@@ -64,7 +64,7 @@ export const RAKSHA_BANDHAN_CAMPAIGN: CampaignConfig = {
   validityDisplay: "19 – 28 AUGUST 2026",
   contactPhone: "+91 97267 39515",
   websiteUrl: "https://lavanyanatural.in/",
-  isEnabled: true,
+  isEnabled: false,
 
   allowedSoaps: [
     {
