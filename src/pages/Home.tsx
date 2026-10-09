@@ -1,18 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, MessageCircle, Phone, Gift } from 'lucide-react';
+import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone } from 'lucide-react';
 import { productsData } from '../data/products';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
 import { socialAccounts } from '../data/social';
 import { ProductCard } from '../components/ProductCard';
 import { WhatsAppButton } from '../components/WhatsAppButton';
-import { RakshaBandhanSection } from '../components/RakshaBandhanSection';
-import { isCampaignActive } from '../data/campaign';
 
 export const Home: React.FC = () => {
   const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 4);
-  const campaignActive = isCampaignActive();
 
   return (
     <div className="space-y-16 md:space-y-24 pb-16">
@@ -29,16 +26,6 @@ export const Home: React.FC = () => {
                   <Leaf className="w-3.5 h-3.5 text-botanical-600" />
                   <span>100% Handcrafted Cold Process Skincare</span>
                 </div>
-
-                {campaignActive && (
-                  <Link
-                    to="/customize-combo"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C85A32]/10 border border-[#C85A32]/30 text-[#A03D1A] text-xs font-bold uppercase tracking-wider hover:bg-[#C85A32]/20 transition-colors shadow-xs"
-                  >
-                    <Gift className="w-3.5 h-3.5" />
-                    <span>Raksha Bandhan Special (19–28 Aug)</span>
-                  </Link>
-                )}
               </div>
 
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-botanical-950 leading-[1.15]">
@@ -115,9 +102,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* RAKSHA BANDHAN 2026 SPECIAL OFFER CAMPAIGN SECTION */}
-      <RakshaBandhanSection />
 
       {/* About Lavanya Summary */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
-import { RakshaBandhanModal } from './components/RakshaBandhanModal';
-import { FestiveFloatingPill } from './components/FestiveFloatingPill';
 import { Home } from './pages/Home';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
@@ -12,7 +10,6 @@ import { Ingredients } from './pages/Ingredients';
 import { Process } from './pages/Process';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
-import { CustomizeCombo } from './pages/CustomizeCombo';
 
 // Scroll to top automatically on route change
 const ScrollToTop = () => {
@@ -40,14 +37,10 @@ export const App: React.FC = () => {
             <Route path="/process" element={<Process />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/customize-combo" element={<CustomizeCombo />} />
-            <Route path="/customize-combo/:comboId" element={<CustomizeCombo />} />
           </Routes>
         </main>
         <Footer />
         <WhatsAppButton variant="floating" />
-        <FestiveFloatingPill />
-        <RakshaBandhanModal />
       </div>
     </BrowserRouter>
   );
