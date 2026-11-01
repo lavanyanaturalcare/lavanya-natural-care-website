@@ -7,12 +7,17 @@ import { processSteps } from '../data/process';
 import { socialAccounts } from '../data/social';
 import { ProductCard } from '../components/ProductCard';
 import { WhatsAppButton } from '../components/WhatsAppButton';
+import { SEO } from '../components/SEO';
 
 export const Home: React.FC = () => {
   const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 4);
 
   return (
-    <div className="space-y-16 md:space-y-24 pb-16">
+    <div className="space-y-16 md:space-y-24 pb-16 w-full overflow-x-clip">
+      <SEO
+        title="Lavanya Natural Care | Handcrafted Cold Process Soap & Botanical Skincare"
+        description="Discover 100% natural, handcrafted cold-process soaps, face & body washes, and botanical skincare by Lavanya Natural Care. Made in small batches in Vadodara with pure plant oils."
+      />
       
       {/* Hero Banner Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-cream-100 via-cream-50 to-white py-16 md:py-24 border-b border-cream-200">

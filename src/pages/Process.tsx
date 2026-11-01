@@ -1,6 +1,8 @@
 import React from 'react';
-import { Leaf, Sparkles, HeartHandshake, Clock, ShieldCheck, PackageCheck, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Leaf, Sparkles, HeartHandshake, Clock, ShieldCheck, PackageCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { processSteps } from '../data/process';
+import { SEO } from '../components/SEO';
 
 export const Process: React.FC = () => {
   const getIcon = (iconName: string) => {
@@ -16,7 +18,11 @@ export const Process: React.FC = () => {
   };
 
   return (
-    <div className="py-12 md:py-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-12 md:py-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
+      <SEO
+        title="6-Step Handcrafted Cold Process Method | Lavanya Natural Care"
+        description="Discover how Lavanya Natural Care makes authentic cold-process soap in Vadodara: oil blending, low-temperature lye mix, slow mold pour, wooden cutting, and 6-week slow curing."
+      />
       
       {/* Hero Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -105,6 +111,32 @@ export const Process: React.FC = () => {
             alt="Handcrafted Soap Packaging"
             className="w-full h-56 object-cover"
           />
+        </div>
+      </div>
+
+      {/* Process CTA */}
+      <div className="bg-botanical-950 text-cream-50 rounded-3xl p-8 sm:p-12 text-center max-w-4xl mx-auto space-y-6 border border-botanical-800">
+        <Sparkles className="w-10 h-10 text-gold-400 mx-auto" />
+        <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+          Ready to Experience the Cold Process Difference?
+        </h2>
+        <p className="text-warmgray-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+          Feel the soothing difference of 100% natural glycerin retention on your skin.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <Link
+            to="/products"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl btn-botanical-3d text-white font-bold text-sm shadow-md"
+          >
+            <span>Explore All 13 Products</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            to="/contact"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-cream-200 text-cream-50 font-semibold text-sm hover:bg-cream-50 hover:text-botanical-950 transition-all"
+          >
+            <span>Contact Workshop</span>
+          </Link>
         </div>
       </div>
 

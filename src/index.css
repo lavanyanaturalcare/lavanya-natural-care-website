@@ -3,12 +3,31 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: #1C231F;
     background-color: #FDFBF7;
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 
   h1, h2, h3, h4, .font-serif {

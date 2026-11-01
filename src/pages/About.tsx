@@ -1,10 +1,15 @@
 import React from 'react';
 import { Leaf, Heart, ShieldCheck, Sparkles, Award } from 'lucide-react';
 import { WhatsAppButton } from '../components/WhatsAppButton';
+import { SEO } from '../components/SEO';
 
 export const About: React.FC = () => {
   return (
-    <div className="py-12 md:py-20 space-y-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-12 md:py-20 space-y-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
+      <SEO
+        title="About Us & Artisanal Story | Lavanya Natural Care"
+        description="Learn the story of Lavanya Natural Care, handcrafted in Vadodara, Gujarat. Dedicated to traditional cold-process soapmaking, 100% natural plant oils, and Ayurvedic purity."
+      />
       
       {/* Hero Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">

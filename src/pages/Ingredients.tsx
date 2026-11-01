@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, CheckCircle2, ArrowRight, Search, X } from 'lucide-react';
 import { ingredientsData } from '../data/ingredients';
+import { SEO } from '../components/SEO';
 
 export const Ingredients: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -19,7 +20,11 @@ export const Ingredients: React.FC = () => {
   }, [searchQuery]);
 
   return (
-    <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
+      <SEO
+        title="Pure Botanical Ingredients & Ayurvedic Herbs | Lavanya Natural Care"
+        description="Learn about the pure ingredients in Lavanya Natural Care soaps: Kesuda (Palash), Neem, Tulsi, Ubtan, Kokum Butter, Hibiscus, Lavender, and pure cold-pressed plant oils."
+      />
       
       {/* Hero Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -144,6 +149,32 @@ export const Ingredients: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Explore Products Call to Action */}
+      <div className="bg-botanical-950 text-cream-50 rounded-3xl p-8 sm:p-12 text-center max-w-4xl mx-auto space-y-6 border border-botanical-800">
+        <Leaf className="w-10 h-10 text-gold-400 mx-auto" />
+        <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+          Experience These Pure Botanicals
+        </h2>
+        <p className="text-warmgray-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+          Every bar of soap and bottle of wash is packed with these fresh herbs and cold-pressed oils. Handcrafted locally in Vadodara.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <Link
+            to="/products"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl btn-botanical-3d text-white font-bold text-sm shadow-md"
+          >
+            <span>Browse All 13 Products</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            to="/contact"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-cream-200 text-cream-50 font-semibold text-sm hover:bg-cream-50 hover:text-botanical-950 transition-all"
+          >
+            <span>Have Ingredient Questions?</span>
+          </Link>
+        </div>
+      </div>
 
     </div>
   );

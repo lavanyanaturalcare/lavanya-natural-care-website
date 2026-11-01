@@ -4,6 +4,7 @@ import { CheckCircle2, ArrowLeft, Phone, ShieldCheck, Sparkles, Truck, Package, 
 import { productsData } from '../data/products';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,11 +15,15 @@ export const ProductDetail: React.FC = () => {
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center space-y-6">
+        <SEO
+          title="Product Not Found | Lavanya Natural Care"
+          description="The requested handcrafted skincare product could not be found."
+        />
         <h2 className="font-serif text-3xl font-bold text-botanical-950">Product Not Found</h2>
         <p className="text-warmgray-600">The product you are looking for does not exist or has been moved.</p>
         <button
           onClick={() => navigate('/products')}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-botanical-800 text-white font-semibold text-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-botanical-800 text-white font-semibold text-sm hover:bg-botanical-900 transition-colors shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Product Showcase</span>
@@ -49,7 +54,11 @@ export const ProductDetail: React.FC = () => {
   };
 
   return (
-    <div className="py-10 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="py-10 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 w-full overflow-x-clip pb-24 lg:pb-16">
+      <SEO
+        title={`${product.name} (₹${product.mrp}) | Lavanya Natural Care`}
+        description={product.shortDescription || product.fullDescription.slice(0, 155)}
+      />
       
       {/* Breadcrumbs Navigation */}
       <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs sm:text-sm text-warmgray-500">

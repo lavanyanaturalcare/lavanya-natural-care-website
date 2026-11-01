@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Circular Luxury Badge -->
+  <circle cx="32" cy="32" r="30" fill="#1B3626" stroke="#D4AF37" stroke-width="2"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#D4AF37" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6"/>
+  
+  <!-- Botanical Leaf Motif -->
+  <path d="M32 14C23 18 19 28 22 38C24 44 29 48 35 48C43 47 47 38 46 29C45 20 38 15 32 14Z" fill="#2E5A3D"/>
+  <path d="M32 14C36 20 38 27 36 35C35 40 32 44 28 47C29 47 32 48 35 48C43 47 47 38 46 29C45 20 38 15 32 14Z" fill="#D4AF37" opacity="0.9"/>
+  
+  <!-- Leaf Central Vein -->
+  <path d="M32 16C31 24 30 33 26 43" stroke="#FDFBF7" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M31 26C34 24 38 24 40 25" stroke="#FDFBF7" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M30 32C33 31 36 32 38 34" stroke="#FDFBF7" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M29 38C26 37 24 37 23 38" stroke="#FDFBF7" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Subtle Sparkle Accent -->
+  <circle cx="43" cy="18" r="1.5" fill="#D4AF37"/>
+</svg>

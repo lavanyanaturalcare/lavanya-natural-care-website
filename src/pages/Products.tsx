@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, X, Sparkles } from 'lucide-react';
 import { productsData } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 
 export const Products: React.FC = () => {
   const categories = [
@@ -45,7 +46,11 @@ export const Products: React.FC = () => {
   }, [filteredProducts]);
 
   return (
-    <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
+      <SEO
+        title="Handcrafted Skincare Products & Cold Process Soaps | Lavanya Natural Care"
+        description="Explore Lavanya Natural Care's full range of handcrafted cold-process soaps, face washes, body washes, face creams, and lotions made with pure botanical oils."
+      />
       
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
