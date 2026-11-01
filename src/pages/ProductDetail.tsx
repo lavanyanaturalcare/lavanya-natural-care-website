@@ -58,6 +58,7 @@ export const ProductDetail: React.FC = () => {
       <SEO
         title={`${product.name} (₹${product.mrp}) | Lavanya Natural Care`}
         description={product.shortDescription || product.fullDescription.slice(0, 155)}
+        image={product.image}
       />
       
       {/* Breadcrumbs Navigation */}
