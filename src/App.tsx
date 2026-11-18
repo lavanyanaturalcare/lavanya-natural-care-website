@@ -25,6 +25,21 @@ const ScrollToTop = () => {
   return null;
 };
 
+// Global floating action controls
+const FloatingActions = () => {
+  const { pathname } = useLocation();
+  // On individual product detail pages (/products/:id), hide the generic floating WhatsApp
+  // to prevent overlapping the mobile sticky order bar and sending generic messages.
+  const isProductDetailPage = pathname.startsWith('/products/') && pathname !== '/products';
+
+  return (
+    <>
+      <AIAssistantWidget />
+      {!isProductDetailPage && <WhatsAppButton variant="floating" />}
+    </>
+  );
+};
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -45,8 +60,7 @@ export const App: React.FC = () => {
           </Routes>
         </main>
         <Footer />
-        <AIAssistantWidget />
-        <WhatsAppButton variant="floating" />
+        <FloatingActions />
       </div>
     </BrowserRouter>
   );

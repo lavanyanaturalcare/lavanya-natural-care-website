@@ -26,8 +26,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
 
-          {/* Product Image Stage with Interactive Preview Tag */}
-          <div className="relative mb-6">
+          {/* Product Image Stage with Dedicated Preview Button */}
+          <div className="relative mb-6 group/stage">
             {/* Visual Preview Tag Badge */}
             <button
               type="button"
@@ -36,21 +36,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 e.stopPropagation();
                 setIsPreviewOpen(true);
               }}
-              className="absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 text-botanical-950 text-xs font-bold shadow-md border border-gold-400/50 hover:bg-gold-500 hover:text-botanical-950 transition-all transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 text-botanical-950 text-xs font-bold shadow-md border border-gold-400/50 hover:bg-gold-500 hover:text-botanical-950 transition-all transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
               title={`Quick Preview for ${product.name}`}
               aria-label={`Quick Preview for ${product.name}`}
             >
               <Eye className="w-3.5 h-3.5 text-gold-700" />
-              <span>Preview</span>
+              <span>Quick Preview</span>
             </button>
 
             <Link
               to={`/products/${product.id}`}
               className="block relative group/img focus:outline-none focus:ring-2 focus:ring-gold-500 rounded-2xl"
-              aria-label={`View details for ${product.name}`}
+              aria-label={`View full details for ${product.name}`}
             >
               <div className="product-platform w-full h-72 sm:h-80 rounded-2xl overflow-hidden p-6 border border-cream-200/60 flex items-center justify-center relative">
-                
                 {/* Product Image */}
                 <img
                   src={product.image}
@@ -61,21 +60,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 {/* Soft Ground Shadow Platform */}
                 <div className="product-platform-shadow" />
-
-                {/* Quick View Hover Overlay on Desktop */}
-                <div
-                  className="absolute inset-0 bg-botanical-950/20 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20 cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setIsPreviewOpen(true);
-                  }}
-                >
-                  <span className="bg-white/95 text-botanical-950 text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform border border-gold-300/60">
-                    <Eye className="w-4 h-4 text-gold-700" />
-                    <span>Quick Preview</span>
-                  </span>
-                </div>
               </div>
             </Link>
           </div>
@@ -117,8 +101,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
           </div>
 
-          {/* Action Buttons with 3D Depth */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Action Buttons with 3D Depth & Dedicated Click Targets */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-20">
             <button
               type="button"
               onClick={(e) => {
@@ -129,13 +113,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               className="btn-botanical-3d inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-white font-semibold text-sm text-center shadow-sm cursor-pointer"
               aria-label={`Preview ${product.name}`}
             >
-              <Eye className="w-4 h-4" />
-              <span>Preview</span>
+              <Eye className="w-4 h-4 text-gold-400" />
+              <span>Quick Preview</span>
             </button>
             <WhatsAppButton
               productName={product.name}
               mrp={product.mrp}
-              className="w-full justify-center py-3.5 text-sm"
+              className="w-full justify-center py-3.5 text-sm cursor-pointer"
             />
           </div>
         </div>

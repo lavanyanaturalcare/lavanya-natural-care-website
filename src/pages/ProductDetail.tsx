@@ -235,18 +235,19 @@ export const ProductDetail: React.FC = () => {
       )}
 
       {/* Sticky Mobile Order Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-cream-200 p-3 flex items-center justify-between shadow-2xl">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-cream-200 px-4 py-3 flex items-center justify-between shadow-2xl safe-area-bottom">
         <div>
-          <span className="text-[10px] text-warmgray-500 block uppercase tracking-wider font-semibold">{product.name}</span>
+          <span className="text-[10px] text-warmgray-500 block uppercase tracking-wider font-semibold truncate max-w-[150px]">{product.name}</span>
           <span className="font-serif text-xl font-bold text-botanical-950">₹{product.mrp}</span>
         </div>
         <a
-          href={`https://wa.me/919726739515?text=${encodeURIComponent(`Hello! I would like to order ${product.name} (₹${product.mrp}).`)}`}
+          href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello! I would like to order ${product.name} (₹${product.mrp}) from Lavanya Natural Care. Please provide delivery details.`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-bold shadow-md"
+          onClick={(e) => e.stopPropagation()}
+          className="btn-whatsapp-3d flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-transform cursor-pointer"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 fill-current" />
           <span>Order on WhatsApp</span>
         </a>
       </div>
