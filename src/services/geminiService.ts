@@ -2,8 +2,8 @@ import { VERIFIED_PRODUCTS, VERIFIED_BOTANICALS, SupportedLanguage, I18N } from 
 import { Product } from '../types';
 import { SkincareQuizAnswers, ConsultationResult, RecommendedRoutineStep } from '../types/ai';
 
-const DEFAULT_MODEL = 'gemini-4-hydrogen';
-const FALLBACK_MODEL = 'gemini-3.5-flash-lite';
+const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
+const FALLBACK_MODEL = 'gemini-flash-lite-latest';
 const STORAGE_KEY = 'lavanya_gemini_api_key';
 // Fallback store key provided by Lavanya Natural Care owner
 const KEY_PARTS = ['AQ', '.', 'Ab8RN6JgrSWFQ5f', 'knEP8Mp-hGZSD', 'gqpqvazpGjm0Rcq', 'Cq2l7VA'];
@@ -97,29 +97,37 @@ async function callGemini(
     }
   };
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(8000),
+    });
 
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({}));
-    const message = errorBody?.error?.message || `HTTP error ${response.status}`;
-    
-    // If model is unsupported or overloaded, attempt fallback
-    if (response.status === 404 && model !== FALLBACK_MODEL) {
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      const message = errorBody?.error?.message || `HTTP error ${response.status}`;
+      
+      // If model is unsupported (404) or overloaded (503), attempt fallback
+      if ((response.status === 404 || response.status === 503) && model !== FALLBACK_MODEL) {
+        return callGemini(contents, systemPrompt, FALLBACK_MODEL);
+      }
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    const candidate = data.candidates?.[0];
+    const text = candidate?.content?.parts?.map((p: any) => p.text).join('') || '';
+    return text;
+  } catch (err: any) {
+    if (model !== FALLBACK_MODEL) {
       return callGemini(contents, systemPrompt, FALLBACK_MODEL);
     }
-    throw new Error(message);
+    throw err;
   }
-
-  const data = await response.json();
-  const candidate = data.candidates?.[0];
-  const text = candidate?.content?.parts?.map((p: any) => p.text).join('') || '';
-  return text;
 }
 
 /**
@@ -270,10 +278,8 @@ export async function askLavanyaAI(
       recommendedProductIds: recommendedProductIds.slice(0, 3)
     };
   } catch (err: any) {
-    if (err.message === 'NO_API_KEY') {
-      return getFallbackChatReply(userQuery, language, imageAttachment != null);
-    }
-    throw err;
+    console.warn('Gemini API call failed or timed out, using verified Ayurvedic knowledge base:', err);
+    return getFallbackChatReply(userQuery, language, imageAttachment != null);
   }
 }
 
@@ -358,10 +364,8 @@ Respond in ${language === 'hi' ? 'Hindi (हिंदी)' : language === 'gu' ?
       recommendedProductIds: recommendedProductIds.slice(0, 3)
     };
   } catch (err: any) {
-    if (err.message === 'NO_API_KEY') {
-      return getFallbackScannerReply(language);
-    }
-    throw err;
+    console.warn('Multimodal scan call failed, using verified botanical knowledge base:', err);
+    return getFallbackScannerReply(language);
   }
 }
 
