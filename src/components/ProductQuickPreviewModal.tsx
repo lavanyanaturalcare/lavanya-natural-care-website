@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { X, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, Eye } from 'lucide-react';
 import { Product } from '../types';
@@ -13,6 +14,12 @@ export const ProductQuickPreviewModal: React.FC<ProductQuickPreviewModalProps> =
   product,
   onClose
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!product) return;
 
@@ -32,19 +39,20 @@ export const ProductQuickPreviewModal: React.FC<ProductQuickPreviewModalProps> =
     };
   }, [product, onClose]);
 
-  if (!product) return null;
+  if (!product || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="preview-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-botanical-950/70 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl bg-white rounded-3xl border border-cream-200 shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-2xl bg-white rounded-3xl border border-cream-200 shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto z-[100000]"
         onClick={(e) => e.stopPropagation()}
+        style={{ backgroundColor: '#ffffff', opacity: 1 }}
       >
         {/* Top Header with Preview Tag and Close Button */}
         <div className="flex items-center justify-between pb-3 border-b border-cream-100">
@@ -149,6 +157,7 @@ export const ProductQuickPreviewModal: React.FC<ProductQuickPreviewModalProps> =
           </Link>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

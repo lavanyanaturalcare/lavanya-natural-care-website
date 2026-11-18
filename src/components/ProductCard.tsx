@@ -31,7 +31,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {/* Visual Preview Tag Badge */}
             <button
               type="button"
-              onClick={() => setIsPreviewOpen(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsPreviewOpen(true);
+              }}
               className="absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 text-botanical-950 text-xs font-bold shadow-md border border-gold-400/50 hover:bg-gold-500 hover:text-botanical-950 transition-all transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gold-500"
               title={`Quick Preview for ${product.name}`}
               aria-label={`Quick Preview for ${product.name}`}
@@ -63,6 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   className="absolute inset-0 bg-botanical-950/20 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20 cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     setIsPreviewOpen(true);
                   }}
                 >
@@ -116,8 +121,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setIsPreviewOpen(true)}
-              className="btn-botanical-3d inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-white font-semibold text-sm text-center shadow-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsPreviewOpen(true);
+              }}
+              className="btn-botanical-3d inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-white font-semibold text-sm text-center shadow-sm cursor-pointer"
               aria-label={`Preview ${product.name}`}
             >
               <Eye className="w-4 h-4" />
