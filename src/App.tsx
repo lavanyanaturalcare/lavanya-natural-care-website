@@ -3,9 +3,11 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { AIAssistantWidget } from './components/AIAssistantWidget';
 import { Home } from './pages/Home';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
+import { AIConsultant } from './pages/AIConsultant';
 import { Ingredients } from './pages/Ingredients';
 import { Process } from './pages/Process';
 import { About } from './pages/About';
@@ -34,6 +36,7 @@ export const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/ai-consultant" element={<AIConsultant />} />
             <Route path="/ingredients" element={<Ingredients />} />
             <Route path="/process" element={<Process />} />
             <Route path="/about" element={<About />} />
@@ -42,6 +45,7 @@ export const App: React.FC = () => {
           </Routes>
         </main>
         <Footer />
+        <AIAssistantWidget />
         <WhatsAppButton variant="floating" />
       </div>
     </BrowserRouter>

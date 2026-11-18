@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, MessageCircle, Menu, X, Leaf, Mail } from 'lucide-react';
+import { Phone, MessageCircle, Menu, X, Leaf, Mail, Sparkles } from 'lucide-react';
 import { socialAccounts } from '../data/social';
 
 export const Navbar: React.FC = () => {
@@ -21,9 +21,10 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const navLinks = [
+  const navLinks: { name: string; path: string; isAi?: boolean }[] = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
+    { name: 'AI Consultant', path: '/ai-consultant', isAi: true },
     { name: 'Ingredients', path: '/ingredients' },
     { name: 'Process', path: '/process' },
     { name: 'About Us', path: '/about' },
@@ -123,6 +124,12 @@ export const Navbar: React.FC = () => {
               }`}
             >
               <span>{link.name}</span>
+              {link.isAi && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-gold-400/30 text-botanical-900 text-[10px] font-bold tracking-tight border border-gold-500/30">
+                  <Sparkles className="w-2.5 h-2.5 text-gold-600" />
+                  <span>AI</span>
+                </span>
+              )}
               {isActive(link.path) && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gold-500 rounded-full" />
               )}
@@ -180,7 +187,15 @@ export const Navbar: React.FC = () => {
                 }`}
                 role="menuitem"
               >
-                <span>{link.name}</span>
+                <span className="flex items-center gap-2">
+                  <span>{link.name}</span>
+                  {link.isAi && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gold-400/30 text-botanical-900 text-[10px] font-bold border border-gold-500/30">
+                      <Sparkles className="w-2.5 h-2.5 text-gold-600" />
+                      <span>Gemini AI</span>
+                    </span>
+                  )}
+                </span>
               </Link>
             ))}
           </div>

@@ -134,13 +134,32 @@ export const ProductDetail: React.FC = () => {
               className="w-full py-4 text-base justify-center shadow-md font-bold"
               label="Order Product via WhatsApp"
             />
-            <a
-              href="tel:+919726739515"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-botanical-800 hover:text-white transition-all"
-            >
-              <Phone className="w-4 h-4" />
-              <span>Call Us: +91 97267 39515</span>
-            </a>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href="tel:+919726739515"
+                className="flex items-center justify-center gap-2 py-3 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-xs sm:text-sm hover:bg-botanical-800 hover:text-white transition-all"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Call: +91 97267 39515</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(
+                    new CustomEvent('open-lavanya-ai-assistant', {
+                      detail: {
+                        initialPrompt: `Is ${product.name} suitable for my skin type? What are the cold-process benefits of its key ingredients (${product.ingredients})?`
+                      }
+                    })
+                  );
+                }}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-cream-100 hover:bg-gold-100/60 border border-gold-400/40 text-botanical-950 font-bold text-xs sm:text-sm transition-all shadow-xs"
+              >
+                <Sparkles className="w-4 h-4 text-gold-600" />
+                <span>Ask AI About This Soap</span>
+              </button>
+            </div>
           </div>
 
           {/* Benefits Checklist */}

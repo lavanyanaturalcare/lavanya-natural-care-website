@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone } from 'lucide-react';
+import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot } from 'lucide-react';
 import { productsData } from '../data/products';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
@@ -170,6 +170,57 @@ export const Home: React.FC = () => {
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+      </section>
+
+      {/* Gemini AI Skincare Consultant Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl bg-gradient-to-r from-botanical-950 via-botanical-900 to-botanical-950 text-cream-50 p-8 sm:p-12 border border-gold-500/30 shadow-xl overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                <span>New AI Feature • Powered by Google Gemini</span>
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-cream-50">
+                Not Sure Which Cold Process Soap Suits Your Skin?
+              </h2>
+              <p className="text-cream-200 text-sm sm:text-base leading-relaxed max-w-2xl">
+                Take our 30-second Ayurvedic Skincare Quiz or chat directly with our botanical consultant. Gemini analyzes your skin type, climate, and concerns to build your custom morning & evening routine.
+              </p>
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/ai-consultant"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-botanical-950 font-bold text-sm shadow-md transition-all"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Start Free AI Skin Diagnostic</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/ai-consultant"
+                  className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl border border-white/20 text-cream-100 hover:bg-white/10 font-semibold text-sm transition-all"
+                >
+                  <Bot className="w-4 h-4 text-gold-400" />
+                  <span>Chat with Botanical AI</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex justify-center">
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-3 max-w-xs">
+                <div className="w-12 h-12 rounded-2xl bg-gold-400/20 border border-gold-400/30 text-gold-400 mx-auto flex items-center justify-center">
+                  <Bot className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-lg font-bold text-cream-50">Ayurvedic AI Match</h3>
+                <p className="text-xs text-cream-200/80 leading-relaxed">
+                  Grounded in authentic Indian botanicals: Kesuda, Neem, Tulsi, Hibiscus, Ubtan & Kokum Butter.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
