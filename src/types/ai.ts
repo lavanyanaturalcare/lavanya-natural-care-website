@@ -1,4 +1,5 @@
 import { Product } from './index';
+import { SupportedLanguage } from '../data/productKnowledge';
 
 export type SkinType = 'oily' | 'dry' | 'combination' | 'sensitive' | 'normal' | 'mature';
 
@@ -13,17 +14,27 @@ export type SkinConcern =
 
 export type ClimateSeason = 'summer_heat' | 'monsoon_humidity' | 'winter_dry' | 'moderate';
 
+export type KnownSensitivity = 
+  | 'none'
+  | 'essential_oils'
+  | 'nut_almond'
+  | 'milk_dairy'
+  | 'fragrance_scents'
+  | 'reactive_allergies';
+
 export interface SkincareQuizAnswers {
   skinType: SkinType;
   primaryConcern: SkinConcern;
-  secondaryConcern?: string;
+  knownSensitivity: KnownSensitivity;
   climateSeason: ClimateSeason;
   routinePreference: 'simple' | 'comprehensive';
   notes?: string;
+  language: SupportedLanguage;
 }
 
 export interface RecommendedRoutineStep {
   step: 'Morning Cleansing' | 'Morning Moisture & Protection' | 'Evening Cleansing' | 'Evening Nourishment' | 'Weekly Herbal Treatment';
+  stepTitleLocalized?: string;
   recommendedProductId: string;
   productName: string;
   whyThisProduct: string;
@@ -38,6 +49,8 @@ export interface ConsultationResult {
   lifestyleTips: string[];
   recommendedProducts: Product[];
   seasonalAdvice: string;
+  patchTestWarning: string;
+  sensitivityNotes?: string;
 }
 
 export interface ChatMessage {
