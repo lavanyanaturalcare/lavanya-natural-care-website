@@ -121,13 +121,6 @@ export const AIAssistantWidget: React.FC = () => {
 
             <div className="flex items-center gap-1.5">
               <button
-                onClick={() => setIsKeyModalOpen(true)}
-                className="p-1.5 rounded-full hover:bg-white/10 text-cream-200 transition-colors"
-                title="Gemini API Key Settings"
-              >
-                <Key className="w-4 h-4" />
-              </button>
-              <button
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 rounded-full hover:bg-white/10 text-cream-200 transition-colors"
                 aria-label="Close assistant"

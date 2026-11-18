@@ -459,15 +459,13 @@ export const AIConsultant: React.FC = () => {
               ))}
             </div>
 
-            <button
-              onClick={() => setIsKeyModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-cream-100 border border-white/20 text-xs font-semibold backdrop-blur-md transition-all shadow-sm"
-              title="Configure Gemini API Key"
+            <div
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 text-cream-100 border border-white/20 text-xs font-medium backdrop-blur-md shadow-xs"
             >
-              <Key className="w-4 h-4 text-gold-400" />
-              <span>{hasKey ? 'Gemini: Active' : 'Demo Mode (Add Key)'}</span>
-              <span className={`w-2 h-2 rounded-full ${hasKey ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-            </button>
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>Ayurvedic AI Online</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
           </div>
         </div>
       </div>
@@ -850,8 +848,9 @@ export const AIConsultant: React.FC = () => {
                 <h3 className="font-serif text-lg font-bold text-botanical-950 leading-tight">
                   {t.aiAdvisorTitle}
                 </h3>
-                <span className="text-[11px] text-warmgray-500">
-                  {hasKey ? 'Gemini 4 Hydrogen • Live' : 'Demo Mode (Add API Key for live AI)'}
+                <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Gemini AI • Grounded in Catalogue
                 </span>
               </div>
             </div>
