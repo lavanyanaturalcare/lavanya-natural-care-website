@@ -30,6 +30,15 @@ import {
 import { SEO } from '../components/SEO';
 import { ApiKeyModal } from '../components/ApiKeyModal';
 import { WhatsAppButton } from '../components/WhatsAppButton';
+import { AIConsentBanner } from '../components/AIConsentBanner';
+import { PrivacyDataModal } from '../components/PrivacyDataModal';
+import { 
+  createConversation, 
+  saveMessage, 
+  trackProductInterest, 
+  createEnquiry, 
+  getConsentStatus 
+} from '../services/crmService';
 import { 
   VERIFIED_PRODUCTS, 
   VERIFIED_BOTANICALS, 
@@ -64,6 +73,9 @@ export const AIConsultant: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'quiz' | 'chat' | 'compare' | 'scanner'>('quiz');
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
   const [hasKey, setHasKey] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [hasChatConsent, setHasChatConsent] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   useEffect(() => {
     setHasKey(hasGeminiApiKey());
@@ -289,6 +301,21 @@ export const AIConsultant: React.FC = () => {
     setChatInput('');
     setIsChatLoading(true);
 
+    let activeConvId = conversationId;
+    if (hasChatConsent && !activeConvId) {
+      try {
+        const conv = await createConversation();
+        activeConvId = conv.id;
+        setConversationId(conv.id);
+      } catch (e) {
+        console.warn('Could not initialize conversation record', e);
+      }
+    }
+
+    if (hasChatConsent && activeConvId) {
+      saveMessage(activeConvId, 'customer', userMsg.text).catch(() => {});
+    }
+
     try {
       const history = messages.map(m => ({ role: m.role, text: m.text }));
       const response = await askLavanyaAI(userMsg.text, history, language);
@@ -302,6 +329,15 @@ export const AIConsultant: React.FC = () => {
       };
 
       setMessages(prev => [...prev, botMsg]);
+
+      if (hasChatConsent && activeConvId) {
+        saveMessage(activeConvId, 'ai', response.text, response.recommendedProductIds).catch(() => {});
+        if (response.recommendedProductIds && response.recommendedProductIds.length > 0) {
+          response.recommendedProductIds.forEach(pid => {
+            trackProductInterest(pid, 'ai_recommended').catch(() => {});
+          });
+        }
+      }
     } catch (err: any) {
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -317,6 +353,7 @@ export const AIConsultant: React.FC = () => {
 
   const handleResetChat = () => {
     if (window.confirm(t.chat.resetConfirm)) {
+      setConversationId(null);
       setMessages([
         {
           id: 'welcome',
@@ -837,7 +874,14 @@ export const AIConsultant: React.FC = () => {
       {/* TAB 2: CONVERSATIONAL SKINCARE ASSISTANT                  */}
       {/* ========================================================= */}
       {activeTab === 'chat' && (
-        <div className="bg-white rounded-3xl border border-cream-200 shadow-sm overflow-hidden flex flex-col h-[700px] animate-fadeIn">
+        <div className="space-y-4 animate-fadeIn">
+          <AIConsentBanner
+            language={language}
+            onConsentChange={setHasChatConsent}
+            onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+          />
+
+          <div className="bg-white rounded-3xl border border-cream-200 shadow-sm overflow-hidden flex flex-col h-[700px]">
           {/* Chat Window Header with Reset Button */}
           <div className="bg-cream-100/80 px-6 py-4 border-b border-cream-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -985,6 +1029,7 @@ export const AIConsultant: React.FC = () => {
               <Send className="w-4 h-4" />
             </button>
           </form>
+          </div>
         </div>
       )}
 
@@ -1327,6 +1372,12 @@ export const AIConsultant: React.FC = () => {
         </div>
         <span className="text-[11px] text-warmgray-500 font-mono">Vadodara, Gujarat • Artisanal Cold Process</span>
       </div>
+
+      {/* Privacy and Right to Erasure Modal */}
+      <PrivacyDataModal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
+      />
 
       {/* Floating Key Modal */}
       <ApiKeyModal

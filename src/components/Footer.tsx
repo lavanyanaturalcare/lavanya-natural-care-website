@@ -203,9 +203,15 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar with Dynamic Copyright */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-warmgray-500 gap-4">
           <p>© {currentYear} Lavanya Natural Care. All rights reserved.</p>
-          <p className="text-warmgray-400">
-            Handcrafted with Care &amp; Integrity • Vadodara, Gujarat
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-warmgray-400">
+              Handcrafted with Care &amp; Integrity • Vadodara, Gujarat
+            </p>
+            <span className="text-warmgray-600">•</span>
+            <Link to="/admin" className="hover:text-gold-400 transition-colors text-warmgray-400">
+              Admin Portal
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
