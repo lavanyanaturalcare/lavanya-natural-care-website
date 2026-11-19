@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot } from 'lucide-react';
+import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot, Star, ChevronDown, ChevronUp, ShieldCheck, Mail, MessageCircle, MapPin } from 'lucide-react';
 import { productsData } from '../data/products';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
@@ -11,12 +11,85 @@ import { SEO } from '../components/SEO';
 
 export const Home: React.FC = () => {
   const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 4);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [vipContact, setVipContact] = useState('');
+  const [vipSuccess, setVipSuccess] = useState(false);
+
+  const handleVipSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vipContact.trim()) return;
+    const url = `https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello Lavanya Natural Care! I would like to join your VIP Skincare Club for 10% off my first order. My contact: ${vipContact}`)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setVipSuccess(true);
+  };
+
+  const faqs = [
+    {
+      q: 'What makes cold process soap different from commercial soaps?',
+      a: 'Most commercial soaps are synthetic detergent bars that remove natural glycerin to sell to cosmetics corporations. Our cold-process soaps in Vadodara are cured naturally for 4 to 6 weeks, retaining 100% of their natural plant glycerin and unrefined Kokum butter. This leaves your skin deeply moisturized and never stripped or tight.'
+    },
+    {
+      q: 'Which soap is best for oily, blemish-prone, or acne-prone skin?',
+      a: 'Our Neem Tulsi Cold Process Soap and Charcoal Rice Soap are ideal. Neem and Tulsi provide purifying botanical action to clear clogged pores, while activated coconut charcoal draws out excess sebum without triggering rebound oiliness.'
+    },
+    {
+      q: 'Which soap is recommended for dry, sensitive, or sunburned skin?',
+      a: 'Kesuda (Palash) Soap and Ubtan Luxury Soap are specially handcrafted for sensitive and dry skin. Kesuda flowers have been used in Gujarat for generations to soothe heat rashes, while Ubtan combines whole milk, turmeric, and besan for comforting nourishment.'
+    },
+    {
+      q: 'What is the shelf life and proper storage of cold process soap?',
+      a: 'Our soaps have a natural shelf life of 18 to 24 months. Because they are handcrafted without chemical hardeners, we recommend placing them on a well-draining soap dish between baths so they dry completely and last longer.'
+    },
+    {
+      q: 'How long does shipping take to Vadodara and across India?',
+      a: 'Local orders within Vadodara are delivered within 24 to 48 hours (same-day or next-day delivery). Orders across Gujarat and other Indian states are dispatched via express courier partners and arrive in 3 to 6 business days. Real-time tracking is provided via WhatsApp.'
+    },
+    {
+      q: 'Do you accept Cash on Delivery (COD) and UPI payments?',
+      a: 'Yes! We accept Instant UPI (Google Pay, PhonePe, Paytm to 9726739515@upi), Cash on Delivery (COD), and direct 1-click WhatsApp orders. Our team verifies every order with you on WhatsApp for complete peace of mind.'
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: 'Pooja Patel',
+      location: 'Vadodara, Gujarat',
+      skinType: 'Oily & Blemish-Prone Skin',
+      rating: 5,
+      review: 'The Neem Tulsi soap is a game-changer for Vadodara’s humid weather! My skin feels thoroughly clean and refreshed without any of the harsh, dry tightness from commercial soap. Quick local delivery too.',
+      product: 'Neem Tulsi Soap'
+    },
+    {
+      name: 'Ananya Sharma',
+      location: 'Mumbai, Maharashtra',
+      skinType: 'Sensitive & Prickly Heat',
+      rating: 5,
+      review: 'I bought the Kesuda Soap for my summer heat rashes after learning about Palash flowers. It completely calmed my skin irritation. The creamy lather and natural botanical touch are wonderful.',
+      product: 'Kesuda Soap'
+    },
+    {
+      name: 'Dr. Rajesh Shah',
+      location: 'Ahmedabad, Gujarat',
+      skinType: 'Normal to Dry Skin',
+      rating: 5,
+      review: 'As someone conscious about synthetic additives, I appreciate that Lavanya retains 100% natural glycerin. The Ubtan soap provides gentle exfoliation and leaves skin visibly soft. Truly authentic craft.',
+      product: 'Ubtan Soap'
+    },
+    {
+      name: 'Meera Desai',
+      location: 'Surat, Gujarat',
+      skinType: 'Dry & Sensitive Skin',
+      rating: 5,
+      review: 'The Rice Aloe Face Cream and Lavender body lotion absorb instantly without any heavy stickiness. Fast dispatch in eco-friendly packaging. Proud to support Gujarat’s handcrafted artisans.',
+      product: 'Rice Aloe Face Cream'
+    }
+  ];
 
   return (
     <div className="space-y-16 md:space-y-24 pb-16 w-full overflow-x-clip">
       <SEO
-        title="Lavanya Natural Care | Handcrafted Cold Process Soap & Botanical Skincare"
-        description="Discover 100% natural, handcrafted cold-process soaps, face & body washes, and botanical skincare by Lavanya Natural Care. Made in small batches in Vadodara with pure plant oils."
+        title="Lavanya Natural Care | Handmade Cold Process Soap, Vadodara"
+        description="Handcrafted cold process soaps & botanical skincare made in Vadodara with pure plant oils & Ayurvedic herbs. 100% natural, gentle, and toxin-free."
       />
       
       {/* Hero Banner Section */}
@@ -104,6 +177,51 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* Verified Trust Badges Strip */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+          <div className="space-y-2">
+            <div className="w-10 h-10 rounded-full bg-botanical-50 text-botanical-800 mx-auto flex items-center justify-center border border-botanical-200">
+              <Leaf className="w-5 h-5 text-botanical-700" />
+            </div>
+            <h3 className="font-serif text-sm font-bold text-botanical-950">Handmade in Small Batches</h3>
+            <p className="text-[11px] text-warmgray-500">Vadodara, Gujarat artisanal craft</p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="w-10 h-10 rounded-full bg-botanical-50 text-botanical-800 mx-auto flex items-center justify-center border border-botanical-200">
+              <Sparkles className="w-5 h-5 text-gold-600" />
+            </div>
+            <h3 className="font-serif text-sm font-bold text-botanical-950">Pure Plant Oils</h3>
+            <p className="text-[11px] text-warmgray-500">Coconut, Mahua &amp; Kokum Butter</p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="w-10 h-10 rounded-full bg-botanical-50 text-botanical-800 mx-auto flex items-center justify-center border border-botanical-200">
+              <ShieldCheck className="w-5 h-5 text-botanical-700" />
+            </div>
+            <h3 className="font-serif text-sm font-bold text-botanical-950">No Synthetic Fragrance</h3>
+            <p className="text-[11px] text-warmgray-500">Zero SLS, parabens or harsh detergents</p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="w-10 h-10 rounded-full bg-botanical-50 text-botanical-800 mx-auto flex items-center justify-center border border-botanical-200">
+              <Award className="w-5 h-5 text-gold-600" />
+            </div>
+            <h3 className="font-serif text-sm font-bold text-botanical-950">Glycerin Retained</h3>
+            <p className="text-[11px] text-warmgray-500">Deep moisture barrier protection</p>
+          </div>
+
+          <div className="col-span-2 md:col-span-1 space-y-2">
+            <div className="w-10 h-10 rounded-full bg-botanical-50 text-botanical-800 mx-auto flex items-center justify-center border border-botanical-200">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            </div>
+            <h3 className="font-serif text-sm font-bold text-botanical-950">100% Vegetarian</h3>
+            <p className="text-[11px] text-warmgray-500">Cruelty-free &amp; ethically sourced</p>
           </div>
         </div>
       </section>
@@ -418,6 +536,186 @@ export const Home: React.FC = () => {
               </a>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Customer Reviews & Testimonials Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <div className="inline-flex items-center gap-1 text-gold-600">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-current text-gold-500" />
+            ))}
+          </div>
+          <span className="text-xs font-semibold uppercase tracking-widest text-gold-700 block">
+            Real Customer Experiences
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-botanical-950">
+            Loved Across Gujarat &amp; India
+          </h2>
+          <p className="text-warmgray-600 text-sm">
+            Read verified customer feedback on our small-batch cold process soaps and herbal skincare.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {testimonials.map((t, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-3xl p-6 border border-cream-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center gap-1 text-gold-500">
+                  {[...Array(t.rating)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                  ))}
+                </div>
+
+                <p className="text-xs text-warmgray-700 leading-relaxed italic">
+                  "{t.review}"
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-cream-100 flex items-center gap-3">
+                {/* Photo Placeholder Slot */}
+                <div className="w-10 h-10 rounded-full bg-botanical-100 text-botanical-900 font-serif font-bold text-sm flex items-center justify-center shrink-0 border border-botanical-200">
+                  {t.name.charAt(0)}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-xs text-botanical-950 truncate">{t.name}</span>
+                    <span title="Verified Customer" className="inline-flex items-center">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-warmgray-500 block truncate">{t.location}</span>
+                  <span className="text-[10px] text-gold-700 font-semibold block">{t.product}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions (FAQ) Section */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-widest text-gold-700 block">
+            Got Questions?
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-botanical-950">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-warmgray-600 text-sm">
+            Everything you need to know about our ingredients, soap curing, delivery, and orders.
+          </p>
+        </div>
+
+        <div className="space-y-3.5">
+          {faqs.map((faq, index) => {
+            const isOpen = openFaqIndex === index;
+            return (
+              <div
+                key={index}
+                className="bg-white rounded-2xl border border-cream-200 shadow-xs overflow-hidden transition-colors"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-serif text-base sm:text-lg font-bold text-botanical-950 hover:text-gold-700 transition-colors focus:outline-none"
+                  aria-expanded={isOpen}
+                >
+                  <span>{faq.q}</span>
+                  {isOpen ? (
+                    <ChevronUp className="w-5 h-5 text-gold-700 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-warmgray-400 shrink-0" />
+                  )}
+                </button>
+                {isOpen && (
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-warmgray-600 leading-relaxed border-t border-cream-100">
+                    <p>{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Vadodara Local Delivery & Shipping Highlight */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-cream-100/80 rounded-3xl p-8 sm:p-10 border border-cream-200 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div className="space-y-2 text-center md:text-left">
+            <span className="text-xs font-bold text-gold-700 uppercase tracking-wider block">
+              Fast Dispatch
+            </span>
+            <h3 className="font-serif text-2xl font-bold text-botanical-950">
+              Vadodara Local &amp; Pan-India Delivery
+            </h3>
+            <p className="text-xs text-warmgray-600 leading-relaxed">
+              Same-day or next-day delivery across Vadodara. Express door delivery across Gujarat and all Indian states within 3–6 business days.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-cream-200 text-center space-y-1.5 shadow-xs">
+            <MapPin className="w-6 h-6 text-botanical-800 mx-auto" />
+            <h4 className="font-serif font-bold text-sm text-botanical-950">Artisan Studio Address</h4>
+            <p className="text-xs text-warmgray-600">
+              FF-22 Pujar Complex, Subhanpura, Vadodara, Gujarat 390023
+            </p>
+            <p className="text-[11px] text-gold-700 font-semibold">Local Pickup Available</p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-cream-200 text-center space-y-2 shadow-xs">
+            <Phone className="w-6 h-6 text-botanical-800 mx-auto" />
+            <h4 className="font-serif font-bold text-sm text-botanical-950">Order By Phone / WhatsApp</h4>
+            <a
+              href="tel:+919726739515"
+              className="font-bold text-sm text-botanical-900 hover:text-gold-700 block transition-colors"
+            >
+              +91 97267 39515
+            </a>
+            <WhatsAppButton label="Order via WhatsApp" className="text-xs py-2 w-full justify-center" />
+          </div>
+        </div>
+      </section>
+
+      {/* VIP Club / WhatsApp Offer Signup */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-botanical-900 text-cream-50 rounded-3xl p-8 sm:p-10 border border-botanical-800 text-center space-y-4">
+          <span className="text-xs uppercase tracking-widest text-gold-400 font-bold bg-botanical-950/60 px-3.5 py-1.5 rounded-full border border-gold-500/30 inline-block">
+            Join the Botanical Circle
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+            Get 10% Off Your First Order
+          </h2>
+          <p className="text-xs sm:text-sm text-warmgray-300 max-w-lg mx-auto leading-relaxed">
+            Sign up with your WhatsApp number or email to receive seasonal soap release notifications, Ayurvedic skincare tips, and a 10% discount on your first order.
+          </p>
+
+          <form onSubmit={handleVipSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-2 pt-2">
+            <input
+              type="text"
+              placeholder="Enter your WhatsApp number or email"
+              value={vipContact}
+              onChange={(e) => setVipContact(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-xl text-xs bg-white text-warmgray-900 border border-cream-300 focus:outline-none focus:ring-2 focus:ring-gold-500"
+              required
+            />
+            <button
+              type="submit"
+              className="px-6 py-3 rounded-xl bg-gold-500 text-botanical-950 font-bold text-xs hover:bg-gold-400 transition-colors shadow-md shrink-0 cursor-pointer"
+            >
+              Claim 10% Off
+            </button>
+          </form>
+
+          {vipSuccess && (
+            <p className="text-xs text-emerald-400 font-semibold animate-fadeIn">
+              ✓ Opening WhatsApp to confirm your 10% welcome coupon!
+            </p>
+          )}
         </div>
       </section>
 

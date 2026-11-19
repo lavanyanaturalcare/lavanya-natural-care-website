@@ -6,9 +6,10 @@ interface SEOProps {
   description: string;
   canonical?: string;
   image?: string;
+  schema?: Record<string, any>;
 }
 
-export const SEO: React.FC<SEOProps> = ({ title, description, canonical, image }) => {
+export const SEO: React.FC<SEOProps> = ({ title, description, canonical, image, schema }) => {
   const location = useLocation();
 
   useEffect(() => {
@@ -37,36 +38,59 @@ export const SEO: React.FC<SEOProps> = ({ title, description, canonical, image }
     setMetaTag('property', 'og:url', currentUrl);
 
     // Update Twitter preview tags
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:site', '@lavanyanatural');
+    setMetaTag('name', 'twitter:creator', '@lavanyanatural');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:url', currentUrl);
 
-    // Update Image Preview Tags if provided
-    if (image) {
-      const absoluteImage = image.startsWith('http')
-        ? image
-        : `https://lavanyanatural.in${image.startsWith('/') ? '' : '/'}${encodeURI(image)}`;
+    // Image Preview Tags
+    const previewImage = image || '/assets/lavanya-natural-soap-collection.png';
+    const absoluteImage = previewImage.startsWith('http')
+      ? previewImage
+      : `https://lavanyanatural.in${previewImage.startsWith('/') ? '' : '/'}${encodeURI(previewImage)}`;
 
-      setMetaTag('property', 'og:image', absoluteImage);
-      setMetaTag('property', 'og:image:secure_url', absoluteImage);
-      setMetaTag('name', 'twitter:image', absoluteImage);
-      setMetaTag('name', 'thumbnail', absoluteImage);
+    setMetaTag('property', 'og:image', absoluteImage);
+    setMetaTag('property', 'og:image:secure_url', absoluteImage);
+    setMetaTag('name', 'twitter:image', absoluteImage);
+    setMetaTag('name', 'thumbnail', absoluteImage);
 
-      let linkImage = document.querySelector('link[rel="image_src"]');
-      if (!linkImage) {
-        linkImage = document.createElement('link');
-        linkImage.setAttribute('rel', 'image_src');
-        document.head.appendChild(linkImage);
-      }
-      linkImage.setAttribute('href', absoluteImage);
+    let linkImage = document.querySelector('link[rel="image_src"]');
+    if (!linkImage) {
+      linkImage = document.createElement('link');
+      linkImage.setAttribute('rel', 'image_src');
+      document.head.appendChild(linkImage);
     }
+    linkImage.setAttribute('href', absoluteImage);
 
     // Update Canonical URL
     let linkCanonical = document.querySelector('link[rel="canonical"]');
     if (linkCanonical) {
       linkCanonical.setAttribute('href', canonical || currentUrl);
     }
-  }, [title, description, canonical, image, location.pathname]);
+
+    // Dynamic JSON-LD Schema
+    const existingScript = document.getElementById('page-jsonld-schema');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    if (schema) {
+      const script = document.createElement('script');
+      script.id = 'page-jsonld-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schema);
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      const scriptToRemove = document.getElementById('page-jsonld-schema');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, [title, description, canonical, image, schema, location.pathname]);
 
   return null;
 };

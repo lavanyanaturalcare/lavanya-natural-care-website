@@ -12,6 +12,12 @@ import { Ingredients } from './pages/Ingredients';
 import { Process } from './pages/Process';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
+import { ShippingDelivery } from './pages/ShippingDelivery';
+import { RefundPolicy } from './pages/RefundPolicy';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { Terms } from './pages/Terms';
+import { Blog } from './pages/Blog';
+import { BlogPost } from './pages/BlogPost';
 import { NotFound } from './pages/NotFound';
 
 // Scroll to top automatically on route change
@@ -56,6 +62,12 @@ export const App: React.FC = () => {
             <Route path="/process" element={<Process />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/shipping-delivery" element={<ShippingDelivery />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

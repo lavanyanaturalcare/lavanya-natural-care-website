@@ -22,8 +22,8 @@ export const Ingredients: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="Pure Botanical Ingredients & Ayurvedic Herbs | Lavanya Natural Care"
-        description="Learn about the pure ingredients in Lavanya Natural Care soaps: Kesuda (Palash), Neem, Tulsi, Ubtan, Kokum Butter, Hibiscus, Lavender, and pure cold-pressed plant oils."
+        title="Botanical Ingredients & Herbs | Lavanya Natural Care"
+        description="Explore pure botanical oils and Ayurvedic herbs in Lavanya soaps: Kesuda, Neem, Tulsi, Kokum Butter, Hibiscus, and cold-pressed plant oils."
       />
       
       {/* Hero Banner */}
@@ -89,8 +89,10 @@ export const Ingredients: React.FC = () => {
                 <div className="w-full h-56 sm:h-64 bg-cream-50 rounded-2xl overflow-hidden p-3 border border-cream-100/80 flex items-center justify-center relative group">
                   <img
                     src={ingredient.image}
-                    alt={ingredient.name}
+                    alt={`${ingredient.name} natural Ayurvedic herb used in cold process soap`}
                     loading="lazy"
+                    width={320}
+                    height={256}
                     className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>

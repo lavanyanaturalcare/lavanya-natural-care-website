@@ -81,7 +81,9 @@ export const ProductQuickPreviewModal: React.FC<ProductQuickPreviewModalProps> =
           <div className="sm:col-span-5 bg-cream-50 rounded-2xl p-4 border border-cream-200 flex items-center justify-center relative min-h-[220px]">
             <img
               src={product.image}
-              alt={product.name}
+              alt={`${product.name} handcrafted natural soap bar - Lavanya Natural Care`}
+              width={240}
+              height={240}
               className="max-h-56 w-auto object-contain"
             />
             <span className="absolute bottom-2 left-2 text-[10px] text-warmgray-500 font-medium bg-white/90 px-2 py-0.5 rounded-md border border-cream-200">

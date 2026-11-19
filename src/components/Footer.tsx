@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
             <h4 className="font-serif text-lg font-semibold text-gold-400 tracking-wide">
               Quick Links
             </h4>
-            <ul className="space-y-2.5 text-sm text-warmgray-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-warmgray-300">
               <li>
                 <Link to="/" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
@@ -84,9 +84,15 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/blog" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>Skincare Guides &amp; Blog</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/ingredients" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Our Ingredients</span>
+                  <span>Our Botanical Ingredients</span>
                 </Link>
               </li>
               <li>
@@ -98,35 +104,54 @@ export const Footer: React.FC = () => {
               <li>
                 <Link to="/about" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>About Us</span>
+                  <span>About Our Craft</span>
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Contact Us</span>
+                  <span>Contact &amp; Orders</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Product Categories (Clickable) */}
+          {/* Customer Care & Policies */}
           <div className="space-y-4">
             <h4 className="font-serif text-lg font-semibold text-gold-400 tracking-wide">
-              Categories
+              Customer Care
             </h4>
-            <ul className="space-y-2.5 text-sm text-warmgray-300">
-              {categories.map((cat, idx) => (
-                <li key={idx}>
-                  <Link
-                    to={cat.path}
-                    className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                    <span>{cat.name}</span>
-                  </Link>
-                </li>
-              ))}
+            <ul className="space-y-2 text-xs sm:text-sm text-warmgray-300">
+              <li>
+                <Link to="/shipping-delivery" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>Shipping &amp; Delivery Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/refund-policy" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>Return &amp; Refund Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy-policy" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>Privacy Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>Terms &amp; Conditions</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/ai-consultant" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                  <span>AI Skincare Diagnostic</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

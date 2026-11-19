@@ -13,6 +13,7 @@ export interface Product {
   additionalImages?: string[];
   howToUse?: string;
   isFeatured?: boolean;
+  skinType?: string;
 }
 
 export interface Ingredient {

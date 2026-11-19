@@ -53,8 +53,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {/* Product Image */}
                 <img
                   src={product.image}
-                  alt={`${product.name} - Lavanya Natural Care`}
+                  alt={`${product.name} - Handmade Cold Process Soap by Lavanya Natural Care Vadodara`}
                   loading="lazy"
+                  width={300}
+                  height={300}
                   className="w-full h-full object-contain max-h-72 transition-transform duration-500 group-hover/img:scale-105 group-hover/img:-translate-y-1.5 z-10"
                 />
 

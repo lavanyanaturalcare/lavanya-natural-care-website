@@ -48,8 +48,8 @@ export const Products: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="Handcrafted Skincare Products & Cold Process Soaps | Lavanya Natural Care"
-        description="Explore Lavanya Natural Care's full range of handcrafted cold-process soaps, face washes, body washes, face creams, and lotions made with pure botanical oils."
+        title="Handmade Soaps & Skincare Products | Lavanya Natural Care"
+        description="Explore Lavanya Natural Care's handcrafted cold-process soaps, face washes, lotions, and creams made with pure plant oils in Vadodara, Gujarat."
       />
       
       {/* Page Header */}

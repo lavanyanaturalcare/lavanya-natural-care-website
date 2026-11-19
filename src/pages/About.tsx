@@ -7,8 +7,8 @@ export const About: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="About Us & Artisanal Story | Lavanya Natural Care"
-        description="Learn the story of Lavanya Natural Care, handcrafted in Vadodara, Gujarat. Dedicated to traditional cold-process soapmaking, 100% natural plant oils, and Ayurvedic purity."
+        title="About Our Handcrafted Soap Studio | Lavanya Natural Care"
+        description="The story of Lavanya Natural Care in Vadodara, Gujarat. Handcrafting cold process soaps with 100% pure plant oils and Ayurvedic herbs."
       />
       
       {/* Hero Header */}
@@ -43,9 +43,12 @@ export const About: React.FC = () => {
         </div>
         <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cream-200 shadow-md">
           <img
-            src="/assets/use-for-making-website/our Collection.png"
-            alt="Lavanya Handmade Collection"
+            src="/assets/lavanya-natural-soap-collection.png"
+            alt="Lavanya Natural Care Handcrafted Soap Collection in Vadodara"
             className="w-full h-auto object-cover"
+            width={1200}
+            height={630}
+            loading="lazy"
           />
         </div>
       </div>

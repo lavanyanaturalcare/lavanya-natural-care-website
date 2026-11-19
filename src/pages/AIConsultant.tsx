@@ -409,8 +409,8 @@ export const AIConsultant: React.FC = () => {
   return (
     <div className="py-8 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 w-full overflow-x-clip pb-24">
       <SEO
-        title={`${t.aiAdvisorTitle} | ${t.brandName}`}
-        description="Experience verified Ayurvedic skincare consultations, guided preference quizzes, and side-by-side product comparisons powered by Google Gemini and Lavanya Natural Care."
+        title="Ayurvedic AI Skincare Consultant | Lavanya Natural Care"
+        description="Consult Lavanya's Ayurvedic AI for skin type diagnosis, herbal ingredient recommendations, and personalized cold process soap routines."
       />
 
       {/* Top Banner with Language Selector & Security Badge */}

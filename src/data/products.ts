@@ -26,6 +26,8 @@ export const productsData: Product[] = [
     netWeightOrVol: '100g (approx)',
     mrp: 99,
     image: '/assets/products/neem-tulsi-soap.png',
+    additionalImages: ['/assets/packaging/soap packaging.jpeg'],
+    skinType: 'Oily, Combination & Blemish-Prone Skin',
     isFeatured: true
   },
   {
@@ -50,6 +52,8 @@ export const productsData: Product[] = [
     netWeightOrVol: '100g (approx)',
     mrp: 99,
     image: '/assets/products/kesuda-soap.PNG',
+    additionalImages: ['/assets/packaging/soap packaging.jpeg'],
+    skinType: 'Sensitive, Sun-Exposed, Prickly Heat & Normal Skin',
     isFeatured: true
   },
   {
@@ -74,6 +78,8 @@ export const productsData: Product[] = [
     netWeightOrVol: '100g (approx)',
     mrp: 99,
     image: '/assets/products/hibiscus-soap.PNG',
+    additionalImages: ['/assets/packaging/soap packaging.jpeg'],
+    skinType: 'Normal to Dry, Mature & Dull Skin',
     isFeatured: true
   },
   {
@@ -97,7 +103,9 @@ export const productsData: Product[] = [
     ingredients: 'Coconut Oil, Mahua Oil, Sunflower Oil, Castor Oil, Essential Oil Saponified with Lye. Additives: Besan, Haldi, Milk, and Multani Mitti.',
     netWeightOrVol: '100g (approx)',
     mrp: 99,
-    image: '/assets/products/ubtan-soap.PNG'
+    image: '/assets/products/ubtan-soap.PNG',
+    additionalImages: ['/assets/packaging/soap packaging.jpeg'],
+    skinType: 'All Skin Types, Sun-Tanned & Uneven Skin Tone'
   },
   {
     id: 'charcoal-rice-soap',
@@ -119,7 +127,9 @@ export const productsData: Product[] = [
     ingredients: 'Coconut Oil, Mahua Oil, Kokum Butter, Sunflower Oil, Castor Oil, Essential Oil Saponified with Lye. Additives: Activated Charcoal Powder, Rice.',
     netWeightOrVol: '100g (approx)',
     mrp: 99,
-    image: '/assets/products/charcoal-rice-soap.PNG'
+    image: '/assets/products/charcoal-rice-soap.PNG',
+    additionalImages: ['/assets/packaging/soap packaging.jpeg'],
+    skinType: 'Oily, Congested & Normal Skin'
   },
 
   // Face & Body Wash Category
@@ -145,6 +155,7 @@ export const productsData: Product[] = [
     netWeightOrVol: '300 ml',
     mrp: 179,
     image: '/assets/products/face-body-wash-neem-tulsi.webp',
+    skinType: 'Oily & Acne-Prone Skin',
     isFeatured: true
   },
   {
@@ -168,7 +179,8 @@ export const productsData: Product[] = [
     ingredients: 'Kesuda Flower Infused Water, Saponified Oils of Coconut Oil, Mahua Oil, Sunflower & Castor Oil, Vegetable Glycerine, Natural Essential Oil.',
     netWeightOrVol: '300 ml',
     mrp: 179,
-    image: '/assets/products/face-body-wash-kesuda.webp'
+    image: '/assets/products/face-body-wash-kesuda.webp',
+    skinType: 'Normal, Sensitive & Heat-Sensitive Skin'
   },
 
   // Hand Wash Category
@@ -193,7 +205,8 @@ export const productsData: Product[] = [
     ingredients: 'Saponified Oils of Coconut Oil, Mahua Oil, Sunflower Oil & Castor Oil, Vegetable Glycerine, Lemon Essential Oil.',
     netWeightOrVol: '300 ml',
     mrp: 179,
-    image: '/assets/products/hand-wash-lemon.webp'
+    image: '/assets/products/hand-wash-lemon.webp',
+    skinType: 'All Skin Types'
   },
 
   // Face Care Category
@@ -219,6 +232,7 @@ export const productsData: Product[] = [
     netWeightOrVol: '50 gm',
     mrp: 99,
     image: '/assets/products/rice-aloe-face-cream.png',
+    skinType: 'Dry, Normal & Sensitive Skin',
     isFeatured: true
   },
 
@@ -244,7 +258,8 @@ export const productsData: Product[] = [
     ingredients: 'Kesuda Flower Infusion, Plant Oils, Kokum Butter, Vegetable Glycerine, Natural Essential Oils.',
     netWeightOrVol: '150 gm',
     mrp: 220,
-    image: '/assets/products/body-cream-kesuda.webp'
+    image: '/assets/products/body-cream-kesuda.webp',
+    skinType: 'Dry, Sensitive & Rough Skin'
   },
   {
     id: 'lavender-body-lotion',
@@ -267,7 +282,8 @@ export const productsData: Product[] = [
     ingredients: 'Lavender Essential Oil, Botanical Oils, Plant-based Emulsifiers, Vegetable Glycerine, Purified Water.',
     netWeightOrVol: '190 ml',
     mrp: 220,
-    image: '/assets/products/body-lotion-lavender.webp'
+    image: '/assets/products/body-lotion-lavender.webp',
+    skinType: 'All Skin Types, Normal to Dry'
   },
   {
     id: 'aparajita-body-lotion',
@@ -290,7 +306,8 @@ export const productsData: Product[] = [
     ingredients: 'Aparajita (Butterfly Pea) Flower Extract, Plant Oils, Vegetable Glycerine, Natural Botanical Emulsifiers.',
     netWeightOrVol: '190 ml',
     mrp: 220,
-    image: '/assets/products/body-lotion-kesuda.webp'
+    image: '/assets/products/body-lotion-kesuda.webp',
+    skinType: 'Normal, Dry & Sun-Exposed Skin'
   },
 
   // Lip Care Category
@@ -315,6 +332,7 @@ export const productsData: Product[] = [
     ingredients: 'Coconut Oil, Beeswax, Almond Oil, Shea Butter, Castor Oil, Mixed Fruit Flavour Oil.',
     netWeightOrVol: '10 g',
     mrp: 70,
-    image: '/assets/products/lip-balm.webp'
+    image: '/assets/products/lip-balm.webp',
+    skinType: 'Dry, Chapped & Sensitive Lips'
   }
 ];

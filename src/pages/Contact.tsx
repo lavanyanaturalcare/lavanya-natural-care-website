@@ -85,8 +85,8 @@ export const Contact: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <SEO
-        title="Contact Us & Store Location | Lavanya Natural Care"
-        description="Get in touch with Lavanya Natural Care in Subhanpura, Vadodara. Call +91 97267 39515 or message us on WhatsApp for handcrafted cold-process soaps and botanical skincare."
+        title="Contact Us & Studio Location | Lavanya Natural Care"
+        description="Contact Lavanya Natural Care in Subhanpura, Vadodara. Call +91 97267 39515 or message on WhatsApp for handcrafted cold process soaps and skincare."
       />
 
       {/* Hero Header */}
