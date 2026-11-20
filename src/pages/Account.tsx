@@ -54,47 +54,68 @@ export const Account: React.FC = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!isSupabaseConfigured() || !supabase) {
-        setLoading(false);
-        return;
+      // 1. Check local session
+      let localCustomer: any = null;
+      try {
+        const raw = localStorage.getItem('onznatural_customer_session');
+        if (raw) localCustomer = JSON.parse(raw);
+      } catch (e) {}
+
+      let activeUser: any = null;
+      if (isSupabaseConfigured() && supabase) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) activeUser = user;
+        } catch (e) {}
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      if (!activeUser && !localCustomer) {
         navigate('/login', { replace: true, state: { from: { pathname: '/account' } } });
         return;
       }
 
-      setUser(user);
-      setFullName(user.user_metadata?.full_name || '');
-      setPhone(user.user_metadata?.phone || '');
-      setLanguage(user.user_metadata?.preferred_language || 'en');
-
-      // Fetch customer profile from customers table
-      try {
-        const { data: customerRow } = await supabase
-          .from('customers')
-          .select('*')
-          .eq('auth_user_id', user.id)
-          .maybeSingle();
-
-        if (customerRow) {
-          setFullName(customerRow.full_name || customerRow.name || user.user_metadata?.full_name || '');
-          setPhone(customerRow.phone || user.user_metadata?.phone || '');
-          setLanguage(customerRow.preferred_language || 'en');
+      const effectiveUser = activeUser || {
+        id: localCustomer?.auth_user_id || localCustomer?.id || 'guest-user',
+        email: localCustomer?.email || '',
+        user_metadata: {
+          full_name: localCustomer?.full_name || localCustomer?.name || '',
+          phone: localCustomer?.phone || '',
+          preferred_language: localCustomer?.preferred_language || 'en'
         }
-      } catch (err) {}
+      };
+
+      setUser(effectiveUser);
+      setFullName(effectiveUser.user_metadata?.full_name || localCustomer?.full_name || localCustomer?.name || '');
+      setPhone(effectiveUser.user_metadata?.phone || localCustomer?.phone || '');
+      setLanguage(effectiveUser.user_metadata?.preferred_language || localCustomer?.preferred_language || 'en');
+
+      // Fetch customer profile from customers table if auth user exists
+      if (activeUser?.id && isSupabaseConfigured() && supabase) {
+        try {
+          const { data: customerRow } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('auth_user_id', activeUser.id)
+            .maybeSingle();
+
+          if (customerRow) {
+            setFullName(customerRow.full_name || customerRow.name || activeUser.user_metadata?.full_name || '');
+            setPhone(customerRow.phone || activeUser.user_metadata?.phone || '');
+            setLanguage(customerRow.preferred_language || 'en');
+          }
+        } catch (err) {}
+      }
 
       // Load collections
+      const email = effectiveUser.email || '';
       const [wList, convs, enqs] = await Promise.all([
         getWishlist(),
-        getConversations({ search: user.email }),
+        getConversations({ search: email }),
         getEnquiries()
       ]);
 
       setWishlistIds(wList);
       setConversations(convs);
-      const email = user.email || '';
       setEnquiries(enqs.filter(e => (email && ((e.contact_details && e.contact_details.includes(email)) || (e.contact_info && e.contact_info.includes(email))))));
       setLoading(false);
     };
@@ -136,9 +157,12 @@ export const Account: React.FC = () => {
   };
 
   const handleSignOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
-    }
+    try {
+      localStorage.removeItem('onznatural_customer_session');
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+    } catch (e) {}
     navigate('/');
   };
 

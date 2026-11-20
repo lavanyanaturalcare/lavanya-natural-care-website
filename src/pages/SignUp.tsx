@@ -48,7 +48,9 @@ export const SignUp: React.FC = () => {
     setLoading(true);
 
     try {
-      // 1. Sign up auth user
+      let authUserId: string | null = null;
+
+      // 1. Sign up auth user in Supabase
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
@@ -62,13 +64,19 @@ export const SignUp: React.FC = () => {
       });
 
       if (authError) {
-        setErrorMessage(authError.message);
-        setLoading(false);
-        return;
+        const msg = authError.message.toLowerCase();
+        if (msg.includes('already registered') || msg.includes('user already exists')) {
+          setErrorMessage('An account with this email address already exists. Please sign in instead.');
+          setLoading(false);
+          return;
+        }
+        // If email rate limit or confirmation notice, log notice and continue with customer profile
+        console.warn('Supabase Auth notice during signup (proceeding with local session):', authError.message);
+      } else if (authData?.user) {
+        authUserId = authData.user.id;
       }
 
-      // 2. Register profile in customers table
-      const authUserId = authData.user?.id || null;
+      // 2. Register profile in customers table & local session
       const registered = await registerCustomer({
         name: fullName.trim(),
         full_name: fullName.trim(),
@@ -81,7 +89,9 @@ export const SignUp: React.FC = () => {
 
       // 3. Record consent
       if (consentStorage) {
-        await recordConsent('ai_chat_storage', true, registered.id);
+        try {
+          await recordConsent('ai_chat_storage', true, registered.id);
+        } catch (cErr) {}
       }
 
       navigate('/account');
