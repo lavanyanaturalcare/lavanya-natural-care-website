@@ -150,7 +150,7 @@ export const ProductQuickPreviewModal: React.FC<ProductQuickPreviewModalProps> =
           <Link
             to={`/products/${product.id}`}
             onClick={onClose}
-            className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-semibold text-sm shadow-sm transition-colors"
+            className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-primary-950 hover:bg-primary-900 text-white font-bold text-sm shadow-md transition-colors"
           >
             <span>View Full Details</span>
             <ArrowRight className="w-4 h-4" />

@@ -120,7 +120,7 @@ export const Home: React.FC = () => {
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Link
                   to="/products"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-primary-950 hover:bg-primary-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
                 >
                   <span>Explore All 16 Products</span>
                   <ArrowRight className="w-4 h-4" />
@@ -128,7 +128,7 @@ export const Home: React.FC = () => {
 
                 <Link
                   to="/process"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-primary-900 text-primary-950 font-semibold text-sm hover:bg-sand-100 transition-colors text-center"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white text-primary-950 font-bold text-sm border-2 border-primary-950 hover:bg-sand-100 transition-all text-center shadow-xs"
                 >
                   <span>Our Cold Process</span>
                   <ArrowRight className="w-4 h-4 text-accent-700" />

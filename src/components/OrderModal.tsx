@@ -239,7 +239,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
             <div className="flex flex-col sm:flex-row gap-2 pt-1">
               <a
                 href={upiPayUrl}
-                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-primary-900 text-white text-xs font-bold text-center hover:bg-primary-950 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-primary-950 text-white text-xs font-bold text-center hover:bg-primary-900 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <CreditCard className="w-3.5 h-3.5" />
                 <span>Open UPI App (Mobile)</span>
@@ -247,7 +247,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
               <button
                 type="button"
                 onClick={handleDirectWhatsAppOrder}
-                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-[#25D366] text-white text-xs font-bold text-center hover:bg-[#1fae54] transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl btn-whatsapp-3d text-white text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
               >
                 <MessageCircle className="w-3.5 h-3.5 fill-current" />
                 <span>Confirm on WhatsApp</span>
@@ -310,7 +310,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
             <button
               type="button"
               onClick={handleDirectWhatsAppOrder}
-              className="w-full py-3.5 rounded-xl bg-primary-900 hover:bg-primary-950 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"
+              className="w-full py-3.5 rounded-xl bg-primary-950 hover:bg-primary-900 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"
             >
               <Truck className="w-4 h-4 text-accent-400" />
               <span>Submit Cash on Delivery Request</span>

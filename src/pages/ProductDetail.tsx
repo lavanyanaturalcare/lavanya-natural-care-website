@@ -209,7 +209,7 @@ export const ProductDetail: React.FC = () => {
                   trackProductInterest(product.id, 'order_intent');
                   setIsOrderModalOpen(true);
                 }}
-                className="w-full py-4 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
+                className="w-full py-4 rounded-xl bg-primary-950 hover:bg-primary-900 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
               >
                 <CreditCard className="w-5 h-5 text-accent-400" />
                 <span>Buy Now (UPI / COD)</span>
@@ -226,15 +226,15 @@ export const ProductDetail: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
                 href="tel:+919726739515"
-                className="flex items-center justify-center gap-2 py-3 rounded-xl border border-primary-900 text-primary-950 font-semibold text-xs sm:text-sm hover:bg-sand-100 transition-all"
+                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white border-2 border-primary-950 text-primary-950 font-bold text-xs sm:text-sm hover:bg-sand-100 transition-all shadow-xs"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4 text-primary-900" />
                 <span>Call: +91 97267 39515</span>
               </a>
 
               <Link
                 to="/ai-consultant"
-                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-sand-100 hover:bg-sand-200 border border-sand-300 text-primary-950 font-bold text-xs sm:text-sm transition-all"
+                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-sand-100 hover:bg-sand-200 border-2 border-primary-900/30 text-primary-950 font-bold text-xs sm:text-sm transition-all shadow-xs"
               >
                 <Sparkles className="w-4 h-4 text-accent-700" />
                 <span>Ask AI About This Product</span>

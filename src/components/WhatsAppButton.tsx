@@ -54,9 +54,9 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
-        className={`inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 border-[#25D366] text-[#1a8a43] hover:bg-[#25D366] hover:text-white transition-all duration-300 font-semibold text-sm shadow-xs hover:shadow-md ${className}`}
+        className={`inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 border-emerald-700 bg-emerald-50 text-emerald-950 hover:bg-emerald-700 hover:text-white transition-all duration-300 font-bold text-sm shadow-xs hover:shadow-md ${className}`}
       >
-        <MessageCircle className="w-4 h-4" />
+        <MessageCircle className="w-4 h-4 text-emerald-800" />
         <span>{label || 'Order on WhatsApp'}</span>
       </a>
     );
