@@ -31,6 +31,7 @@ import {
   BookOpen,
   HelpCircle,
   Eye,
+  EyeOff,
   Heart,
   Check,
   X,
@@ -99,6 +100,7 @@ export const AdminDashboard: React.FC = () => {
   const [adminRole, setAdminRole] = useState<string>('store_manager');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -572,20 +574,28 @@ export const AdminDashboard: React.FC = () => {
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-500" />
                   <input
-                    type="password"
+                    type={showAdminPassword ? 'text' : 'password'}
                     required
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-sand-300 text-sm focus:outline-none focus:ring-2 focus:ring-accent-600 bg-sand-50/50"
+                    className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-sand-300 text-sm focus:outline-none focus:ring-2 focus:ring-accent-600 bg-sand-50/50"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminPassword(!showAdminPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-1"
+                    aria-label={showAdminPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showAdminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-3 px-4 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-medium text-xs transition-colors shadow-sm disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+                className="btn-primary w-full py-3 px-4 rounded-xl text-white font-bold text-xs transition-colors shadow-sm disabled:opacity-50 mt-2 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isLoggingIn && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                 <span>{isLoggingIn ? 'Verifying Credentials...' : 'Sign In to Operations Portal'}</span>

@@ -131,7 +131,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-7" aria-label="Main Navigation">
+        <nav className="hidden md:flex items-center gap-7 lg:gap-8" aria-label="Main Navigation">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -203,7 +203,7 @@ export const Navbar: React.FC = () => {
           >
             <Heart className="w-5 h-5" />
             {wishlistCount > 0 && (
-              <span className="absolute 0 top-0 right-0 w-4 h-4 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -231,7 +231,7 @@ export const Navbar: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-4 py-3 rounded-xl text-base font-semibold transition-colors flex items-center justify-between ${
                   isActive(link.path)
-                    ? 'bg-primary-900 text-white shadow-sm'
+                    ? 'btn-primary shadow-sm'
                     : 'text-sand-900 hover:bg-sand-200'
                 }`}
                 role="menuitem"
@@ -254,7 +254,7 @@ export const Navbar: React.FC = () => {
             <Link
               to={currentUser ? "/account" : "/login"}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-primary-900 text-primary-950 font-semibold text-sm hover:bg-primary-900 hover:text-white transition-colors"
+              className="btn-secondary-outline flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-colors shadow-xs"
             >
               <User className="w-4 h-4" />
               <span>{currentUser ? 'My Account' : 'Sign In / Register'}</span>
@@ -263,7 +263,7 @@ export const Navbar: React.FC = () => {
             {/* Direct Call Button */}
             <a
               href="tel:+919726739515"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border-2 border-primary-900 text-primary-950 font-semibold text-sm active:bg-primary-900 active:text-white transition-all shadow-xs"
+              className="btn-secondary-outline flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
             >
               <Phone className="w-4 h-4 text-primary-900" />
               <span>Call +91 97267 39515</span>

@@ -15,11 +15,21 @@ export const Home: React.FC = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [vipContact, setVipContact] = useState('');
   const [vipSuccess, setVipSuccess] = useState(false);
+  const [vipError, setVipError] = useState('');
 
   const handleVipSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!vipContact.trim()) return;
-    const url = `https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello ONZNATURAL! I would like to join your VIP Skincare Circle for 10% off my first order. My contact: ${vipContact}`)}`;
+    const clean = vipContact.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9+() -]{10,15}$/;
+    
+    if (!clean || (!emailRegex.test(clean) && !phoneRegex.test(clean))) {
+      setVipError('Please enter a valid 10-digit phone number or email address.');
+      return;
+    }
+
+    setVipError('');
+    const url = `https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello ONZNATURAL! I would like to join your VIP Skincare Circle for 10% off my first order. My contact: ${clean}`)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
     setVipSuccess(true);
   };
@@ -120,15 +130,15 @@ export const Home: React.FC = () => {
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Link
                   to="/products"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-primary-950 hover:bg-primary-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
+                  className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
                 >
-                  <span>Explore All 16 Products</span>
+                  <span>Explore All 17 Artisanal Botanicals</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
                 <Link
                   to="/process"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white text-primary-950 font-bold text-sm border-2 border-primary-950 hover:bg-sand-100 transition-all text-center shadow-xs"
+                  className="btn-secondary-outline inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-sm transition-all text-center shadow-xs"
                 >
                   <span>Our Cold Process</span>
                   <ArrowRight className="w-4 h-4 text-accent-700" />
@@ -700,7 +710,10 @@ export const Home: React.FC = () => {
               type="text"
               placeholder="Enter your WhatsApp number or email"
               value={vipContact}
-              onChange={(e) => setVipContact(e.target.value)}
+              onChange={(e) => {
+                setVipContact(e.target.value);
+                if (vipError) setVipError('');
+              }}
               className="flex-1 px-4 py-3 rounded-xl text-xs bg-white text-primary-950 border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600"
               required
             />
@@ -711,6 +724,12 @@ export const Home: React.FC = () => {
               Claim 10% Off
             </button>
           </form>
+
+          {vipError && (
+            <p className="text-xs text-rose-300 font-semibold animate-fadeIn">
+              ⚠️ {vipError}
+            </p>
+          )}
 
           {vipSuccess && (
             <p className="text-xs text-emerald-400 font-semibold animate-fadeIn">

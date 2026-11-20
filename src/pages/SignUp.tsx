@@ -4,7 +4,7 @@ import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
 import { registerCustomer, recordConsent } from '../services/crmService';
 import { PreferredLanguage } from '../types/crm';
 import { SEO } from '../components/SEO';
-import { ArrowRight, Lock, Mail, User, Phone, Globe, AlertCircle, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Lock, Mail, User, Phone, Globe, AlertCircle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
 export const SignUp: React.FC = () => {
   const [fullName, setFullName] = useState('');
@@ -13,6 +13,8 @@ export const SignUp: React.FC = () => {
   const [preferredLanguage, setPreferredLanguage] = useState<PreferredLanguage>('en');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [consentStorage, setConsentStorage] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -204,14 +206,22 @@ export const SignUp: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-500" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-11 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -222,13 +232,21 @@ export const SignUp: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-500" />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-type password"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-11 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-1"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -250,7 +268,7 @@ export const SignUp: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-4"
+              className="btn-primary w-full py-3 px-4 rounded-xl text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
             >
               {loading ? (
                 <span>Creating Account...</span>

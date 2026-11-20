@@ -209,7 +209,7 @@ export const ProductDetail: React.FC = () => {
                   trackProductInterest(product.id, 'order_intent');
                   setIsOrderModalOpen(true);
                 }}
-                className="w-full py-4 rounded-xl bg-primary-950 hover:bg-primary-900 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
+                className="btn-primary w-full py-4 rounded-xl text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
               >
                 <CreditCard className="w-5 h-5 text-accent-400" />
                 <span>Buy Now (UPI / COD)</span>
@@ -226,7 +226,7 @@ export const ProductDetail: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
                 href="tel:+919726739515"
-                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white border-2 border-primary-950 text-primary-950 font-bold text-xs sm:text-sm hover:bg-sand-100 transition-all shadow-xs"
+                className="btn-secondary-outline flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-xs"
               >
                 <Phone className="w-4 h-4 text-primary-900" />
                 <span>Call: +91 97267 39515</span>
@@ -327,7 +327,7 @@ export const ProductDetail: React.FC = () => {
               trackProductInterest(product.id, 'order_intent');
               setIsOrderModalOpen(true);
             }}
-            className="px-3.5 py-2 rounded-xl bg-primary-900 text-white text-xs font-bold shadow-sm active:scale-95 transition-transform"
+            className="btn-primary px-3.5 py-2 rounded-xl text-white text-xs font-bold shadow-sm active:scale-95 transition-transform"
           >
             Buy (UPI/COD)
           </button>

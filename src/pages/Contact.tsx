@@ -204,9 +204,9 @@ export const Contact: React.FC = () => {
             <div className="pt-4 border-t border-cream-100 flex flex-col gap-3">
               <a
                 href="tel:+919726739515"
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-botanical-800 hover:text-white transition-all shadow-xs"
+                className="btn-secondary-outline flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4 text-primary-900" />
                 <span>Call Now (+91 97267 39515)</span>
               </a>
               <WhatsAppButton
@@ -451,7 +451,7 @@ export const Contact: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-xl btn-botanical-3d text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all disabled:opacity-70"
+                  className="btn-primary w-full py-4 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all disabled:opacity-70 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Submitting Message...</span>

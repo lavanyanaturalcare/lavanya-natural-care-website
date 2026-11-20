@@ -39,9 +39,9 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
         rel="noopener noreferrer"
         onClick={handleClick}
         aria-label="Order on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 btn-whatsapp-3d text-white px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 group font-semibold text-sm border-2 border-white/90"
+        className="fixed bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 btn-whatsapp-3d text-white px-4 py-3 sm:px-5 sm:py-3.5 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 group font-semibold text-xs sm:text-sm border-2 border-white/90"
       >
-        <MessageCircle className="w-5 h-5 fill-current" />
+        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
         <span className="hidden sm:inline font-semibold">Order on WhatsApp</span>
       </a>
     );

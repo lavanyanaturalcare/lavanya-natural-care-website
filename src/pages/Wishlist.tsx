@@ -64,7 +64,7 @@ export const Wishlist: React.FC = () => {
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-900 hover:bg-primary-950 text-white text-xs font-medium transition-colors shadow-sm"
+              className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-xs font-bold transition-colors shadow-sm"
             >
               <span>Explore Products</span>
               <ArrowRight className="w-4 h-4" />
@@ -118,7 +118,7 @@ export const Wishlist: React.FC = () => {
                   <div className="pt-4 border-t border-sand-100 flex items-center gap-2">
                     <Link
                       to={`/product/${p.id}`}
-                      className="flex-1 py-2 px-3 rounded-xl border border-sand-300 text-center text-xs font-medium text-sand-900 hover:bg-sand-100 transition-colors"
+                      className="btn-secondary-outline flex-1 py-2 px-3 rounded-xl text-center text-xs font-bold transition-colors"
                     >
                       View Details
                     </Link>
@@ -126,7 +126,7 @@ export const Wishlist: React.FC = () => {
                       href={`https://wa.me/919726739515?text=${encodeURIComponent(`Hello ONZNATURAL, I would like to order ${p.name} (₹${p.mrp}, ${p.netWeightOrVol}).`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-2 px-3 rounded-xl bg-primary-900 hover:bg-primary-950 text-white text-center text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
+                      className="btn-primary flex-1 py-2 px-3 rounded-xl text-white text-center text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
                     >
                       <span>Order</span>
                       <ExternalLink className="w-3.5 h-3.5" />
