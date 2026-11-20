@@ -399,7 +399,7 @@ export const Account: React.FC = () => {
                   <button
                     type="submit"
                     disabled={profileSaving}
-                    className="py-2.5 px-6 rounded-xl bg-primary-900 hover:bg-primary-950 text-white font-medium text-xs transition-colors shadow-sm disabled:opacity-50 mt-4"
+                    className="btn-primary py-2.5 px-6 rounded-xl text-white font-bold text-xs transition-colors shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
                   >
                     {profileSaving ? 'Saving...' : 'Save Profile Changes'}
                   </button>

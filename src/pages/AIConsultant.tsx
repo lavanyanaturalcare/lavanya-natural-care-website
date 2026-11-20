@@ -724,7 +724,7 @@ export const AIConsultant: React.FC = () => {
                 type="button"
                 onClick={handleRunQuiz}
                 disabled={isQuizLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-botanical-800 text-white font-bold text-sm hover:bg-botanical-900 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
+                className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-white font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer"
               >
                 {isQuizLoading ? (
                   <>
@@ -1081,7 +1081,7 @@ export const AIConsultant: React.FC = () => {
             <button
               type="submit"
               disabled={isChatLoading || !chatInput.trim()}
-              className="p-3 rounded-xl bg-botanical-800 text-white hover:bg-botanical-900 transition-colors disabled:opacity-40"
+              className="btn-primary p-3 rounded-xl text-white transition-colors disabled:opacity-40 cursor-pointer"
               aria-label={t.chat.send}
             >
               <Send className="w-4 h-4" />

@@ -39,8 +39,8 @@ export const Products: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="Handcrafted Botanical Soaps & Care (16 Items) | ONZNATURAL"
-        description="Explore ONZNATURAL's 16 handcrafted cold-process soaps, botanical body lotions, creams, and face washes made with pure plant oils in Vadodara, Gujarat."
+        title={`Handcrafted Botanical Soaps & Care (${products.length} Items) | ONZNATURAL`}
+        description={`Explore ONZNATURAL's ${products.length} handcrafted cold-process soaps, botanical body lotions, creams, and face washes made with pure plant oils in Vadodara, Gujarat.`}
         canonical="https://onznatural.com/products"
       />
       
@@ -54,7 +54,7 @@ export const Products: React.FC = () => {
           Handcrafted Product Collection
         </h1>
         <p className="text-sand-800 text-base leading-relaxed">
-          Explore all 16 artisanal cold-process soaps, rich botanical body lotions, creams, and washes. Handcrafted with authentic plant oils and flower infusions in Vadodara, Gujarat.
+          Explore all {products.length} artisanal cold-process soaps, rich botanical body lotions, creams, and washes. Handcrafted with authentic plant oils and flower infusions in Vadodara, Gujarat.
         </p>
       </div>
 
@@ -104,7 +104,7 @@ export const Products: React.FC = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                   isSelected
-                    ? 'bg-primary-950 text-white shadow-md border-2 border-primary-950'
+                    ? 'btn-primary shadow-md border-2 border-primary-950'
                     : 'bg-white text-primary-950 border-2 border-sand-300 hover:border-primary-900 hover:bg-sand-100 shadow-xs'
                 }`}
               >
@@ -133,7 +133,7 @@ export const Products: React.FC = () => {
           </p>
           <button
             onClick={() => { setSearchQuery(''); setSelectedCategory('All Products'); }}
-            className="px-5 py-2 rounded-xl bg-primary-900 text-white text-xs font-semibold"
+            className="btn-primary px-5 py-2 rounded-xl text-white text-xs font-semibold"
           >
             Reset All Filters
           </button>
@@ -141,7 +141,7 @@ export const Products: React.FC = () => {
       ) : (
         <div className="space-y-6">
           <div className="flex items-center justify-between text-xs text-sand-700 px-1">
-            <span>Showing {filteredProducts.length} handcrafted product{filteredProducts.length > 1 ? 's' : ''}</span>
+            <span>Showing {filteredProducts.length} handcrafted {filteredProducts.length === 1 ? 'product' : 'products'}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (

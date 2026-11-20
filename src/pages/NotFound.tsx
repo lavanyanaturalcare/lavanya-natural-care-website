@@ -32,14 +32,14 @@ export const NotFound: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
         <Link
           to="/"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl btn-botanical-3d text-white font-semibold text-sm shadow-md"
+          className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-sm shadow-md"
         >
           <Home className="w-4 h-4" />
           <span>Return to Homepage</span>
         </Link>
         <Link
           to="/products"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border-2 border-botanical-800 text-botanical-900 font-semibold text-sm hover:bg-botanical-800 hover:text-white transition-all"
+          className="btn-secondary-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-xs"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>Browse All Products</span>
