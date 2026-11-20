@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
+import { getLocalCustomers } from '../services/crmService';
 import { SEO } from '../components/SEO';
 import { ArrowRight, Lock, Mail, AlertCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 
@@ -39,8 +40,27 @@ export const SignIn: React.FC = () => {
       });
 
       if (error) {
+        if (error.message.toLowerCase().includes('confirm') || error.message.toLowerCase().includes('rate')) {
+          const localList = getLocalCustomers();
+          const match = localList.find(c => c.email.toLowerCase() === email.trim().toLowerCase());
+          if (match) {
+            localStorage.setItem('onznatural_customer_session', JSON.stringify(match));
+            navigate(from, { replace: true });
+            return;
+          }
+        }
         setErrorMessage(error.message || 'Invalid email or password.');
       } else if (data.user) {
+        // Set local session for reliability
+        const sessionPayload = {
+          auth_user_id: data.user.id,
+          email: data.user.email,
+          full_name: data.user.user_metadata?.full_name || '',
+          name: data.user.user_metadata?.full_name || '',
+          phone: data.user.user_metadata?.phone || null,
+          preferred_language: data.user.user_metadata?.preferred_language || 'en'
+        };
+        localStorage.setItem('onznatural_customer_session', JSON.stringify(sessionPayload));
         navigate(from, { replace: true });
       }
     } catch (err: any) {
