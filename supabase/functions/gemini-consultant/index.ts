@@ -167,6 +167,7 @@ Language: ${lang}`;
     return new Response(
       JSON.stringify({
         text: rawText,
+        reply: rawText,
         recommendedProductIds
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

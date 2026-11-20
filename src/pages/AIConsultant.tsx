@@ -71,6 +71,7 @@ export const AIConsultant: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'quiz' | 'chat' | 'compare' | 'scanner'>('quiz');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [hasChatConsent, setHasChatConsent] = useState(false);
+  const [storageStatus, setStorageStatus] = useState<'saved' | 'saving' | 'temporary' | 'failed'>('temporary');
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   // ===============================
@@ -305,7 +306,10 @@ export const AIConsultant: React.FC = () => {
     }
 
     if (hasChatConsent && activeConvId) {
+      setStorageStatus('saving');
       saveMessage(activeConvId, 'customer', userMsg.text).catch(() => {});
+    } else {
+      setStorageStatus('temporary');
     }
 
     try {
@@ -323,12 +327,21 @@ export const AIConsultant: React.FC = () => {
       setMessages(prev => [...prev, botMsg]);
 
       if (hasChatConsent && activeConvId) {
-        saveMessage(activeConvId, 'ai', response.text, response.recommendedProductIds).catch(() => {});
+        try {
+          await saveMessage(activeConvId, 'ai', response.text, response.recommendedProductIds);
+          setStorageStatus('saved');
+        } catch (saveErr) {
+          console.warn('Could not save AI reply to database:', saveErr);
+          setStorageStatus('failed');
+        }
+
         if (response.recommendedProductIds && response.recommendedProductIds.length > 0) {
           response.recommendedProductIds.forEach(pid => {
             trackProductInterest(pid, 'ai_recommended').catch(() => {});
           });
         }
+      } else {
+        setStorageStatus('temporary');
       }
     } catch (err: any) {
       const errorMsg: ChatMessage = {
@@ -340,6 +353,27 @@ export const AIConsultant: React.FC = () => {
       setMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsChatLoading(false);
+    }
+  };
+
+  const handleRetrySave = async () => {
+    if (!hasChatConsent) return;
+    setStorageStatus('saving');
+    try {
+      let activeConvId = conversationId;
+      if (!activeConvId) {
+        const conv = await createConversation();
+        activeConvId = conv.id;
+        setConversationId(conv.id);
+      }
+      const lastUser = [...messages].reverse().find(m => m.role === 'user');
+      const lastAi = [...messages].reverse().find(m => m.role === 'model');
+      if (lastUser) await saveMessage(activeConvId, 'customer', lastUser.text);
+      if (lastAi) await saveMessage(activeConvId, 'ai', lastAi.text, lastAi.recommendedProductIds);
+      setStorageStatus('saved');
+    } catch (err) {
+      console.warn('Retry save failed:', err);
+      setStorageStatus('failed');
     }
   };
 
@@ -453,11 +487,11 @@ export const AIConsultant: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                <span>Google Gemini 4 Hydrogen AI</span>
+                <span>ONZNATURAL Botanical AI (Gemini 2.5 Flash)</span>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-cream-200 text-xs font-medium">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>13 Verified Products Grounded</span>
+                <span>16 Verified Products Grounded</span>
               </div>
             </div>
 
@@ -885,10 +919,41 @@ export const AIConsultant: React.FC = () => {
                 <h3 className="font-serif text-lg font-bold text-botanical-950 leading-tight">
                   {t.aiAdvisorTitle}
                 </h3>
-                <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Gemini AI • Grounded in Catalogue
-                </span>
+                <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                  <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    ONZNATURAL Botanical AI (Gemini 2.5 Flash) • Grounded in Catalogue
+                  </span>
+
+                  {storageStatus === 'saved' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold border border-emerald-200" title="Chat saved to customer history with consent">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                      <span>Saved</span>
+                    </span>
+                  )}
+                  {storageStatus === 'saving' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-semibold border border-blue-200 animate-pulse" title="Saving message to database...">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                      <span>Saving...</span>
+                    </span>
+                  )}
+                  {storageStatus === 'temporary' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-medium border border-amber-200" title="Temporary session: Chat storage consent not granted">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                      <span>Temporary conversation</span>
+                    </span>
+                  )}
+                  {storageStatus === 'failed' && (
+                    <button
+                      onClick={handleRetrySave}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-semibold border border-red-200 hover:bg-red-200 transition-colors"
+                      title="Storage failed. Click to retry saving"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
+                      <span>Save failed • Retry</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -14,6 +14,7 @@ export interface Product {
   howToUse?: string;
   isFeatured?: boolean;
   skinType?: string;
+  availabilityStatus?: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued';
 }
 
 export interface Ingredient {

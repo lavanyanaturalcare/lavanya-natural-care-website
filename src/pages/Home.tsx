@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot, Star, ChevronDown, ChevronUp, ShieldCheck, MapPin } from 'lucide-react';
-import { productsData } from '../data/products';
+import { useProductCatalog } from '../context/ProductContext';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
 import { socialAccounts } from '../data/social';
@@ -10,7 +10,8 @@ import { WhatsAppButton } from '../components/WhatsAppButton';
 import { SEO } from '../components/SEO';
 
 export const Home: React.FC = () => {
-  const featuredProducts = productsData.filter((p) => p.isFeatured).slice(0, 8);
+  const { products } = useProductCatalog();
+  const featuredProducts = products.filter((p) => p.isFeatured).slice(0, 8);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [vipContact, setVipContact] = useState('');
   const [vipSuccess, setVipSuccess] = useState(false);
