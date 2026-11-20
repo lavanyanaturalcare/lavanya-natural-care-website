@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search, X, Sparkles } from 'lucide-react';
-import { productsData } from '../data/products';
+import { useProductCatalog } from '../context/ProductContext';
 import { ProductCard } from '../components/ProductCard';
 import { SEO } from '../components/SEO';
 
@@ -15,11 +15,12 @@ export const Products: React.FC = () => {
     'Lip Care'
   ] as const;
 
+  const { products } = useProductCatalog();
   const [selectedCategory, setSelectedCategory] = useState<string>('All Products');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const filteredProducts = useMemo(() => {
-    return productsData.filter((product) => {
+    return products.filter((product) => {
       const matchesCategory = 
         selectedCategory === 'All Products' || 
         (selectedCategory === 'Body Care & Lotions' ? product.category === 'Body Care' :
@@ -89,8 +90,8 @@ export const Products: React.FC = () => {
             const isSelected = selectedCategory === category;
 
             const count = category === 'All Products'
-              ? productsData.length
-              : productsData.filter((p) => {
+              ? products.length
+              : products.filter((p) => {
                   if (category === 'Body Care & Lotions') return p.category === 'Body Care';
                   if (category === 'Body & Face Creams') return p.category === 'Face Care';
                   return (p.category as string) === category;

@@ -25,6 +25,7 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { Account } from './pages/Account';
 import { Wishlist } from './pages/Wishlist';
 import { NotFound } from './pages/NotFound';
+import { ProductProvider } from './context/ProductContext';
 
 // Scroll to top automatically on route change
 const ScrollToTop = () => {
@@ -107,8 +108,10 @@ const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <AppContent />
+      <ProductProvider>
+        <ScrollToTop />
+        <AppContent />
+      </ProductProvider>
     </BrowserRouter>
   );
 };

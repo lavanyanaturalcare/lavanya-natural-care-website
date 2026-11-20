@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { CheckCircle2, ArrowLeft, Phone, ShieldCheck, Sparkles, Truck, Package, MessageCircle, ChevronRight, CreditCard, Heart } from 'lucide-react';
-import { productsData } from '../data/products';
+import { useProductCatalog } from '../context/ProductContext';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { ProductCard } from '../components/ProductCard';
 import { SEO } from '../components/SEO';
@@ -11,10 +11,11 @@ import { isInWishlist, toggleWishlist, trackProductInterest } from '../services/
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { getProductById, products } = useProductCatalog();
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
 
-  const product = productsData.find((p) => p.id === id);
+  const product = getProductById(id || '');
 
   useEffect(() => {
     if (product) {
@@ -47,7 +48,7 @@ export const ProductDetail: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
   const allImages = [product.image, ...(product.additionalImages || [])];
 
-  const relatedProducts = productsData
+  const relatedProducts = products
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 3);
 
