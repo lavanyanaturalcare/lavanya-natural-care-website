@@ -15,7 +15,7 @@ export const BlogPost: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 py-24 text-center space-y-6">
         <SEO
-          title="Article Not Found | Lavanya Natural Care"
+          title="Article Not Found | ONZNATURAL"
           description="The requested botanical skincare article could not be found."
         />
         <h2 className="font-serif text-3xl font-bold text-botanical-950">Article Not Found</h2>
@@ -35,28 +35,28 @@ export const BlogPost: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    image: `https://lavanyanatural.in${post.coverImage}`,
+    image: `https://onznatural.com${post.coverImage}`,
     author: {
       '@type': 'Organization',
       name: post.author
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Lavanya Natural Care',
+      name: 'ONZNATURAL',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://lavanyanatural.in/favicon.svg'
+        url: 'https://onznatural.com/favicon.svg'
       }
     },
     datePublished: '2026-11-15',
     description: post.metaDescription,
-    mainEntityOfPage: `https://lavanyanatural.in/blog/${post.slug}`
+    mainEntityOfPage: `https://onznatural.com/blog/${post.slug}`
   };
 
   return (
     <div className="py-10 md:py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SEO
-        title={`${post.title.slice(0, 50)} | Lavanya Natural Care`}
+        title={`${post.title.slice(0, 50)} | ONZNATURAL`}
         description={post.metaDescription}
         image={post.coverImage}
         schema={articleSchema}

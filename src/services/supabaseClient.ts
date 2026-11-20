@@ -1,5 +1,5 @@
 // =====================================================================
-// Supabase Client Initializer - Lavanya Natural Care
+// ONZNATURAL — Supabase Client Initializer
 // Connected to Supabase PostgreSQL & Auth with Resilient Fallback
 // =====================================================================
 

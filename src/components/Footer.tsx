@@ -1,52 +1,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Leaf, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { socialAccounts } from '../data/social';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  const categories = [
-    { name: 'Handmade Cold Process Soap', path: '/products' },
-    { name: 'Face & Body Wash', path: '/products' },
-    { name: 'Hand Wash', path: '/products' },
-    { name: 'Face Care & Creams', path: '/products' },
-    { name: 'Body Care & Lotions', path: '/products' },
-    { name: 'Nourishing Lip Care', path: '/products' }
-  ];
-
   return (
-    <footer className="bg-botanical-950 text-cream-100 pt-16 pb-12 border-t border-botanical-800 w-full overflow-hidden">
+    <footer className="bg-primary-950 text-sand-100 pt-16 pb-12 border-t border-primary-900 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-botanical-800/60">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-primary-900/80">
           
-          {/* Brand Info & Clickable Logo */}
+          {/* Brand Info & Typographic Wordmark */}
           <div className="space-y-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2.5 group hover:opacity-95 transition-opacity focus:outline-none"
-              aria-label="Lavanya Natural Care Home"
+              className="inline-block group hover:opacity-95 transition-opacity focus:outline-none"
+              aria-label="ONZNATURAL Home"
             >
-              <div className="w-10 h-10 rounded-full bg-botanical-800 flex items-center justify-center text-gold-400 group-hover:bg-botanical-900 transition-colors shadow-sm">
-                <Leaf className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="font-serif text-2xl font-bold tracking-tight text-cream-50 block leading-tight">
-                  LAVANYA
-                </span>
-                <span className="text-[10px] tracking-[0.25em] text-gold-400 font-semibold uppercase block">
-                  Natural Care
-                </span>
-              </div>
+              <span className="font-serif text-2xl font-bold tracking-widest text-white block leading-tight">
+                ONZNATURAL
+              </span>
+              <span className="text-[9px] tracking-[0.25em] text-accent-400 font-semibold uppercase block mt-1">
+                Handcrafted Botanical Care
+              </span>
             </Link>
 
-            <p className="text-warmgray-400 text-sm leading-relaxed">
-              Handcrafted pure cold process soaps and natural botanical skincare. Formulated with authentic plant oils, flower infusions, and Ayurvedic herbs in Vadodara, India.
+            <p className="text-sand-300 text-sm leading-relaxed">
+              Artisanal cold-process soaps, rich botanical body lotions, and herbal face care. Formulated with authentic plant oils, flower infusions, and Ayurvedic botanicals in Vadodara, Gujarat.
             </p>
 
             <div className="pt-2 space-y-2">
-              <span className="text-xs text-gold-400 font-semibold uppercase tracking-wider block">
-                Follow Lavanya Natural Care
+              <span className="text-xs text-accent-400 font-semibold uppercase tracking-wider block">
+                Follow ONZNATURAL
               </span>
               <div className="flex items-center gap-3">
                 {socialAccounts.map((social) => (
@@ -55,8 +41,8 @@ export const Footer: React.FC = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Follow Lavanya on ${social.name}`}
-                    className="w-9 h-9 rounded-full bg-botanical-900 border border-botanical-800 flex items-center justify-center text-cream-200 hover:text-gold-400 hover:border-gold-500/50 transition-all duration-200"
+                    aria-label={`Follow ONZNATURAL on ${social.name}`}
+                    className="w-9 h-9 rounded-full bg-primary-900 border border-primary-800 flex items-center justify-center text-sand-200 hover:text-accent-400 hover:border-accent-500/50 transition-all duration-200"
                   >
                     <social.icon className="w-4 h-4" />
                   </a>
@@ -67,50 +53,50 @@ export const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-serif text-lg font-semibold text-gold-400 tracking-wide">
+            <h4 className="font-serif text-base font-semibold text-accent-400 tracking-wide uppercase">
               Quick Links
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-warmgray-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-sand-300">
               <li>
-                <Link to="/" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                <Link to="/" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>Home</span>
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Product Showcase</span>
+                <Link to="/products" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Product Collection (16 Items)</span>
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Skincare Guides &amp; Blog</span>
+                <Link to="/ai-consultant" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>AI Botanical Consultant</span>
                 </Link>
               </li>
               <li>
-                <Link to="/ingredients" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Our Botanical Ingredients</span>
+                <Link to="/blog" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Botanical Guides &amp; Blog</span>
                 </Link>
               </li>
               <li>
-                <Link to="/process" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                <Link to="/ingredients" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Verified Ingredients</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/process" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>6-Step Cold Process</span>
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>About Our Craft</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Contact &amp; Orders</span>
+                <Link to="/about" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>About Our Workshop</span>
                 </Link>
               </li>
             </ul>
@@ -118,79 +104,85 @@ export const Footer: React.FC = () => {
 
           {/* Customer Care & Policies */}
           <div className="space-y-4">
-            <h4 className="font-serif text-lg font-semibold text-gold-400 tracking-wide">
+            <h4 className="font-serif text-base font-semibold text-accent-400 tracking-wide uppercase">
               Customer Care
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-warmgray-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-sand-300">
               <li>
-                <Link to="/shipping-delivery" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                <Link to="/account" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>My Account</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/wishlist" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Saved Botanicals</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/shipping-delivery" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>Shipping &amp; Delivery Policy</span>
                 </Link>
               </li>
               <li>
-                <Link to="/refund-policy" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                <Link to="/refund-policy" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>Return &amp; Refund Policy</span>
                 </Link>
               </li>
               <li>
-                <Link to="/privacy-policy" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>Privacy Policy</span>
+                <Link to="/privacy-policy" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Privacy Policy (DPDP Act)</span>
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
+                <Link to="/terms" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>Terms &amp; Conditions</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/ai-consultant" className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-500/60" />
-                  <span>AI Skincare Diagnostic</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Details (Clickable Phone & Email) */}
+          {/* Contact Details */}
           <div className="space-y-4">
-            <h4 className="font-serif text-lg font-semibold text-gold-400 tracking-wide">
-              Contact Us
+            <h4 className="font-serif text-base font-semibold text-accent-400 tracking-wide uppercase">
+              Workshop Contact
             </h4>
-            <ul className="space-y-3.5 text-sm text-warmgray-300">
+            <ul className="space-y-3.5 text-sm text-sand-300">
               <li className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-gold-400 shrink-0 mt-1" />
+                <Phone className="w-4 h-4 text-accent-400 shrink-0 mt-1" />
                 <div>
                   <a
                     href="tel:+919726739515"
-                    className="hover:text-gold-400 transition-colors font-semibold block text-cream-50"
-                    aria-label="Call Lavanya Natural Care at +91 97267 39515"
+                    className="hover:text-accent-400 transition-colors font-semibold block text-white"
+                    aria-label="Call ONZNATURAL at +91 97267 39515"
                   >
                     +91 97267 39515
                   </a>
-                  <span className="text-xs text-warmgray-400">Mon - Sat (10:00 AM - 7:00 PM)</span>
+                  <span className="text-xs text-sand-400">Mon - Sat (10:00 AM - 7:00 PM IST)</span>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-gold-400 shrink-0 mt-1" />
+                <Mail className="w-4 h-4 text-accent-400 shrink-0 mt-1" />
                 <a
-                  href="mailto:lavanyanaturalcare@gmail.com"
-                  className="hover:text-gold-400 transition-colors break-all"
-                  aria-label="Email Lavanya Natural Care at lavanyanaturalcare@gmail.com"
+                  href="mailto:care@onznatural.com"
+                  className="hover:text-accent-400 transition-colors break-all"
+                  aria-label="Email ONZNATURAL at care@onznatural.com"
                 >
-                  lavanyanaturalcare@gmail.com
+                  care@onznatural.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gold-400 shrink-0 mt-1" />
+                <MapPin className="w-4 h-4 text-accent-400 shrink-0 mt-1" />
                 <a
                   href="https://maps.google.com/?q=Subhanpura+Vadodara+Gujarat"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gold-400 transition-colors text-xs leading-relaxed"
+                  className="hover:text-accent-400 transition-colors text-xs leading-relaxed"
                 >
                   FF-22 Pujar Complex, Subhanpura, Vadodara, Gujarat 390023, India
                 </a>
@@ -200,16 +192,16 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom Bar with Dynamic Copyright */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-warmgray-500 gap-4">
-          <p>© {currentYear} Lavanya Natural Care. All rights reserved.</p>
+        {/* Bottom Bar with Dynamic Copyright & Admin link */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-sand-400 gap-4">
+          <p>© {currentYear} ONZNATURAL. All rights reserved.</p>
           <div className="flex items-center gap-3">
-            <p className="text-warmgray-400">
+            <p className="text-sand-300">
               Handcrafted with Care &amp; Integrity • Vadodara, Gujarat
             </p>
-            <span className="text-warmgray-600">•</span>
-            <Link to="/admin" className="hover:text-gold-400 transition-colors text-warmgray-400">
-              Admin Portal
+            <span className="text-sand-600">•</span>
+            <Link to="/admin" className="hover:text-accent-400 transition-colors text-sand-400">
+              Owner Dashboard
             </Link>
           </div>
         </div>

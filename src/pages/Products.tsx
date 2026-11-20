@@ -8,10 +8,10 @@ export const Products: React.FC = () => {
   const categories = [
     'All Products',
     'Handmade Cold Process Soap',
+    'Body Care & Lotions',
+    'Body & Face Creams',
     'Face & Body Wash',
     'Hand Wash',
-    'Face Care',
-    'Body Care',
     'Lip Care'
   ] as const;
 
@@ -22,7 +22,9 @@ export const Products: React.FC = () => {
     return productsData.filter((product) => {
       const matchesCategory = 
         selectedCategory === 'All Products' || 
-        product.category === selectedCategory;
+        (selectedCategory === 'Body Care & Lotions' ? product.category === 'Body Care' :
+         selectedCategory === 'Body & Face Creams' ? product.category === 'Face Care' :
+         (product.category as string) === selectedCategory);
 
       const matchesSearch = searchQuery.trim() === '' ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -33,36 +35,25 @@ export const Products: React.FC = () => {
     });
   }, [selectedCategory, searchQuery]);
 
-  // Group products by category for 'All Products' view when no search query
-  const categoryGroups = useMemo(() => {
-    return [
-      { title: 'Handmade Cold Process Soap', items: filteredProducts.filter(p => p.category === 'Handmade Cold Process Soap') },
-      { title: 'Face & Body Wash', items: filteredProducts.filter(p => p.category === 'Face & Body Wash') },
-      { title: 'Hand Wash', items: filteredProducts.filter(p => p.category === 'Hand Wash') },
-      { title: 'Face Care', items: filteredProducts.filter(p => p.category === 'Face Care') },
-      { title: 'Body Care', items: filteredProducts.filter(p => p.category === 'Body Care') },
-      { title: 'Lip Care', items: filteredProducts.filter(p => p.category === 'Lip Care') }
-    ].filter(group => group.items.length > 0);
-  }, [filteredProducts]);
-
   return (
     <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="Handmade Soaps & Skincare Products | Lavanya Natural Care"
-        description="Explore Lavanya Natural Care's handcrafted cold-process soaps, face washes, lotions, and creams made with pure plant oils in Vadodara, Gujarat."
+        title="Handcrafted Botanical Soaps & Care (16 Items) | ONZNATURAL"
+        description="Explore ONZNATURAL's 16 handcrafted cold-process soaps, botanical body lotions, creams, and face washes made with pure plant oils in Vadodara, Gujarat."
+        canonical="https://onznatural.com/products"
       />
       
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100 text-botanical-800 text-xs font-semibold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-gold-600" />
-          <span>Pure Botanical Care</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sand-200 text-primary-950 text-xs font-semibold uppercase tracking-wider">
+          <Sparkles className="w-3.5 h-3.5 text-accent-700" />
+          <span>ONZNATURAL Verified Botanical Collection</span>
         </div>
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-botanical-950">
-          Handcrafted Product Showcase
+        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-primary-950">
+          Handcrafted Product Collection
         </h1>
-        <p className="text-warmgray-600 text-base leading-relaxed">
-          Explore our complete collection of handcrafted cold-process soaps, liquid washes, creams, and lotions. Select any item to view complete details or order directly via WhatsApp.
+        <p className="text-sand-800 text-base leading-relaxed">
+          Explore all 16 artisanal cold-process soaps, rich botanical body lotions, creams, and washes. Handcrafted with authentic plant oils and flower infusions in Vadodara, Gujarat.
         </p>
       </div>
 
@@ -72,18 +63,18 @@ export const Products: React.FC = () => {
         {/* Search Bar */}
         <div className="max-w-md mx-auto relative">
           <div className="relative flex items-center">
-            <Search className="w-5 h-5 text-warmgray-400 absolute left-4 pointer-events-none" />
+            <Search className="w-5 h-5 text-sand-500 absolute left-4 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by product name, herb, or ingredient..."
-              className="w-full pl-12 pr-10 py-3.5 bg-white border border-cream-200 rounded-2xl text-sm font-medium text-warmgray-900 focus:outline-none focus:ring-2 focus:ring-botanical-800 focus:border-transparent shadow-xs transition-all"
+              className="w-full pl-12 pr-10 py-3.5 bg-white border border-sand-300 rounded-2xl text-sm font-medium text-primary-950 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent shadow-xs transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 text-warmgray-400 hover:text-warmgray-600 p-1"
+                className="absolute right-4 text-sand-500 hover:text-sand-800 p-1"
                 aria-label="Clear search"
               >
                 <X className="w-4 h-4" />
@@ -99,7 +90,11 @@ export const Products: React.FC = () => {
 
             const count = category === 'All Products'
               ? productsData.length
-              : productsData.filter((p) => p.category === category).length;
+              : productsData.filter((p) => {
+                  if (category === 'Body Care & Lotions') return p.category === 'Body Care';
+                  if (category === 'Body & Face Creams') return p.category === 'Face Care';
+                  return (p.category as string) === category;
+                }).length;
 
             return (
               <button
@@ -108,15 +103,15 @@ export const Products: React.FC = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-botanical-800 text-cream-50 shadow-sm'
-                    : 'bg-white text-warmgray-700 border border-cream-200 hover:border-gold-400'
+                    ? 'bg-primary-900 text-white shadow-sm'
+                    : 'bg-white text-sand-800 border border-sand-300 hover:border-accent-600'
                 }`}
               >
                 <span>{category}</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
                   isSelected
                     ? 'bg-white/20 text-white'
-                    : 'bg-cream-100 text-warmgray-600'
+                    : 'bg-sand-100 text-sand-700'
                 }`}>
                   {count}
                 </span>
@@ -129,46 +124,23 @@ export const Products: React.FC = () => {
 
       {/* Main Products Grid */}
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-3xl border border-cream-200 max-w-md mx-auto p-8 space-y-4">
-          <Sparkles className="w-8 h-8 text-warmgray-400 mx-auto" />
-          <h3 className="font-serif text-xl font-bold text-botanical-950">No Products Found</h3>
-          <p className="text-xs text-warmgray-600">
-            We couldn't find any products matching "{searchQuery}". Try searching for Neem, Kesuda, Ubtan, or Hibiscus.
+        <div className="text-center py-16 bg-white rounded-3xl border border-sand-200 max-w-md mx-auto p-8 space-y-4">
+          <Sparkles className="w-8 h-8 text-sand-500 mx-auto" />
+          <h3 className="font-serif text-xl font-bold text-primary-950">No Products Found</h3>
+          <p className="text-xs text-sand-700">
+            We couldn't find any products matching "{searchQuery}". Try searching for Neem, Kesuda, Aparajita, or Ubtan.
           </p>
           <button
             onClick={() => { setSearchQuery(''); setSelectedCategory('All Products'); }}
-            className="px-5 py-2 rounded-xl bg-botanical-800 text-white text-xs font-semibold"
+            className="px-5 py-2 rounded-xl bg-primary-900 text-white text-xs font-semibold"
           >
             Reset All Filters
           </button>
         </div>
-      ) : selectedCategory === 'All Products' && !searchQuery ? (
-        // Grouped By Category Display
-        <div className="space-y-16">
-          {categoryGroups.map((group) => (
-            <div key={group.title} className="space-y-6">
-              <div className="flex items-center justify-between border-b border-cream-200 pb-3">
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-botanical-950">
-                  {group.title}
-                </h2>
-                <span className="text-xs font-semibold text-warmgray-500">
-                  {group.items.length} Product{group.items.length > 1 ? 's' : ''}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {group.items.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
       ) : (
-        // Flat Grid for Specific Category or Active Search
         <div className="space-y-6">
-          <div className="flex items-center justify-between text-xs text-warmgray-600 px-1">
-            <span>Showing {filteredProducts.length} product{filteredProducts.length > 1 ? 's' : ''}</span>
+          <div className="flex items-center justify-between text-xs text-sand-700 px-1">
+            <span>Showing {filteredProducts.length} handcrafted product{filteredProducts.length > 1 ? 's' : ''}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (

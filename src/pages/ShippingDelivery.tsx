@@ -7,8 +7,8 @@ export const ShippingDelivery: React.FC = () => {
   return (
     <div className="py-12 md:py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SEO
-        title="Shipping & Delivery Policy | Lavanya Natural Care"
-        description="Delivery timelines, packaging, and shipping rates for handcrafted soaps across Vadodara, Gujarat, and pan-India by Lavanya Natural Care."
+        title="Shipping & Delivery Policy | ONZNATURAL"
+        description="Delivery timelines, packaging, and shipping rates for handcrafted soaps across Vadodara, Gujarat, and pan-India by ONZNATURAL."
       />
 
       <div className="text-center space-y-3">
@@ -53,7 +53,7 @@ export const ShippingDelivery: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">1. Order Processing Timeline</h2>
           <p>
-            Because each Lavanya Natural Care bar is naturally cured and hand-cut, orders are inspected and packed within <strong>24 to 48 hours</strong> of order confirmation. You will receive tracking details via WhatsApp or SMS as soon as your shipment is dispatched.
+            Because each ONZNATURAL bar is naturally cured and hand-cut, orders are inspected and packed within <strong>24 to 48 hours</strong> of order confirmation. You will receive tracking details via WhatsApp or SMS as soon as your shipment is dispatched.
           </p>
         </section>
 

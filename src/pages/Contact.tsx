@@ -78,15 +78,15 @@ export const Contact: React.FC = () => {
   // Pre-fill WhatsApp message based on form
   const generateWhatsAppMessage = () => {
     return encodeURIComponent(
-      `Hello Lavanya Natural Care!\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nInquiry: ${formData.subject}\n\nMessage:\n${formData.message}`
+      `Hello ONZNATURAL!\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nInquiry: ${formData.subject}\n\nMessage:\n${formData.message}`
     );
   };
 
   return (
     <div className="py-12 md:py-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <SEO
-        title="Contact Us & Studio Location | Lavanya Natural Care"
-        description="Contact Lavanya Natural Care in Subhanpura, Vadodara. Call +91 97267 39515 or message on WhatsApp for handcrafted cold process soaps and skincare."
+        title="Contact Us & Studio Location | ONZNATURAL"
+        description="Contact ONZNATURAL in Subhanpura, Vadodara. Call +91 97267 39515 or message on WhatsApp for handcrafted cold process soaps and skincare."
       />
 
       {/* Hero Header */}
@@ -95,7 +95,7 @@ export const Contact: React.FC = () => {
           Get In Touch
         </span>
         <h1 className="font-serif text-4xl sm:text-5xl font-bold text-botanical-950">
-          Contact Lavanya Natural Care
+          Contact ONZNATURAL
         </h1>
         <p className="text-warmgray-600 text-base leading-relaxed">
           We would love to assist you with product inquiries, customized orders, or wholesale questions. Reach out directly or send us a message below.
@@ -140,11 +140,11 @@ export const Contact: React.FC = () => {
                 <div>
                   <span className="text-xs text-warmgray-500 font-semibold uppercase block">WhatsApp Business</span>
                   <a
-                    href="https://wa.me/919726739515?text=Hello%20Lavanya%20Natural%20Care!"
+                    href="https://wa.me/919726739515?text=Hello%20ONZNATURAL%20Natural%20Care!"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold text-[#1e9b4c] text-base hover:underline block"
-                    aria-label="Chat with Lavanya Natural Care on WhatsApp"
+                    aria-label="Chat with ONZNATURAL on WhatsApp"
                   >
                     +91 97267 39515
                   </a>
@@ -160,11 +160,11 @@ export const Contact: React.FC = () => {
                 <div>
                   <span className="text-xs text-warmgray-500 font-semibold uppercase block">Email Address</span>
                   <a
-                    href="mailto:lavanyanaturalcare@gmail.com"
+                    href="mailto:care@onznatural.com"
                     className="font-semibold text-botanical-900 text-base hover:text-gold-700 transition-colors block break-all"
-                    aria-label="Email lavanyanaturalcare@gmail.com"
+                    aria-label="Email care@onznatural.com"
                   >
-                    lavanyanaturalcare@gmail.com
+                    care@onznatural.com
                   </a>
                   <span className="text-xs text-warmgray-500 block mt-0.5">Click to write an email</span>
                 </div>
@@ -218,7 +218,7 @@ export const Contact: React.FC = () => {
 
           {/* Social Accounts */}
           <div className="bg-botanical-900 text-cream-50 p-6 sm:p-8 rounded-3xl space-y-4 border border-botanical-800 shadow-sm">
-            <h3 className="font-serif text-xl font-bold text-cream-50">Follow Lavanya Natural Care</h3>
+            <h3 className="font-serif text-xl font-bold text-cream-50">Follow ONZNATURAL</h3>
             <p className="text-xs text-warmgray-300">
               Connect with our official channels for handcrafted soapmaking, skincare insights, and product updates.
             </p>
@@ -479,7 +479,7 @@ export const Contact: React.FC = () => {
 
             <div className="w-full h-[360px] sm:h-[420px] rounded-2xl overflow-hidden border border-cream-200 shadow-inner bg-cream-50">
               <iframe
-                title="Lavanya Natural Care Vadodara Map Location"
+                title="ONZNATURAL Vadodara Map Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.963428987114!2d73.1534293!3d22.3172081!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc8b0a1d48c8b%3A0x6b14f6b1e626e257!2sSubhanpura%2C%20Vadodara%2C%20Gujarat%20390023!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"

@@ -6,8 +6,8 @@ export const Terms: React.FC = () => {
   return (
     <div className="py-12 md:py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SEO
-        title="Terms & Conditions | Lavanya Natural Care"
-        description="Terms of service, pricing, and small-batch handcrafted product disclosures for Lavanya Natural Care in Vadodara, Gujarat."
+        title="Terms & Conditions | ONZNATURAL"
+        description="Terms of service, pricing, and small-batch handcrafted product disclosures for ONZNATURAL in Vadodara, Gujarat."
       />
 
       <div className="text-center space-y-3">
@@ -18,7 +18,7 @@ export const Terms: React.FC = () => {
           Terms & Conditions
         </h1>
         <p className="text-warmgray-600 text-sm sm:text-base max-w-2xl mx-auto">
-          Please review the terms that govern the use of our website and purchase of Lavanya Natural Care products.
+          Please review the terms that govern the use of our website and purchase of ONZNATURAL products.
         </p>
       </div>
 
@@ -26,7 +26,7 @@ export const Terms: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">1. Handcrafted Small-Batch Variations</h2>
           <p>
-            All soaps and skincare items at Lavanya Natural Care are handcrafted in small batches using natural plant oils, raw unrefined butters, and real botanical extracts (such as Kesuda petals, Neem, and Turmeric). As a result:
+            All soaps and skincare items at ONZNATURAL are handcrafted in small batches using natural plant oils, raw unrefined butters, and real botanical extracts (such as Kesuda petals, Neem, and Turmeric). As a result:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
             <li>Slight variations in color, natural marbling, and scent intensity are natural hallmarks of authentic artisan soapmaking and not product defects.</li>
@@ -37,7 +37,7 @@ export const Terms: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">2. Botanical Skincare & Health Disclaimer</h2>
           <p>
-            Lavanya Natural Care products are designed for general cosmetic cleansing and botanical skincare comfort.
+            ONZNATURAL products are designed for general cosmetic cleansing and botanical skincare comfort.
           </p>
           <div className="p-4 rounded-xl bg-cream-50 border border-cream-200 text-xs space-y-2">
             <p className="font-bold text-botanical-950">Important Health Advisory:</p>
@@ -57,7 +57,7 @@ export const Terms: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">4. Governing Law & Jurisdiction</h2>
           <p>
-            These terms and all orders placed through Lavanya Natural Care are governed by and construed in accordance with the laws of India, under the exclusive jurisdiction of the competent courts in <strong>Vadodara, Gujarat</strong>.
+            These terms and all orders placed through ONZNATURAL are governed by and construed in accordance with the laws of India, under the exclusive jurisdiction of the competent courts in <strong>Vadodara, Gujarat</strong>.
           </p>
         </section>
       </div>

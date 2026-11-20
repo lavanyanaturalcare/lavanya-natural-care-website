@@ -7,34 +7,61 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ONZNATURAL Brand Colors
+        primary: {
+          DEFAULT: '#173F35', // Deep botanical green
+          light: '#235A4D',
+          dark: '#0E2822',
+        },
+        secondary: {
+          DEFAULT: '#71836D', // Muted sage
+          light: '#8E9E8B',
+          dark: '#556552',
+        },
         cream: {
-          50: '#FDFBF7',
-          100: '#F9F6F0',
-          200: '#F2EBDC',
-          300: '#E6D9C0',
-          400: '#D5BF97',
+          50: '#F7F4ED', // Warm ivory background
+          100: '#EFEBE0',
+          200: '#E7DCCB', // Soft sand surface
+          300: '#D5C4AC',
+          400: '#C0AC90',
+        },
+        surface: {
+          DEFAULT: '#E7DCCB', // Soft sand
+          light: '#F0E7D9',
+          dark: '#D8C7B0',
         },
         botanical: {
-          50: '#F4F7F4',
-          100: '#E3EBE4',
-          200: '#C5D6C7',
-          600: '#3D614A',
-          800: '#233F2E',
-          900: '#172E20',
-          950: '#0E1D13',
+          50: '#F2F6F4',
+          100: '#DEECE5',
+          200: '#BDD7CB',
+          300: '#95BEAC',
+          400: '#71836D', // Muted sage
+          500: '#466C5E',
+          600: '#34574B',
+          700: '#264E43',
+          800: '#1F473C',
+          900: '#173F35', // Deep botanical green
+          950: '#0C241E',
         },
         gold: {
-          300: '#F3E5AB',
-          400: '#E6C875',
-          500: '#D4AF37',
-          600: '#B89228',
-          700: '#91711C',
+          300: '#DFD0A8',
+          400: '#CCB681',
+          500: '#B99B62', // Subtle antique gold
+          600: '#9D8049',
+          700: '#7E6534',
         },
         warmgray: {
-          100: '#F5F5F3',
-          200: '#E6E6E2',
-          600: '#6E6E69',
-          900: '#2A2A28',
+          50: '#FAF9F6',
+          100: '#F3F1EC',
+          200: '#E6E3DB',
+          300: '#D0CBC1',
+          400: '#A39D91',
+          500: '#7A7468',
+          600: '#5C564B',
+          700: '#413D34',
+          800: '#2A2721',
+          900: '#171612',
+          950: '#0D0C0A',
         }
       },
       fontFamily: {

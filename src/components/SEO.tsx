@@ -34,22 +34,22 @@ export const SEO: React.FC<SEOProps> = ({ title, description, canonical, image, 
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
 
-    const currentUrl = `https://lavanyanatural.in${location.pathname}`;
+    const currentUrl = `https://onznatural.com${location.pathname}`;
     setMetaTag('property', 'og:url', currentUrl);
 
     // Update Twitter preview tags
     setMetaTag('name', 'twitter:card', 'summary_large_image');
-    setMetaTag('name', 'twitter:site', '@lavanyanatural');
-    setMetaTag('name', 'twitter:creator', '@lavanyanatural');
+    setMetaTag('name', 'twitter:site', '@onznatural');
+    setMetaTag('name', 'twitter:creator', '@onznatural');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:url', currentUrl);
 
     // Image Preview Tags
-    const previewImage = image || '/assets/lavanya-natural-soap-collection.png';
+    const previewImage = image || '/images/products/kesuda-palash-soap.webp';
     const absoluteImage = previewImage.startsWith('http')
       ? previewImage
-      : `https://lavanyanatural.in${previewImage.startsWith('/') ? '' : '/'}${encodeURI(previewImage)}`;
+      : `https://onznatural.com${previewImage.startsWith('/') ? '' : '/'}${encodeURI(previewImage)}`;
 
     setMetaTag('property', 'og:image', absoluteImage);
     setMetaTag('property', 'og:image:secure_url', absoluteImage);
