@@ -18,11 +18,11 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
 }) => {
   const phone = '919726739515';
   
-  let message = 'Hello Lavanya Natural Care! I would like to inquire about your natural skincare products.';
+  let message = 'Hello ONZNATURAL! I would like to inquire about your handcrafted botanical skincare products.';
   if (productName && mrp) {
-    message = `Hello! I would like to order ${productName} (₹${mrp}) from Lavanya Natural Care. Please provide delivery details.`;
+    message = `Hello! I would like to order ${productName} (₹${mrp}) from ONZNATURAL. Please provide delivery details.`;
   } else if (productName) {
-    message = `Hello! I would like to order ${productName} from Lavanya Natural Care. Please share details.`;
+    message = `Hello! I would like to order ${productName} from ONZNATURAL. Please share details.`;
   }
 
   const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;

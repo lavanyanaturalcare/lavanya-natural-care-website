@@ -8,8 +8,8 @@ export const Blog: React.FC = () => {
   return (
     <div className="py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       <SEO
-        title="Skincare Guides & Botanical Wisdom | Lavanya Natural Care"
-        description="Read educational guides on handcrafted cold process soapmaking, Ayurvedic herbs for skin, and natural routines by Lavanya Natural Care in Vadodara."
+        title="Skincare Guides & Botanical Wisdom | ONZNATURAL"
+        description="Read educational guides on handcrafted cold process soapmaking, Ayurvedic herbs for skin, and natural routines by ONZNATURAL in Vadodara."
       />
 
       <div className="text-center max-w-3xl mx-auto space-y-4">

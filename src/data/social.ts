@@ -1,10 +1,10 @@
 import { Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
 
 export const SOCIAL_LINKS = {
-  instagram: 'https://www.instagram.com/lavanya.naturalcare?igsh=MXhmeTFwMzJlam4yMA==',
-  facebook: 'https://www.facebook.com/share/1HGWM8Lm4X/',
-  youtube: 'https://youtube.com/@lavanyanaturalcare?si=mGKJ-pZDoEP9Dk1y',
-  linkedin: 'https://www.linkedin.com/in/lavanya-naturalcare-6ab686423'
+  instagram: 'https://www.instagram.com/onznatural',
+  facebook: 'https://www.facebook.com/onznatural',
+  youtube: 'https://youtube.com/@onznatural',
+  linkedin: 'https://www.linkedin.com/company/onznatural'
 };
 
 export const socialAccounts = [
@@ -12,28 +12,28 @@ export const socialAccounts = [
     name: 'Instagram',
     icon: Instagram,
     href: SOCIAL_LINKS.instagram,
-    handle: '@lavanya.naturalcare',
-    description: 'Follow us for daily handcrafted soap videos, skincare tips, and natural botanical updates.'
+    handle: '@onznatural',
+    description: 'Follow ONZNATURAL for artisanal cold-process formulation, botanical science, and skin rituals.'
   },
   {
     name: 'Facebook',
     icon: Facebook,
     href: SOCIAL_LINKS.facebook,
-    handle: 'Lavanya Natural Care',
-    description: 'Join our community on Facebook to learn about our cold process manufacturing and new releases.'
+    handle: 'ONZNATURAL',
+    description: 'Join our community to discover small-batch botanical updates, customer stories, and launches.'
   },
   {
     name: 'YouTube',
     icon: Youtube,
     href: SOCIAL_LINKS.youtube,
-    handle: '@lavanyanaturalcare',
-    description: 'Watch behind-the-scenes soapmaking, ingredient guides, and botanical crafting tutorials.'
+    handle: '@onznatural',
+    description: 'Watch cold-process saponification, botanical ingredient studies, and mindful skincare guides.'
   },
   {
     name: 'LinkedIn',
     icon: Linkedin,
     href: SOCIAL_LINKS.linkedin,
-    handle: 'Lavanya Natural Care',
-    description: 'Connect with Lavanya Natural Care for business inquiries, brand philosophy, and updates.'
+    handle: 'ONZNATURAL',
+    description: 'Connect with ONZNATURAL for brand heritage, artisanal quality standards, and partnerships.'
   }
 ];

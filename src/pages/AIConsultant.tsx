@@ -28,7 +28,6 @@ import {
   Info
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
-import { ApiKeyModal } from '../components/ApiKeyModal';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { AIConsentBanner } from '../components/AIConsentBanner';
 import { PrivacyDataModal } from '../components/PrivacyDataModal';
@@ -58,10 +57,9 @@ import {
 } from '../types/ai';
 import { 
   generateSkincareConsultation, 
-  askLavanyaAI, 
+  askOnzAI, 
   compareProductsWithAI,
-  analyzeSkinOrLabelImage, 
-  hasGeminiApiKey 
+  analyzeSkinOrLabelImage 
 } from '../services/geminiService';
 
 export const AIConsultant: React.FC = () => {
@@ -71,15 +69,9 @@ export const AIConsultant: React.FC = () => {
 
   // Navigation Tabs: 'quiz' | 'chat' | 'compare' | 'scanner'
   const [activeTab, setActiveTab] = useState<'quiz' | 'chat' | 'compare' | 'scanner'>('quiz');
-  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
-  const [hasKey, setHasKey] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [hasChatConsent, setHasChatConsent] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
-
-  useEffect(() => {
-    setHasKey(hasGeminiApiKey());
-  }, [isKeyModalOpen]);
 
   // ===============================
   // TAB 1: GUIDED QUIZ STATE & LOGIC
@@ -318,7 +310,7 @@ export const AIConsultant: React.FC = () => {
 
     try {
       const history = messages.map(m => ({ role: m.role, text: m.text }));
-      const response = await askLavanyaAI(userMsg.text, history, language);
+      const response = await askOnzAI(userMsg.text, history, language);
 
       const botMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -446,8 +438,9 @@ export const AIConsultant: React.FC = () => {
   return (
     <div className="py-8 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 w-full overflow-x-clip pb-24">
       <SEO
-        title="Ayurvedic AI Skincare Consultant | Lavanya Natural Care"
-        description="Consult Lavanya's Ayurvedic AI for skin type diagnosis, herbal ingredient recommendations, and personalized cold process soap routines."
+        title="Ayurvedic AI Skincare Consultant | ONZNATURAL"
+        description="Consult ONZNATURAL's Ayurvedic AI for skin type diagnosis, herbal ingredient recommendations, and personalized cold process soap routines."
+        canonical="https://onznatural.com/ai-consultant"
       />
 
       {/* Top Banner with Language Selector & Security Badge */}
@@ -796,7 +789,7 @@ export const AIConsultant: React.FC = () => {
               {quizResult.recommendedProducts.length > 0 && (
                 <div className="space-y-4 pt-4 border-t border-cream-100">
                   <h3 className="font-serif text-2xl font-bold text-botanical-950">
-                    Recommended Lavanya Products
+                    Recommended ONZNATURAL Products
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {quizResult.recommendedProducts.map((prod) => (
@@ -855,7 +848,7 @@ export const AIConsultant: React.FC = () => {
               <div className="pt-2 text-center">
                 <a
                   href={`https://wa.me/919726739515?text=${encodeURIComponent(
-                    `Hello Lavanya Natural Care! I took your Ayurvedic Skincare Quiz and would like to order my recommended routine: ${quizResult.routine.map(r => r.productName).join(', ')}.`
+                    `Hello ONZNATURAL! I took your Ayurvedic Skincare Quiz and would like to order my recommended routine: ${quizResult.routine.map(r => r.productName).join(', ')}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -910,11 +903,11 @@ export const AIConsultant: React.FC = () => {
               </button>
 
               <button
-                onClick={() => setIsKeyModalOpen(true)}
+                onClick={() => setIsPrivacyModalOpen(true)}
                 className="p-1.5 rounded-xl border border-cream-300 text-warmgray-600 hover:text-botanical-900 transition-colors"
-                title="Settings"
+                title="Privacy Controls"
               >
-                <Key className="w-3.5 h-3.5" />
+                <ShieldCheck className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -1377,13 +1370,6 @@ export const AIConsultant: React.FC = () => {
       <PrivacyDataModal
         isOpen={isPrivacyModalOpen}
         onClose={() => setIsPrivacyModalOpen(false)}
-      />
-
-      {/* Floating Key Modal */}
-      <ApiKeyModal
-        isOpen={isKeyModalOpen}
-        onClose={() => setIsKeyModalOpen(false)}
-        onKeySaved={() => setHasKey(hasGeminiApiKey())}
       />
     </div>
   );

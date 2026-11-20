@@ -6,8 +6,8 @@ export const PrivacyPolicy: React.FC = () => {
   return (
     <div className="py-12 md:py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SEO
-        title="Privacy Policy | Lavanya Natural Care"
-        description="Learn how Lavanya Natural Care protects and respects customer privacy and personal data for orders in Vadodara and across India."
+        title="Privacy Policy | ONZNATURAL"
+        description="Learn how ONZNATURAL protects and respects customer privacy and personal data for orders in Vadodara and across India."
       />
 
       <div className="text-center space-y-3">
@@ -18,7 +18,7 @@ export const PrivacyPolicy: React.FC = () => {
           Privacy Policy
         </h1>
         <p className="text-warmgray-600 text-sm sm:text-base max-w-2xl mx-auto">
-          Last updated: November 2026. Your privacy is paramount to Lavanya Natural Care.
+          Last updated: November 2026. Your privacy is paramount to ONZNATURAL.
         </p>
       </div>
 
@@ -63,9 +63,9 @@ export const PrivacyPolicy: React.FC = () => {
             For any questions or requests regarding your personal data, you can reach us at:
           </p>
           <p className="text-xs bg-cream-50 p-4 rounded-xl border border-cream-200 font-medium text-botanical-950">
-            Lavanya Natural Care<br />
+            ONZNATURAL<br />
             FF-22 Pujar Complex, Subhanpura, Vadodara, Gujarat 390023, India<br />
-            Email: lavanyanaturalcare@gmail.com | Phone: +91 97267 39515
+            Email: care@onznatural.com | Phone: +91 97267 39515
           </p>
         </section>
       </div>

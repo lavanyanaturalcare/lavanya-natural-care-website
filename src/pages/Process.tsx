@@ -20,8 +20,8 @@ export const Process: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="6-Step Cold Process Soap Method | Lavanya Natural Care"
-        description="Discover how Lavanya Natural Care crafts cold process soap in Vadodara: oil blending, mold pouring, hand-cutting, and 6-week natural curing."
+        title="6-Step Cold Process Soap Method | ONZNATURAL"
+        description="Discover how ONZNATURAL crafts cold process soap in Vadodara: oil blending, mold pouring, hand-cutting, and 6-week natural curing."
       />
       
       {/* Hero Banner */}
@@ -108,7 +108,7 @@ export const Process: React.FC = () => {
         <div className="sm:w-1/2 rounded-2xl overflow-hidden shadow-md border border-cream-200">
           <img
             src="/assets/packaging/soap packaging.jpeg"
-            alt="Handcrafted Soap Eco Packaging - Lavanya Natural Care Vadodara"
+            alt="Handcrafted Soap Eco Packaging - ONZNATURAL Vadodara"
             width={500}
             height={224}
             loading="lazy"

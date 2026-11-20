@@ -7,8 +7,8 @@ export const RefundPolicy: React.FC = () => {
   return (
     <div className="py-12 md:py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SEO
-        title="Return & Refund Policy | Lavanya Natural Care"
-        description="Return and refund terms for handcrafted botanical skincare by Lavanya Natural Care, Vadodara, Gujarat."
+        title="Return & Refund Policy | ONZNATURAL"
+        description="Return and refund terms for handcrafted botanical skincare by ONZNATURAL, Vadodara, Gujarat."
       />
 
       <div className="text-center space-y-3">
@@ -56,7 +56,7 @@ export const RefundPolicy: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">4. Cancellations</h2>
           <p>
-            You may cancel any order before it is dispatched by messaging us on WhatsApp or emailing <code>lavanyanaturalcare@gmail.com</code>. Once the parcel is handed over to the courier partner, cancellations cannot be processed.
+            You may cancel any order before it is dispatched by messaging us on WhatsApp or emailing <code>care@onznatural.com</code>. Once the parcel is handed over to the courier partner, cancellations cannot be processed.
           </p>
         </section>
 

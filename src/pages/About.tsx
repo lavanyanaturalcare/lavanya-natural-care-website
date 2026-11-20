@@ -7,8 +7,8 @@ export const About: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="About Our Handcrafted Soap Studio | Lavanya Natural Care"
-        description="The story of Lavanya Natural Care in Vadodara, Gujarat. Handcrafting cold process soaps with 100% pure plant oils and Ayurvedic herbs."
+        title="About Our Handcrafted Soap Studio | ONZNATURAL"
+        description="The story of ONZNATURAL in Vadodara, Gujarat. Handcrafting cold process soaps with 100% pure plant oils and Ayurvedic herbs."
       />
       
       {/* Hero Header */}
@@ -18,7 +18,7 @@ export const About: React.FC = () => {
           <span>Our Brand Journey</span>
         </div>
         <h1 className="font-serif text-4xl sm:text-5xl font-bold text-botanical-950">
-          The Story Behind Lavanya Natural Care
+          The Story Behind ONZNATURAL
         </h1>
         <p className="text-warmgray-600 text-base leading-relaxed">
           Crafting honest, botanical skincare products rooted in traditional cold process wisdom in Vadodara, Gujarat.
@@ -35,7 +35,7 @@ export const About: React.FC = () => {
             Returning to Genuine Plant Skincare
           </h2>
           <p className="text-warmgray-600 text-sm sm:text-base leading-relaxed">
-            Lavanya Natural Care was founded with a simple realization: modern commercial skincare products have become heavily dependent on synthetic chemicals, harsh sulfates, artificial hardeners, and stripped glycerin.
+            ONZNATURAL was founded with a simple realization: modern commercial skincare products have become heavily dependent on synthetic chemicals, harsh sulfates, artificial hardeners, and stripped glycerin.
           </p>
           <p className="text-warmgray-600 text-sm sm:text-base leading-relaxed">
             We wanted to return to the authentic purity of cold-process soapmaking—where pure vegetable oils (Coconut, Mahua, Castor, Sunflower) are slowly saponified with natural herbs like Neem, Tulsi, Kesuda (Palash), and Ubtan.
@@ -43,8 +43,8 @@ export const About: React.FC = () => {
         </div>
         <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cream-200 shadow-md">
           <img
-            src="/assets/lavanya-natural-soap-collection.png"
-            alt="Lavanya Natural Care Handcrafted Soap Collection in Vadodara"
+            src="/images/products/hibiscus-soap.webp"
+            alt="ONZNATURAL Handcrafted Botanical Soap Collection in Vadodara"
             className="w-full h-auto object-cover"
             width={1200}
             height={630}

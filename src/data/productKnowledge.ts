@@ -183,11 +183,11 @@ export const getVerifiedProductById = (id: string): VerifiedProductKnowledge | u
 // Multilingual UI & Safety Translations
 export const I18N = {
   en: {
-    brandName: 'Lavanya Natural Care',
-    aiAdvisorTitle: 'Lavanya Botanical Skincare AI',
-    aiAdvisorSubtitle: 'Grounded Ayurvedic Regimens & Cold Process Soap Advisor',
-    safetyDisclaimerTitle: 'Ayurvedic Skincare Notice & Safety',
-    safetyDisclaimerText: 'Lavanya Natural Care provides artisanal cosmetic skincare handcrafted with cold-process oils and Indian herbs. Our AI assistant offers general cosmetic and routine guidance based strictly on our verified product catalogue. It does not provide medical diagnoses, treatment, or cures for dermatological diseases. Always perform a 24-hour patch test before using any new botanical product and consult a certified dermatologist for persistent skin conditions.',
+    brandName: 'ONZNATURAL',
+    aiAdvisorTitle: 'ONZNATURAL Botanical AI',
+    aiAdvisorSubtitle: 'Grounded Ayurvedic Regimens & Cold Process Skincare Advisor',
+    safetyDisclaimerTitle: 'Botanical Skincare Notice & Safety',
+    safetyDisclaimerText: 'ONZNATURAL provides artisanal cosmetic skincare handcrafted with cold-process botanical oils and traditional herbs. Our AI assistant offers general cosmetic and routine guidance based strictly on our verified product catalogue. It does not provide medical diagnoses, treatment, or cures for dermatological diseases. Always perform a 24-hour patch test before using any new botanical product and consult a certified dermatologist for persistent skin conditions.',
     patchTestReminder: 'Mandatory: Always patch test on the inner wrist 24 hours prior to full facial use.',
     tabs: {
       quiz: 'Guided Skincare Quiz',
@@ -202,9 +202,9 @@ export const I18N = {
       step2: '2. Select Your Primary Concern',
       step3: '3. Known Sensitivities / Allergies',
       step4: '4. Current Climate / Season',
-      generateBtn: 'Generate My Ayurvedic Regimen',
-      generatingBtn: 'Formulating with Gemini AI...',
-      resultHeading: 'Your Verified Ayurvedic Care Plan',
+      generateBtn: 'Generate My Botanical Regimen',
+      generatingBtn: 'Formulating with Botanical Intelligence...',
+      resultHeading: 'Your Verified Botanical Care Plan',
       prakritiHeading: 'Skin Balance & Herbal Insights',
       coldProcessAdvantage: 'The Artisanal Cold-Process Advantage',
       routineHeading: 'Your Custom Regimen (Verified Products)',
@@ -213,18 +213,18 @@ export const I18N = {
       sensitivityNotice: 'Sensitivity Notice:'
     },
     chat: {
-      welcome: 'Namaste! 🙏 I am your Lavanya Botanical AI Skincare Consultant. How can I help you today? You can ask about our cold-process soaps, liquid washes, Ayurvedic herbs (Kesuda, Neem, Tulsi, Ubtan), or compare products.',
-      placeholder: 'Ask about soaps, ingredients, routines, skin types...',
+      welcome: 'Namaste! 🙏 I am your ONZNATURAL Botanical AI Skincare Consultant. How can I assist you today? You can ask about our cold-process soaps, body lotions, body creams, liquid washes, Ayurvedic herbs (Kesuda, Neem, Tulsi, Ubtan, Aparajita), or compare products.',
+      placeholder: 'Ask about soaps, lotions, ingredients, routines, skin types...',
       send: 'Send',
       reset: 'Clear Chat',
       resetConfirm: 'Are you sure you want to clear your conversation history?',
-      thinking: 'Consulting Ayurvedic product database...',
+      thinking: 'Consulting verified ONZNATURAL catalogue...',
       suggestedHeading: 'Suggested Questions:',
-      matchingProducts: 'Matching Lavanya Products:'
+      matchingProducts: 'Matching ONZNATURAL Products:'
     },
     compare: {
       heading: 'Side-by-Side Product Comparison',
-      subheading: 'Compare ingredients, benefits, prices, and skin suitability between any two verified Lavanya products.',
+      subheading: 'Compare ingredients, benefits, prices, and skin suitability between any two verified ONZNATURAL products.',
       selectProduct1: 'Select First Product',
       selectProduct2: 'Select Second Product',
       price: 'Price (MRP)',
@@ -238,15 +238,15 @@ export const I18N = {
     },
     privacy: {
       badge: '100% Privacy Protected',
-      text: 'No personal health data or contact information is stored on remote servers. Conversations stay in your local browser.'
+      text: 'No personal health data is shared with third parties. Conversations are governed by your selected privacy preferences.'
     }
   },
   hi: {
-    brandName: 'लावण्या नेचुरल केयर',
-    aiAdvisorTitle: 'लावण्या प्राकृतिक त्वचा परामर्शदाता AI',
+    brandName: 'ऑन्जनेचुरल (ONZNATURAL)',
+    aiAdvisorTitle: 'ऑन्जनेचुरल प्राकृतिक त्वचा परामर्शदाता AI',
     aiAdvisorSubtitle: 'प्रामाणिक आयुर्वेदिक देखभाल एवं कोल्ड-प्रोसेस साबुन सलाहकार',
     safetyDisclaimerTitle: 'आयुर्वेदिक त्वचा देखभाल सूचना एवं सुरक्षा',
-    safetyDisclaimerText: 'लावण्या नेचुरल केयर विशुद्ध कोल्ड-प्रोसेस तेलों और जड़ी-बूटियों से हस्तनिर्मित प्रसाधन प्रदान करता है। यह AI परामर्शदाता केवल हमारे वास्तविक उत्पादों के आधार पर सौंदर्य और दैनिक उपयोग की सलाह देता है। यह किसी चिकित्सीय रोग (एक्जिमा, सोरायसिस, सिस्टिक एक्ने) का निदान या उपचार नहीं करता। किसी भी नए उत्पाद के उपयोग से पूर्व 24 घंटे का पैच टेस्ट अवश्य करें तथा गंभीर समस्याओं हेतु त्वचा विशेषज्ञ (Dermatologist) से परामर्श लें।',
+    safetyDisclaimerText: 'ऑन्जनेचुरल (ONZNATURAL) विशुद्ध कोल्ड-प्रोसेस तेलों और जड़ी-बूटियों से हस्तनिर्मित प्रसाधन प्रदान करता है। यह AI परामर्शदाता केवल हमारे वास्तविक उत्पादों के आधार पर सौंदर्य और दैनिक उपयोग की सलाह देता है। यह किसी चिकित्सीय रोग (एक्जिमा, सोरायसिस, सिस्टिक एक्ने) का निदान या उपचार नहीं करता। किसी भी नए उत्पाद के उपयोग से पूर्व 24 घंटे का पैच टेस्ट अवश्य करें तथा गंभीर समस्याओं हेतु त्वचा विशेषज्ञ (Dermatologist) से परामर्श लें।',
     patchTestReminder: 'अनिवार्य: चेहरे पर उपयोग से पूर्व कलाई के भीतरी भाग पर 24 घंटे का पैच टेस्ट अवश्य करें।',
     tabs: {
       quiz: 'त्वचा प्राथमिक प्रश्नोत्तरी',
@@ -272,18 +272,18 @@ export const I18N = {
       sensitivityNotice: 'संवेदनशीलता सूचना:'
     },
     chat: {
-      welcome: 'नमस्ते! 🙏 मैं आपका लावण्या प्राकृतिक त्वचा सलाहकार AI हूँ। मैं आपकी क्या सहायता कर सकता हूँ? आप हमारे हस्तनिर्मित कोल्ड-प्रोसेस साबुन, फेसवॉश, केसूड़ा, नीम, तुलसी, उबटन आदि के लाभों के बारे में पूछ सकते हैं।',
+      welcome: 'नमस्ते! 🙏 मैं आपका ऑन्जनेचुरल (ONZNATURAL) प्राकृतिक त्वचा सलाहकार AI हूँ। मैं आपकी क्या सहायता कर सकता हूँ? आप हमारे हस्तनिर्मित कोल्ड-प्रोसेस साबुन, बॉडी लोशन, केसूड़ा, नीम, तुलसी, उबटन आदि के लाभों के बारे में पूछ सकते हैं।',
       placeholder: 'साबुन, सामग्री, दिनचर्या या त्वचा संबंधी प्रश्न पूछें...',
       send: 'भेजें',
       reset: 'चैट साफ़ करें',
       resetConfirm: 'क्या आप वार्तालाप इतिहास साफ़ करना चाहते हैं?',
       thinking: 'आयुर्वेदिक उत्पाद ज्ञानकोष से परामर्श ले रहे हैं...',
       suggestedHeading: 'सुझाए गए प्रश्न:',
-      matchingProducts: 'अनुकूल लावण्या उत्पाद:'
+      matchingProducts: 'अनुकूल ऑन्जनेचुरल उत्पाद:'
     },
     compare: {
       heading: 'दो उत्पादों की आमने-सामने तुलना',
-      subheading: 'किसी भी दो लावण्या उत्पादों की सामग्री, लाभ, मूल्य एवं उपयोग विधि की तुलना करें।',
+      subheading: 'किसी भी दो ऑन्जनेचुरल उत्पादों की सामग्री, लाभ, मूल्य एवं उपयोग विधि की तुलना करें।',
       selectProduct1: 'पहला उत्पाद चुनें',
       selectProduct2: 'दूसरा उत्पाद चुनें',
       price: 'मूल्य (MRP)',
@@ -297,15 +297,15 @@ export const I18N = {
     },
     privacy: {
       badge: '100% गोपनीयता सुरक्षित',
-      text: 'आपका कोई भी व्यक्तिगत विवरण या स्वास्थ्य संबंधी डेटा किसी सर्वर पर सहेजा नहीं जाता। यह केवल आपके ब्राउज़र में सुरक्षित रहता है।'
+      text: 'आपकी कोई भी निजी स्वास्थ्य संबंधी जानकारी बाहरी पक्षों के साथ साझा नहीं की जाती।'
     }
   },
   gu: {
-    brandName: 'લાવણ્ય નેચરલ કેર',
-    aiAdvisorTitle: 'લાવણ્ય પ્રાકૃતિક ત્વચા સલાહકાર AI',
+    brandName: 'ઓન્ઝનેચરલ (ONZNATURAL)',
+    aiAdvisorTitle: 'ઓન્ઝનેચરલ પ્રાકૃતિક ત્વચા સલાહકાર AI',
     aiAdvisorSubtitle: 'આયુર્વેદિક કેર અને કોલ્ડ-પ્રોસેસ સાબુ માર્ગદર્શિકા',
     safetyDisclaimerTitle: 'આયુર્વેદિક ત્વચા સંભાળ સૂચના અને સુરક્ષા',
-    safetyDisclaimerText: 'લાવણ્ય નેચરલ કેર શુદ્ધ કોલ્ડ-પ્રોસેસ તેલ અને વનસ્પતિઓમાંથી હાથબનાવટ સૌંદર્ય પ્રસાધનો પ્રદાન કરે છે. આ AI સલાહકાર ફક્ત અમારા વાસ્તવિક ઉત્પાદનો પર આધારિત સૌંદર્ય માર્ગદર્શન આપે છે. તે કોઈપણ તબીબી રોગનું નિદાન કે ઈલાજ કરતું નથી. કોઈપણ નવી વનસ્પતિ ઉત્પાદન વાપરતા પહેલા 24 કલાકનો પેચ ટેસ્ટ અવશ્ય કરો અને ગંભીર ત્વચા સમસ્યાઓ માટે ત્વચારોગ નિષ્ણાત (Dermatologist) નો સંપર્ક કરો.',
+    safetyDisclaimerText: 'ઓન્ઝનેચરલ (ONZNATURAL) શુદ્ધ કોલ્ડ-પ્રોસેસ તેલ અને વનસ્પતિઓમાંથી હાથબનાવટ સૌંદર્ય પ્રસાધનો પ્રદાન કરે છે. આ AI સલાહકાર ફક્ત અમારા વાસ્તવિક ઉત્પાદનો પર આધારિત સૌંદર્ય માર્ગદર્શન આપે છે. તે કોઈપણ તબીબી રોગનું નિદાન કે ઈલાજ કરતું નથી. કોઈપણ નવી વનસ્પતિ ઉત્પાદન વાપરતા પહેલા 24 કલાકનો પેચ ટેસ્ટ અવશ્ય કરો અને ગંભીર ત્વચા સમસ્યાઓ માટે ત્વચારોગ નિષ્ણાત (Dermatologist) નો સંપર્ક કરો.',
     patchTestReminder: 'ફરજિયાત: મોં પર ઉપયોગ કરતાં પહેલાં કાંડાના અંદરના ભાગ પર 24 કલાકનો પેચ ટેસ્ટ કરો.',
     tabs: {
       quiz: 'ત્વચા સંભાળ પ્રશ્નોત્તરી',
@@ -331,18 +331,18 @@ export const I18N = {
       sensitivityNotice: 'સંવેદનશીલતા નોંધ:'
     },
     chat: {
-      welcome: 'નમસ્તે! 🙏 હું તમારો લાવણ્ય પ્રાકૃતિક ત્વચા સલાહકાર AI છું. હું તમને કેવી રીતે મદદ કરી શકું? તમે અમારા કોલ્ડ-પ્રોસેસ સાબુ, કેસૂડાં, લીમડો, તુલસી, ઉબટન અથવા ઉત્પાદનોની સરખામણી વિશે પૂછી શકો છો.',
+      welcome: 'નમસ્તે! 🙏 હું તમારો ઓન્ઝનેચરલ (ONZNATURAL) પ્રાકૃતિક ત્વચા સલાહકાર AI છું. હું તમને કેવી રીતે મદદ કરી શકું? તમે અમારા કોલ્ડ-પ્રોસેસ સાબુ, લોશન, કેસૂડાં, લીમડો, તુલસી, ઉબટન અથવા ઉત્પાદનોની સરખામણી વિશે પૂછી શકો છો.',
       placeholder: 'સાબુ, ઘટકો, પદ્ધતિ કે ત્વચા વિશે પૂછો...',
       send: 'મોકલો',
       reset: 'ચેટ સાફ કરો',
       resetConfirm: 'શું તમે વાતચીતનો ઇતિહાસ સાફ કરવા માંગો છો?',
       thinking: 'આયુર્વેદિક ઉત્પાદન માહિતી ચકાસી રહ્યા છીએ...',
       suggestedHeading: 'સૂચવેલા પ્રશ્નો:',
-      matchingProducts: 'યોગ્ય લાવણ્ય ઉત્પાદનો:'
+      matchingProducts: 'યોગ્ય ઓન્ઝનેચરલ ઉત્પાદનો:'
     },
     compare: {
       heading: 'બે ઉત્પાદનોની સરખામણી',
-      subheading: 'કોઈપણ બે લાવણ્ય ઉત્પાદનોના ઘટકો, ફાયદા, કિંમત અને ઉપયોગ પદ્ધતિ સરખાવો.',
+      subheading: 'કોઈપણ બે ઓન્ઝનેચરલ ઉત્પાદનોના ઘટકો, ફાયદા, કિંમત અને ઉપયોગ પદ્ધતિ સરખાવો.',
       selectProduct1: 'પ્રથમ ઉત્પાદન પસંદ કરો',
       selectProduct2: 'બીજું ઉત્પાદન પસંદ કરો',
       price: 'કિંમત (MRP)',
@@ -356,7 +356,7 @@ export const I18N = {
     },
     privacy: {
       badge: '100% ગોપનીયતા સુરક્ષિત',
-      text: 'તમારી કોઈપણ વ્યક્તિગત માહિતી સર્વર પર સાચવવામાં આવતી નથી. બધો ડેટા તમારા બ્રાઉઝરમાં જ રહે છે.'
+      text: 'તમારી કોઈપણ વ્યક્તિગત માહિતી બાહ્ય પક્ષો સાથે વહેંચવામાં આવતી નથી.'
     }
   }
 };

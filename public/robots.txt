@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /account
 
-Sitemap: https://lavanyanatural.in/sitemap.xml
+Sitemap: https://onznatural.com/sitemap.xml

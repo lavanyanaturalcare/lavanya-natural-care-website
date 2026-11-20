@@ -22,8 +22,8 @@ export const Ingredients: React.FC = () => {
   return (
     <div className="py-12 md:py-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-clip">
       <SEO
-        title="Botanical Ingredients & Herbs | Lavanya Natural Care"
-        description="Explore pure botanical oils and Ayurvedic herbs in Lavanya soaps: Kesuda, Neem, Tulsi, Kokum Butter, Hibiscus, and cold-pressed plant oils."
+        title="Botanical Ingredients & Herbs | ONZNATURAL"
+        description="Explore pure botanical oils and Ayurvedic herbs in ONZNATURAL soaps: Kesuda, Neem, Tulsi, Kokum Butter, Hibiscus, and cold-pressed plant oils."
       />
       
       {/* Hero Banner */}
@@ -36,7 +36,7 @@ export const Ingredients: React.FC = () => {
           Our Pure Botanical Ingredients
         </h1>
         <p className="text-warmgray-600 text-base leading-relaxed">
-          We use cold-pressed vegetable oils, Ayurvedic herbs, and fresh flower infusions. Discover what goes inside every Lavanya product.
+          We use cold-pressed vegetable oils, Ayurvedic herbs, and fresh flower infusions. Discover what goes inside every ONZNATURAL product.
         </p>
       </div>
 

@@ -9,8 +9,8 @@
 
   html, body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #1C231F;
-    background-color: #FDFBF7;
+    color: #171612;
+    background-color: #F7F4ED;
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -36,7 +36,7 @@
 
   /* Accessibility Focus Rings */
   a:focus-visible, button:focus-visible, input:focus-visible {
-    outline: 2px solid #D4AF37;
+    outline: 2px solid #B99B62;
     outline-offset: 2px;
   }
 }

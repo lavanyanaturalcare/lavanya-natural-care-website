@@ -1,150 +1,151 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Core Pages -->
+  <!-- Core Store Pages -->
   <url>
-    <loc>https://lavanyanatural.in/</loc>
+    <loc>https://onznatural.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products</loc>
+    <loc>https://onznatural.com/products</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/ingredients</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/process</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/ai-consultant</loc>
+    <loc>https://onznatural.com/ai-consultant</loc>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/about</loc>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/ingredients</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/process</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/shipping-delivery</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/refund-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/privacy-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://onznatural.com/terms</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
-  <!-- Product Pages -->
+  <!-- Product Pages (All 16 Handcrafted Items) -->
   <url>
-    <loc>https://lavanyanatural.in/products/neem-tulsi-soap</loc>
+    <loc>https://onznatural.com/products/neem-tulsi-soap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/kesuda-soap</loc>
+    <loc>https://onznatural.com/products/kesuda-palash-soap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/hibiscus-soap</loc>
+    <loc>https://onznatural.com/products/hibiscus-soap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/ubtan-soap</loc>
+    <loc>https://onznatural.com/products/ubtan-soap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/charcoal-rice-soap</loc>
+    <loc>https://onznatural.com/products/charcoal-rice-soap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/face-body-wash-neem-tulsi</loc>
+    <loc>https://onznatural.com/products/aparajita-body-lotion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/face-body-wash-kesuda</loc>
+    <loc>https://onznatural.com/products/lavender-body-lotion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/hand-wash-lemon</loc>
+    <loc>https://onznatural.com/products/honey-almond-body-lotion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/rice-aloe-face-cream</loc>
+    <loc>https://onznatural.com/products/kesuda-body-lotion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/body-cream-kesuda</loc>
+    <loc>https://onznatural.com/products/aparajita-body-cream</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/lavender-body-lotion</loc>
+    <loc>https://onznatural.com/products/kesuda-palash-body-cream</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/aparajita-body-lotion</loc>
+    <loc>https://onznatural.com/products/honey-almond-body-cream</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/products/lip-balm</loc>
+    <loc>https://onznatural.com/products/face-body-wash-neem-tulsi</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Skincare Guides & Blog -->
   <url>
-    <loc>https://lavanyanatural.in/blog</loc>
+    <loc>https://onznatural.com/products/face-body-wash-kesuda</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/blog/cold-process-vs-commercial-soap</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://onznatural.com/products/hand-wash-lemon</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/blog/best-natural-soap-for-oily-skin</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://onznatural.com/products/rice-aloe-face-cream</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lavanyanatural.in/blog/why-glycerin-matters</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Customer Trust & Policy Pages -->
-  <url>
-    <loc>https://lavanyanatural.in/shipping-delivery</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/refund-policy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/privacy-policy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://lavanyanatural.in/terms</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://onznatural.com/products/lip-balm</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

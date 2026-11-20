@@ -42,35 +42,35 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-botanical-950/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-botanical-100 overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary-950/60 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-sand-200 overflow-hidden relative">
         {/* Header */}
-        <div className="bg-botanical-900 text-cream-50 px-6 py-5 flex items-center justify-between">
+        <div className="bg-primary-950 text-sand-50 px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-botanical-800 flex items-center justify-center text-emerald-400">
+            <div className="w-8 h-8 rounded-full bg-primary-900 flex items-center justify-center text-emerald-400">
               <Shield className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-serif font-bold text-base sm:text-lg">Customer Data Privacy & Controls</h3>
-              <p className="text-[11px] text-cream-200">Lavanya Natural Care • Vadodara, Gujarat</p>
+              <h3 className="font-serif font-bold text-base sm:text-lg">Customer Data Privacy &amp; Controls</h3>
+              <p className="text-[11px] text-sand-300">ONZNATURAL • Vadodara, Gujarat</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-botanical-800 flex items-center justify-center text-cream-200 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-full hover:bg-primary-900 flex items-center justify-center text-sand-300 hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab switch */}
-        <div className="flex border-b border-cream-200 bg-cream-50/50">
+        <div className="flex border-b border-sand-200 bg-sand-50/50">
           <button
             onClick={() => setActiveTab('consents')}
             className={`flex-1 py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'consents'
-                ? 'border-botanical-900 text-botanical-950 font-bold bg-white'
-                : 'border-transparent text-warmgray-500 hover:text-botanical-900'
+                ? 'border-primary-900 text-primary-950 font-bold bg-white'
+                : 'border-transparent text-sand-600 hover:text-primary-950'
             }`}
           >
             Manage Consents
@@ -79,8 +79,8 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
             onClick={() => setActiveTab('deletion')}
             className={`flex-1 py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'deletion'
-                ? 'border-botanical-900 text-botanical-950 font-bold bg-white'
-                : 'border-transparent text-warmgray-500 hover:text-botanical-900'
+                ? 'border-primary-900 text-primary-950 font-bold bg-white'
+                : 'border-transparent text-sand-600 hover:text-primary-950'
             }`}
           >
             Right to Erasure (Forget Me)
@@ -90,22 +90,22 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
         {/* Content */}
         <div className="p-6 max-h-[75vh] overflow-y-auto space-y-4">
           {activeTab === 'consents' && (
-            <div className="space-y-4 text-xs sm:text-sm text-warmgray-700">
-              <div className="bg-cream-50 p-4 rounded-2xl border border-cream-200 space-y-2">
-                <div className="flex items-center gap-2 text-botanical-950 font-semibold">
+            <div className="space-y-4 text-xs sm:text-sm text-sand-800">
+              <div className="bg-sand-50 p-4 rounded-2xl border border-sand-200 space-y-2">
+                <div className="flex items-center gap-2 text-primary-950 font-semibold">
                   <Lock className="w-4 h-4 text-emerald-700" />
-                  <span>How Lavanya Protects Your Data</span>
+                  <span>How ONZNATURAL Protects Your Data</span>
                 </div>
-                <p className="text-xs text-warmgray-600 leading-relaxed">
+                <p className="text-xs text-sand-700 leading-relaxed">
                   We collect minimal information only to provide tailored botanical skincare consultations. Your conversations are never sold, never shared, and never used to train public generative AI models.
                 </p>
               </div>
 
-              <div className="border border-warmgray-200 rounded-2xl p-4 space-y-3">
+              <div className="border border-sand-200 rounded-2xl p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h5 className="font-bold text-botanical-950 text-xs sm:text-sm">AI Skincare History Storage</h5>
-                    <p className="text-xs text-warmgray-500 mt-0.5">
+                    <h5 className="font-bold text-primary-950 text-xs sm:text-sm">AI Skincare History Storage</h5>
+                    <p className="text-xs text-sand-600 mt-0.5">
                       Saves your routine in secure database tables governed by 90-day retention.
                     </p>
                   </div>
@@ -135,10 +135,10 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
 
           {activeTab === 'deletion' && (
             <div className="space-y-4">
-              <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-900">
-                <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                <p leading-relaxed>
-                  Under our compliance policy and data privacy laws, you have the right to request permanent deletion of your stored customer records, consultation messages, and phone numbers.
+              <div className="bg-accent-50/60 p-4 rounded-2xl border border-accent-200 flex items-start gap-2.5 text-xs text-primary-950">
+                <AlertTriangle className="w-4 h-4 text-accent-700 shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  Under India's Digital Personal Data Protection (DPDP) Act and international privacy standards, you have the right to request permanent deletion of your customer record and consultation messages.
                 </p>
               </div>
 
@@ -159,7 +159,7 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
               ) : (
                 <form onSubmit={handleSubmitDeletion} className="space-y-3">
                   <div>
-                    <label className="block text-xs font-semibold text-botanical-950 mb-1">
+                    <label className="block text-xs font-semibold text-primary-950 mb-1">
                       Email Address or WhatsApp Phone *
                     </label>
                     <input
@@ -168,12 +168,12 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
                       value={contactInput}
                       onChange={e => setContactInput(e.target.value)}
                       placeholder="e.g. yourname@gmail.com or +91 98250 00000"
-                      className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-warmgray-300 focus:outline-none focus:border-botanical-700 bg-warmgray-50/50"
+                      className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 bg-sand-50/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-botanical-950 mb-1">
+                    <label className="block text-xs font-semibold text-primary-950 mb-1">
                       Reason for Deletion (Optional)
                     </label>
                     <textarea
@@ -181,14 +181,14 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
                       value={reasonInput}
                       onChange={e => setReasonInput(e.target.value)}
                       placeholder="e.g. Right to be forgotten, no longer using the service"
-                      className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-warmgray-300 focus:outline-none focus:border-botanical-700 bg-warmgray-50/50 resize-none"
+                      className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 bg-sand-50/50 resize-none"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting || !contactInput.trim()}
-                    className="w-full py-2.5 px-4 rounded-xl bg-botanical-900 text-white font-semibold text-xs sm:text-sm hover:bg-botanical-800 transition-colors flex items-center justify-center gap-1.5 shadow-sm active:scale-95 disabled:opacity-50"
+                    className="w-full py-2.5 px-4 rounded-xl bg-primary-900 text-white font-semibold text-xs sm:text-sm hover:bg-primary-950 transition-colors flex items-center justify-center gap-1.5 shadow-sm active:scale-95 disabled:opacity-50"
                   >
                     <span>Submit Deletion Request</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -200,10 +200,10 @@ export const PrivacyDataModal: React.FC<PrivacyDataModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Footer */}
-        <div className="bg-cream-50 px-6 py-3 border-t border-cream-200 flex justify-end">
+        <div className="bg-sand-50 px-6 py-3 border-t border-sand-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-botanical-900 hover:bg-cream-100 transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-primary-950 hover:bg-sand-100 transition-colors"
           >
             Close
           </button>

@@ -8,7 +8,7 @@ export const NotFound: React.FC = () => {
   return (
     <div className="py-20 md:py-28 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
       <SEO
-        title="404 - Page Not Found | Lavanya Natural Care"
+        title="404 - Page Not Found | ONZNATURAL"
         description="The page you are looking for could not be found. Explore our handcrafted cold-process soaps and botanical skincare collection."
       />
 
@@ -57,8 +57,8 @@ export const NotFound: React.FC = () => {
             +91 97267 39515
           </a>
           {' '}or email{' '}
-          <a href="mailto:lavanyanaturalcare@gmail.com" className="text-botanical-900 font-semibold hover:underline">
-            lavanyanaturalcare@gmail.com
+          <a href="mailto:care@onznatural.com" className="text-botanical-900 font-semibold hover:underline">
+            care@onznatural.com
           </a>.
         </p>
       </div>
