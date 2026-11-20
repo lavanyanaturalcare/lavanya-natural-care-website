@@ -61,7 +61,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <button
               type="button"
               onClick={handleOpenPreview}
-              className="absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 text-primary-950 text-xs font-semibold shadow-sm border border-sand-300 hover:bg-accent-600 hover:text-white transition-all transform hover:scale-105 active:scale-95 focus:outline-none cursor-pointer"
+              className="absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary-950 text-white text-xs font-bold shadow-md hover:bg-accent-700 transition-all transform hover:scale-105 active:scale-95 focus:outline-none cursor-pointer border border-primary-900/40"
               title={`Quick Preview for ${product.name}`}
               aria-label={`Quick Preview for ${product.name}`}
             >
@@ -136,14 +136,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <Link
               to={`/products/${product.id}`}
               onClick={() => trackProductInterest(product.id, 'view_details')}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-primary-900 text-primary-950 font-semibold text-xs text-center hover:bg-sand-100 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-sand-100 hover:bg-primary-950 hover:text-white text-primary-950 font-bold text-xs text-center border-2 border-primary-900/30 transition-all shadow-xs"
             >
               <span>View Details</span>
             </Link>
             <WhatsAppButton
               productName={product.name}
               mrp={product.mrp}
-              className="w-full justify-center py-2.5 text-xs cursor-pointer"
+              className="w-full justify-center py-2.5 text-xs cursor-pointer font-bold"
             />
           </div>
         </div>

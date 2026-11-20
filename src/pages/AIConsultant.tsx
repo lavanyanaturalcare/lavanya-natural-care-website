@@ -551,10 +551,10 @@ export const AIConsultant: React.FC = () => {
         <div className="inline-flex p-1.5 rounded-2xl bg-cream-100 border border-cream-200 shadow-xs max-w-full overflow-x-auto">
           <button
             onClick={() => setActiveTab('quiz')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'quiz'
-                ? 'bg-botanical-800 text-white shadow-md'
-                : 'text-warmgray-600 hover:text-botanical-950 hover:bg-cream-50'
+                ? 'bg-botanical-950 text-white shadow-md border border-botanical-900'
+                : 'text-warmgray-900 hover:text-botanical-950 hover:bg-white bg-cream-50/50'
             }`}
           >
             <Sliders className="w-4 h-4" />
@@ -563,10 +563,10 @@ export const AIConsultant: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'chat'
-                ? 'bg-botanical-800 text-white shadow-md'
-                : 'text-warmgray-600 hover:text-botanical-950 hover:bg-cream-50'
+                ? 'bg-botanical-950 text-white shadow-md border border-botanical-900'
+                : 'text-warmgray-900 hover:text-botanical-950 hover:bg-white bg-cream-50/50'
             }`}
           >
             <Bot className="w-4 h-4" />
@@ -575,10 +575,10 @@ export const AIConsultant: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('compare')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'compare'
-                ? 'bg-botanical-800 text-white shadow-md'
-                : 'text-warmgray-600 hover:text-botanical-950 hover:bg-cream-50'
+                ? 'bg-botanical-950 text-white shadow-md border border-botanical-900'
+                : 'text-warmgray-900 hover:text-botanical-950 hover:bg-white bg-cream-50/50'
             }`}
           >
             <Scale className="w-4 h-4" />
@@ -587,10 +587,10 @@ export const AIConsultant: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('scanner')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'scanner'
-                ? 'bg-botanical-800 text-white shadow-md'
-                : 'text-warmgray-600 hover:text-botanical-950 hover:bg-cream-50'
+                ? 'bg-botanical-950 text-white shadow-md border border-botanical-900'
+                : 'text-warmgray-900 hover:text-botanical-950 hover:bg-white bg-cream-50/50'
             }`}
           >
             <Camera className="w-4 h-4" />
@@ -634,7 +634,7 @@ export const AIConsultant: React.FC = () => {
                     <span className="text-2xl shrink-0">{opt.icon}</span>
                     <div className="space-y-0.5">
                       <div className="text-xs sm:text-sm font-bold text-botanical-950">{opt.label[language]}</div>
-                      <div className="text-[11px] text-warmgray-500 leading-snug">{opt.desc[language]}</div>
+                      <div className="text-[11px] text-warmgray-700 leading-snug">{opt.desc[language]}</div>
                     </div>
                   </button>
                 ))}

@@ -102,17 +102,17 @@ export const Products: React.FC = () => {
                 key={category}
                 type="button"
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                   isSelected
-                    ? 'bg-primary-900 text-white shadow-sm'
-                    : 'bg-white text-sand-800 border border-sand-300 hover:border-accent-600'
+                    ? 'bg-primary-950 text-white shadow-md border-2 border-primary-950'
+                    : 'bg-white text-primary-950 border-2 border-sand-300 hover:border-primary-900 hover:bg-sand-100 shadow-xs'
                 }`}
               >
                 <span>{category}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                   isSelected
-                    ? 'bg-white/20 text-white'
-                    : 'bg-sand-100 text-sand-700'
+                    ? 'bg-white/25 text-white'
+                    : 'bg-sand-200 text-primary-950'
                 }`}>
                   {count}
                 </span>
