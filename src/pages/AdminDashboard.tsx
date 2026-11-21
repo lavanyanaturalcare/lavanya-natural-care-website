@@ -1939,7 +1939,7 @@ export const AdminDashboard: React.FC = () => {
                   AI Botanical Consultant &amp; Transcripts
                 </h3>
                 <p>
-                  The ONZNATURAL AI Consultant runs on Google Gemini 2.5 Flash through a secure Supabase Edge Function (<code className="font-mono bg-sand-100 px-1">gemini-consultant</code>). It is strictly grounded on your 16 verified botanicals.
+                  The ONZNATURAL AI Consultant runs on Google Gemini 3 Flash with strict grounding on your 17 verified botanical products, supporting real-time streaming, multilingual consultations, and an intelligent Ayurvedic offline engine.
                 </p>
                 <div className="p-4 rounded-2xl bg-sand-50 border border-sand-200 space-y-2">
                   <p className="font-bold text-primary-950">Key Safety &amp; Grounding Safeguards:</p>

@@ -115,7 +115,7 @@ export const AIAssistantWidget: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-serif text-base font-bold leading-tight">ONZNATURAL Botanical AI</h4>
-                <span className="text-[10px] text-sand-300">Gemini 2.5 Flash • Handcrafted Botanical Consultant</span>
+                <span className="text-[10px] text-sand-300">Gemini 3 Flash • Handcrafted Botanical Consultant</span>
               </div>
             </div>
 

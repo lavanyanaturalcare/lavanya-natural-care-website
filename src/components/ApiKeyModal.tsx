@@ -146,7 +146,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose, onKey
 
         <div className="mt-6 pt-4 border-t border-cream-100 flex items-center justify-between text-[11px] text-warmgray-500">
           <span>🔒 Stored only in your local browser</span>
-          <span className="font-semibold text-botanical-800">Model: Gemini 2.5 Flash</span>
+          <span className="font-semibold text-botanical-800">Model: Gemini 3 Flash</span>
         </div>
       </div>
     </div>
