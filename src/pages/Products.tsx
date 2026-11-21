@@ -98,7 +98,7 @@ export const Products: React.FC = () => {
           <span className="text-sand-400 hidden sm:inline">•</span>
           <div className="flex items-center gap-1.5">
             <Truck className="w-3.5 h-3.5 text-primary-900 shrink-0" />
-            <span><strong>FREE Delivery</strong> over ₹499</span>
+            <span><strong>Fast Courier Dispatch</strong> across India</span>
           </div>
         </div>
 

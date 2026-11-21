@@ -60,9 +60,8 @@ export const ShippingDelivery: React.FC = () => {
         <section className="space-y-3">
           <h2 className="font-serif text-2xl font-bold text-botanical-950">2. Delivery Charges</h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-            <li><strong>Vadodara City:</strong> Free delivery on orders above ₹499. Flat ₹40 for smaller orders.</li>
-            <li><strong>Rest of Gujarat:</strong> Flat ₹50 shipping. Free delivery on orders above ₹699.</li>
-            <li><strong>All Other Indian States:</strong> Flat ₹70 shipping. Free delivery on orders above ₹999.</li>
+            <li><strong>Vadodara City:</strong> Flat ₹40 local courier / direct delivery.</li>
+            <li><strong>Rest of Gujarat &amp; All Indian States:</strong> Flat ₹50 express courier shipping.</li>
           </ul>
         </section>
 

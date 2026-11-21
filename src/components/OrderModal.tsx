@@ -96,13 +96,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
   const discountAmount = Math.round(itemsSubtotal * effectiveDiscountRate);
   const discountedSubtotal = itemsSubtotal - discountAmount;
 
-  // Shipping calculation (Free over ₹499 or FREESHIP coupon)
-  const freeShippingThreshold = 499;
+  // Shipping calculation (Flat courier fee)
   const standardShippingFee = 50;
-  const isFreeShipping = discountedSubtotal >= freeShippingThreshold || appliedCoupon === 'FREESHIP';
-  const shippingFee = isFreeShipping ? 0 : standardShippingFee;
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - discountedSubtotal);
-  const freeShippingProgress = Math.min(100, Math.round((discountedSubtotal / freeShippingThreshold) * 100));
+  const shippingFee = standardShippingFee;
 
   const finalTotal = discountedSubtotal + shippingFee;
   const totalSavings = Math.max(0, originalFullMrp - finalTotal);
@@ -125,9 +121,6 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
         setAppliedCoupon('TRIO15');
         setCouponError(null);
       }
-    } else if (clean === 'FREESHIP') {
-      setAppliedCoupon('FREESHIP');
-      setCouponError(null);
     } else {
       setCouponError('Invalid coupon code. Try WELCOME10 for 10% off your order.');
     }
@@ -150,7 +143,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
     if (discountAmount > 0) {
       msg += `• Applied Discount: -₹${discountAmount} (${appliedCoupon ? `Code ${appliedCoupon}` : `${Math.round(effectiveDiscountRate * 100)}% Volume Save`})\n`;
     }
-    msg += `• Delivery: ${isFreeShipping ? 'FREE Delivery' : `Standard Delivery (₹${shippingFee})`}\n`;
+    msg += `• Delivery: Standard Courier (₹${shippingFee})\n`;
     msg += `• *TOTAL PAYABLE: ₹${finalTotal}* (Saved ₹${totalSavings})\n`;
     msg += `• Payment Method: ${selectedMethod.toUpperCase()}\n`;
     if (customerName) msg += `• Customer Name: ${customerName}\n`;
@@ -209,34 +202,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
           </button>
         </div>
 
-        {/* Free Shipping Progress Bar */}
-        <div className="p-3.5 rounded-2xl bg-sand-50 border border-sand-200 space-y-1.5">
-          <div className="flex items-center justify-between text-xs font-semibold">
-            <span className="flex items-center gap-1.5 text-primary-950">
-              <Truck className="w-3.5 h-3.5 text-accent-700" />
-              {isFreeShipping ? (
-                <span className="text-emerald-800 font-bold">🎉 Congratulations! You have unlocked FREE Express Delivery!</span>
-              ) : (
-                <span>
-                  Add <strong className="text-primary-900 font-bold">₹{remainingForFreeShipping}</strong> more to unlock <strong>FREE Delivery</strong>
-                </span>
-              )}
-            </span>
-            <span className="text-[11px] text-sand-600 font-mono font-bold">{freeShippingProgress}%</span>
+        {/* Express Dispatch & Courier Banner */}
+        <div className="p-3 rounded-2xl bg-sand-50 border border-sand-200 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-primary-950 font-semibold">
+            <Truck className="w-4 h-4 text-primary-900" />
+            <span>Express Courier Delivery Across India</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-sand-200 overflow-hidden">
-            <div
-              className={`h-full transition-all duration-300 rounded-full ${
-                isFreeShipping ? 'bg-emerald-600' : 'bg-accent-600'
-              }`}
-              style={{ width: `${freeShippingProgress}%` }}
-            />
-          </div>
-          {!isFreeShipping && (
-            <p className="text-[10px] text-sand-500">
-              Orders below ₹{freeShippingThreshold} have a flat pan-India courier fee of ₹{standardShippingFee}.
-            </p>
-          )}
+          <span className="text-[11px] text-sand-600 bg-sand-100 px-2.5 py-0.5 rounded-lg border border-sand-300 font-medium">
+            Dispatched in 24–48 hrs
+          </span>
         </div>
 
         {/* Selected Product Summary */}
@@ -397,7 +371,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
               <span className="flex items-center gap-1.5">
                 <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
                 <span>
-                  Code <strong>{appliedCoupon}</strong> applied ({appliedCoupon === 'FREESHIP' ? 'Free Shipping' : `${Math.round(effectiveDiscountRate * 100)}% OFF`})
+                  Code <strong>{appliedCoupon}</strong> applied ({Math.round(effectiveDiscountRate * 100)}% OFF)
                 </span>
               </span>
               <button
@@ -436,14 +410,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
             </div>
           )}
           <div className="flex justify-between">
-            <span>Shipping &amp; Courier Handling</span>
-            <span>
-              {isFreeShipping ? (
-                <span className="text-emerald-700 font-bold uppercase tracking-wider text-[11px]">FREE</span>
-              ) : (
-                <span className="font-medium text-primary-950">₹{standardShippingFee}</span>
-              )}
-            </span>
+            <span>Standard Courier Delivery</span>
+            <span className="font-medium text-primary-950">₹{standardShippingFee}</span>
           </div>
           <div className="pt-2 border-t border-sand-200 flex items-baseline justify-between text-primary-950">
             <div>
