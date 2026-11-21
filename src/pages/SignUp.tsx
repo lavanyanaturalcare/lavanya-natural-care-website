@@ -5,6 +5,7 @@ import { registerCustomer, recordConsent } from '../services/crmService';
 import { PreferredLanguage } from '../types/crm';
 import { SEO } from '../components/SEO';
 import { ArrowRight, Lock, Mail, User, Phone, Globe, AlertCircle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { sanitizeInput, validateEmail, validatePhone, validatePassword, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
 
 export const SignUp: React.FC = () => {
   const [fullName, setFullName] = useState('');
@@ -13,9 +14,10 @@ export const SignUp: React.FC = () => {
   const [preferredLanguage, setPreferredLanguage] = useState<PreferredLanguage>('en');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [consentStorage, setConsentStorage] = useState(true);
+  const [consentStorage, setConsentStorage] = useState(false); // DPDP Act: Unchecked by default
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -25,18 +27,51 @@ export const SignUp: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!fullName.trim() || !email.trim() || !password) {
+    // 1. Honeypot check
+    if (isBotDetected(honeypot)) {
+      setErrorMessage('Invalid submission request.');
+      return;
+    }
+
+    // 2. Rate limit registration attempts (max 4 per 5 minutes)
+    const rl = checkRateLimit('customer_signup', 4, 300000, 300000);
+    if (!rl.allowed) {
+      setErrorMessage(`Registration rate limit reached. Please wait ${rl.remainingSeconds} seconds.`);
+      return;
+    }
+
+    const cleanName = sanitizeInput(fullName);
+    const cleanEmail = sanitizeInput(email).toLowerCase();
+    const cleanPhone = sanitizeInput(phone);
+
+    if (!cleanName || !cleanEmail || !password) {
       setErrorMessage('Please provide your name, email, and a secure password.');
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long.');
+    if (!validateEmail(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if (cleanPhone && !validatePhone(cleanPhone)) {
+      setErrorMessage('Please enter a valid contact phone number.');
+      return;
+    }
+
+    const pwCheck = validatePassword(password);
+    if (!pwCheck.isValid) {
+      setErrorMessage(pwCheck.message || 'Password must be at least 8 characters with letters and numbers.');
       return;
     }
 
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match. Please re-enter.');
+      return;
+    }
+
+    if (!consentStorage) {
+      setErrorMessage('Please accept the privacy consent to create your account per the DPDP Act.');
       return;
     }
 
@@ -52,36 +87,38 @@ export const SignUp: React.FC = () => {
 
       // 1. Sign up auth user in Supabase
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: cleanEmail,
         password,
         options: {
           data: {
-            full_name: fullName.trim(),
-            phone: phone.trim() || null,
+            full_name: cleanName,
+            phone: cleanPhone || null,
             preferred_language: preferredLanguage
           }
         }
       });
 
       if (authError) {
+        recordFailedAttempt('customer_signup', 4, 300000, 300000);
         const msg = authError.message.toLowerCase();
         if (msg.includes('already registered') || msg.includes('user already exists')) {
           setErrorMessage('An account with this email address already exists. Please sign in instead.');
           setLoading(false);
           return;
         }
-        // If email rate limit or confirmation notice, log notice and continue with customer profile
-        console.warn('Supabase Auth notice during signup (proceeding with local session):', authError.message);
+        console.warn('Supabase Auth notice during signup:', authError.message);
       } else if (authData?.user) {
         authUserId = authData.user.id;
       }
 
+      resetRateLimit('customer_signup');
+
       // 2. Register profile in customers table & local session
       const registered = await registerCustomer({
-        name: fullName.trim(),
-        full_name: fullName.trim(),
-        email: email.trim(),
-        phone: phone.trim() || null,
+        name: cleanName,
+        full_name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone || null,
         preferred_language: preferredLanguage,
         status: 'active',
         auth_user_id: authUserId
@@ -96,6 +133,7 @@ export const SignUp: React.FC = () => {
 
       navigate('/account');
     } catch (err: any) {
+      recordFailedAttempt('customer_signup', 4, 300000, 300000);
       setErrorMessage(err.message || 'An unexpected error occurred during account creation.');
     } finally {
       setLoading(false);
@@ -134,6 +172,18 @@ export const SignUp: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot field for bot suppression */}
+            <div style={{ display: 'none', position: 'absolute', left: '-9999px' }} aria-hidden="true">
+              <input
+                type="text"
+                name="_bot_honey"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider text-sand-800 mb-1.5">
                 Full Name

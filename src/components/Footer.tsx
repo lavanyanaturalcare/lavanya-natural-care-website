@@ -139,10 +139,26 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/cookie-policy" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Cookie Policy</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/terms" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
                   <span>Terms &amp; Conditions</span>
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))}
+                  className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5 text-xs text-sand-300 hover:underline cursor-pointer"
+                >
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
+                  <span>Cookie Preferences</span>
+                </button>
               </li>
             </ul>
           </div>

@@ -4,10 +4,12 @@ import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
 import { getLocalCustomers } from '../services/crmService';
 import { SEO } from '../components/SEO';
 import { ArrowRight, Lock, Mail, AlertCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { sanitizeInput, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
 
 export const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -19,31 +21,47 @@ export const SignIn: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-    setLoading(true);
 
-    if (!email.trim() || !password.trim()) {
+    // 1. Honeypot check
+    if (isBotDetected(honeypot)) {
+      setErrorMessage('Invalid submission request.');
+      return;
+    }
+
+    // 2. Anti-Brute Force Rate Limiting
+    const rl = checkRateLimit('customer_login', 5, 60000, 60000);
+    if (!rl.allowed) {
+      setErrorMessage(`Too many sign in attempts. For your account security, please wait ${rl.remainingSeconds} seconds.`);
+      return;
+    }
+
+    const cleanEmail = sanitizeInput(email).toLowerCase();
+
+    if (!cleanEmail || !password.trim()) {
       setErrorMessage('Please enter both your email and password.');
-      setLoading(false);
       return;
     }
 
     if (!isSupabaseConfigured() || !supabase) {
       setErrorMessage('Authentication service is currently offline. Please try again later.');
-      setLoading(false);
       return;
     }
 
+    setLoading(true);
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: cleanEmail,
         password
       });
 
       if (error) {
+        recordFailedAttempt('customer_login', 5, 60000, 60000);
         if (error.message.toLowerCase().includes('confirm') || error.message.toLowerCase().includes('rate')) {
           const localList = getLocalCustomers();
-          const match = localList.find(c => c.email.toLowerCase() === email.trim().toLowerCase());
+          const match = localList.find(c => c.email.toLowerCase() === cleanEmail);
           if (match) {
+            resetRateLimit('customer_login');
             localStorage.setItem('onznatural_customer_session', JSON.stringify(match));
             navigate(from, { replace: true });
             return;
@@ -51,6 +69,7 @@ export const SignIn: React.FC = () => {
         }
         setErrorMessage(error.message || 'Invalid email or password.');
       } else if (data.user) {
+        resetRateLimit('customer_login');
         // Set local session for reliability
         const sessionPayload = {
           auth_user_id: data.user.id,
@@ -64,6 +83,7 @@ export const SignIn: React.FC = () => {
         navigate(from, { replace: true });
       }
     } catch (err: any) {
+      recordFailedAttempt('customer_login', 5, 60000, 60000);
       setErrorMessage(err.message || 'Sign in encountered an unexpected issue.');
     } finally {
       setLoading(false);
@@ -102,6 +122,18 @@ export const SignIn: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Honeypot field for bot suppression */}
+            <div style={{ display: 'none', position: 'absolute', left: '-9999px' }} aria-hidden="true">
+              <input
+                type="text"
+                name="_bot_honey"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider text-sand-800 mb-2">
                 Email Address
