@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot, Star, ChevronDown, ChevronUp, ShieldCheck, MapPin } from 'lucide-react';
+import { 
+  ArrowRight, Leaf, Shield, Award, Sparkles, CheckCircle2, Phone, Bot, 
+  Star, ChevronDown, ChevronUp, ShieldCheck, MapPin, Gift, Tag, Percent, 
+  RefreshCw, ShoppingBag, Clock, Truck 
+} from 'lucide-react';
 import { useProductCatalog } from '../context/ProductContext';
 import { ingredientsData } from '../data/ingredients';
 import { processSteps } from '../data/process';
@@ -291,7 +295,7 @@ export const Home: React.FC = () => {
             to="/products"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-primary-900 text-primary-950 font-semibold text-sm hover:bg-primary-900 hover:text-white transition-colors"
           >
-            <span>View All 16 Products</span>
+            <span>View All 17 Artisanal Products</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -300,6 +304,175 @@ export const Home: React.FC = () => {
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+      </section>
+
+      {/* Curated Artisanal Combos & Value Bundles */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-sand-50/70 rounded-3xl p-6 sm:p-10 border border-sand-200 space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200 mb-2">
+                <Gift className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Value Packs &amp; Genuine Bundle Discounts</span>
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-primary-950">
+                Curated Botanical Combos
+              </h2>
+              <p className="text-sand-700 text-sm mt-1 max-w-xl">
+                Experience full routines crafted with synergistic plant extracts. Save up to 15% compared to purchasing individual products.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200 shrink-0">
+              <Truck className="w-4 h-4 text-emerald-700" />
+              <span>FREE India Delivery on orders ₹499+</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Combo 1: The Ayurvedic Purity Trio */}
+            <div className="bg-white rounded-2xl p-6 border border-sand-200 shadow-xs flex flex-col justify-between space-y-5 relative">
+              <span className="absolute top-4 right-4 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-200">
+                Save 15%
+              </span>
+              <div className="space-y-4">
+                <div className="w-full h-44 rounded-xl overflow-hidden bg-sand-50 p-3 border border-sand-200 flex items-center justify-center">
+                  <img
+                    src="/images/products/neem-tulsi-soap.webp"
+                    alt="The Ayurvedic Purity Trio"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl font-bold text-primary-950">The Ayurvedic Purity Trio</h3>
+                  <p className="text-xs text-sand-600 font-medium mt-0.5">3 Handcrafted Cold-Process Soaps (300g total)</p>
+                  <p className="text-xs text-sand-700 mt-2 leading-relaxed">
+                    Neem &amp; Tulsi (purifying) + Kesuda Palash (soothing) + Ubtan Radiance (exfoliating). Cured 4–6 weeks with 100% natural glycerin.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-sand-100 space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <span className="text-[10px] text-sand-500 uppercase tracking-wider block">Combo Price</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-serif text-2xl font-bold text-primary-950">₹252</span>
+                      <span className="text-xs line-through text-sand-400">₹297</span>
+                      <span className="text-[10px] font-bold text-emerald-700">Save ₹45 (15% OFF)</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono bg-sand-100 px-2 py-0.5 rounded border border-sand-200 text-primary-900 font-bold">
+                    Code: TRIO15
+                  </span>
+                </div>
+                <a
+                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Ayurvedic Purity Trio (Neem Tulsi + Kesuda + Ubtan) for ₹252 with code TRIO15. Please confirm delivery.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>Order Trio on WhatsApp (₹252)</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Combo 2: Summer Heat Relief Ritual */}
+            <div className="bg-white rounded-2xl p-6 border-2 border-primary-900 shadow-md flex flex-col justify-between space-y-5 relative">
+              <span className="absolute top-4 right-4 bg-primary-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                Free Delivery Included
+              </span>
+              <div className="space-y-4">
+                <div className="w-full h-44 rounded-xl overflow-hidden bg-sand-50 p-3 border border-sand-200 flex items-center justify-center">
+                  <img
+                    src="/images/products/kesuda-palash-soap.webp"
+                    alt="Summer Heat Relief Ritual"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200 mb-1">
+                    Summer Seasonal Care (Apr–Jun 2026)
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-primary-950">Summer Heat Relief Ritual</h3>
+                  <p className="text-xs text-sand-600 font-medium mt-0.5">Soap + Body Wash + Hydrating Lotion</p>
+                  <p className="text-xs text-sand-700 mt-2 leading-relaxed">
+                    Full Kesuda (Flame of the Forest) body care ritual to calm prickly heat, reduce sun redness, and restore skin barrier hydration.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-sand-100 space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <span className="text-[10px] text-sand-500 uppercase tracking-wider block">Combo Price</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-serif text-2xl font-bold text-primary-950">₹849</span>
+                      <span className="text-xs line-through text-sand-400">₹947</span>
+                      <span className="text-[10px] font-bold text-emerald-700">Save ₹98 + Free Delivery</span>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Summer Heat Relief Ritual (Kesuda Soap + Wash + Lotion) for ₹849 with FREE delivery. Please confirm.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>Order Summer Ritual (₹849)</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Combo 3: Daily Barrier & Glow Duo */}
+            <div className="bg-white rounded-2xl p-6 border border-sand-200 shadow-xs flex flex-col justify-between space-y-5 relative">
+              <span className="absolute top-4 right-4 bg-accent-100 text-accent-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-accent-200">
+                Save ₹38
+              </span>
+              <div className="space-y-4">
+                <div className="w-full h-44 rounded-xl overflow-hidden bg-sand-50 p-3 border border-sand-200 flex items-center justify-center">
+                  <img
+                    src="/images/products/charcoal-rice-soap.webp"
+                    alt="Daily Barrier and Glow Duo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl font-bold text-primary-950">Daily Barrier &amp; Glow Duo</h3>
+                  <p className="text-xs text-sand-600 font-medium mt-0.5">Charcoal Rice Soap + Rice Aloe Face Cream</p>
+                  <p className="text-xs text-sand-700 mt-2 leading-relaxed">
+                    Cleanses impurities and excess sebum without stripping, followed by deep barrier nourishment with pure organic aloe vera and rice extracts.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-sand-100 space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <span className="text-[10px] text-sand-500 uppercase tracking-wider block">Duo Price</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-serif text-2xl font-bold text-primary-950">₹310</span>
+                      <span className="text-xs line-through text-sand-400">₹348</span>
+                      <span className="text-[10px] font-bold text-emerald-700">Save ₹38 (11% OFF)</span>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Daily Barrier & Glow Duo (Charcoal Rice Soap + Rice Aloe Face Cream) for ₹310. Please share delivery timeline.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>Order Duo on WhatsApp (₹310)</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -692,23 +865,29 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* VIP Club / WhatsApp Offer Signup */}
+      {/* VIP Club / WhatsApp Offer & Retention Circle */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-primary-950 text-sand-50 rounded-3xl p-8 sm:p-10 border border-primary-900 text-center space-y-4">
-          <span className="text-xs uppercase tracking-widest text-accent-400 font-bold bg-primary-900/80 px-3.5 py-1.5 rounded-full border border-accent-500/30 inline-block">
-            Join the Botanical Circle
-          </span>
+        <div className="bg-primary-950 text-sand-50 rounded-3xl p-8 sm:p-10 border border-primary-900 text-center space-y-5">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="text-xs uppercase tracking-widest text-accent-400 font-bold bg-primary-900/80 px-3.5 py-1.5 rounded-full border border-accent-500/30 inline-block">
+              Join the Botanical Circle
+            </span>
+            <span className="text-xs text-emerald-400 font-bold bg-emerald-950/60 px-3 py-1.5 rounded-full border border-emerald-500/30">
+              🎁 50 Welcome Points
+            </span>
+          </div>
+
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white">
             Get 10% Off Your First Order
           </h2>
           <p className="text-xs sm:text-sm text-sand-300 max-w-lg mx-auto leading-relaxed">
-            Sign up with your WhatsApp number or email to receive seasonal soap release notifications, Ayurvedic skincare tips, and a 10% discount on your first order.
+            Join thousands of natural skincare lovers across India. Receive promo code <strong className="text-accent-300 font-mono">WELCOME10</strong>, seasonal batch alerts, and 30-day restock reminders so you never run out of cured soap.
           </p>
 
           <form onSubmit={handleVipSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-2 pt-2">
             <input
               type="text"
-              placeholder="Enter your WhatsApp number or email"
+              placeholder="Enter WhatsApp number or email"
               value={vipContact}
               onChange={(e) => {
                 setVipContact(e.target.value);
@@ -736,6 +915,22 @@ export const Home: React.FC = () => {
               ✓ Opening WhatsApp to confirm your 10% welcome coupon!
             </p>
           )}
+
+          {/* Retention & Loyalty Highlights */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-primary-900/60 text-xs text-sand-300">
+            <div className="flex items-center justify-center gap-2">
+              <Sparkles className="w-4 h-4 text-accent-400 shrink-0" />
+              <span>Earn 50 Points on Every Order</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <RefreshCw className="w-4 h-4 text-accent-400 shrink-0" />
+              <span>30-Day WhatsApp Restock Alert</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Gift className="w-4 h-4 text-accent-400 shrink-0" />
+              <span>Refer a Friend: Both Get ₹50</span>
+            </div>
+          </div>
         </div>
       </section>
 

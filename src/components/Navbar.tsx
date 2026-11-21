@@ -60,6 +60,21 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-sand-50/95 backdrop-blur-md border-b border-sand-200 shadow-sm transition-all duration-200 w-full overflow-x-clip">
       
+      {/* Promotional & Welcome Offer Bar */}
+      <div className="bg-gradient-to-r from-botanical-950 via-botanical-900 to-botanical-950 text-cream-50 text-[11px] py-1.5 px-3 border-b border-gold-500/20 text-center font-medium">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1 text-gold-300 font-bold">
+            <Sparkles className="w-3 h-3 text-gold-400" />
+            <span>Welcome Offer:</span>
+          </span>
+          <span>Get <strong>10% OFF</strong> on your first order with code <code className="bg-gold-500/20 text-gold-200 px-1.5 py-0.5 rounded border border-gold-400/30 font-mono font-bold tracking-wider">WELCOME10</code></span>
+          <span className="text-gold-400/50 hidden sm:inline">•</span>
+          <span className="text-cream-200 hidden sm:inline">📦 <strong>FREE Delivery</strong> on orders over ₹499</span>
+          <span className="text-gold-400/50 hidden md:inline">•</span>
+          <span className="text-cream-200 hidden md:inline">🌱 100% Handcrafted in Vadodara</span>
+        </div>
+      </div>
+
       {/* Top Utility Bar */}
       <div className="bg-primary-950 text-sand-100 text-xs py-2 px-4 border-b border-accent-600/20">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
