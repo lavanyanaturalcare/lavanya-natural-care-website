@@ -325,7 +325,7 @@ export const Home: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200 shrink-0">
               <Truck className="w-4 h-4 text-emerald-700" />
-              <span>FREE India Delivery on orders ₹499+</span>
+              <span>Express Courier Delivery Across India</span>
             </div>
           </div>
 
@@ -382,7 +382,7 @@ export const Home: React.FC = () => {
             {/* Combo 2: Summer Heat Relief Ritual */}
             <div className="bg-white rounded-2xl p-6 border-2 border-primary-900 shadow-md flex flex-col justify-between space-y-5 relative">
               <span className="absolute top-4 right-4 bg-primary-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Free Delivery Included
+                Best Value Set
               </span>
               <div className="space-y-4">
                 <div className="w-full h-44 rounded-xl overflow-hidden bg-sand-50 p-3 border border-sand-200 flex items-center justify-center">
@@ -411,12 +411,12 @@ export const Home: React.FC = () => {
                     <div className="flex items-baseline gap-2">
                       <span className="font-serif text-2xl font-bold text-primary-950">₹849</span>
                       <span className="text-xs line-through text-sand-400">₹947</span>
-                      <span className="text-[10px] font-bold text-emerald-700">Save ₹98 + Free Delivery</span>
+                      <span className="text-[10px] font-bold text-emerald-700">Save ₹98 (10% OFF)</span>
                     </div>
                   </div>
                 </div>
                 <a
-                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Summer Heat Relief Ritual (Kesuda Soap + Wash + Lotion) for ₹849 with FREE delivery. Please confirm.')}`}
+                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Summer Heat Relief Ritual (Kesuda Soap + Wash + Lotion) for ₹849. Please confirm delivery.')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center"

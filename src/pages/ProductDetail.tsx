@@ -276,7 +276,7 @@ export const ProductDetail: React.FC = () => {
                   </span>
                 )}
               </div>
-              <span className="text-sand-600 text-[11px]">📦 <strong>FREE Delivery</strong> over ₹499</span>
+              <span className="text-sand-600 text-[11px]">🚚 <strong>Fast Express Courier</strong> across India</span>
             </div>
           </div>
 

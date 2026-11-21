@@ -69,7 +69,7 @@ export const Navbar: React.FC = () => {
           </span>
           <span>Get <strong>10% OFF</strong> on your first order with code <code className="bg-gold-500/20 text-gold-200 px-1.5 py-0.5 rounded border border-gold-400/30 font-mono font-bold tracking-wider">WELCOME10</code></span>
           <span className="text-gold-400/50 hidden sm:inline">•</span>
-          <span className="text-cream-200 hidden sm:inline">📦 <strong>FREE Delivery</strong> on orders over ₹499</span>
+          <span className="text-cream-200 hidden sm:inline">🚚 Express Pan-India Courier Delivery</span>
           <span className="text-gold-400/50 hidden md:inline">•</span>
           <span className="text-cream-200 hidden md:inline">🌱 100% Handcrafted in Vadodara</span>
         </div>
