@@ -1074,35 +1074,114 @@ export const getAdminAuditLogs = async (): Promise<AdminAuditLog[]> => {
 };
 
 // -------------------------------------------------------------
-// 11. Central Product Catalogue Persistence
+// 11. Central Product Catalogue Persistence & Real-Time Sync
 // -------------------------------------------------------------
+const LOCAL_PRODUCTS_KEY = 'onznatural_cached_products';
+
+export const getLocalCachedProducts = (): ProductRecord[] => {
+  try {
+    const raw = localStorage.getItem(LOCAL_PRODUCTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+export const saveLocalCachedProducts = (products: ProductRecord[]): void => {
+  try {
+    localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(products));
+  } catch (e) {}
+};
+
+export function dbRowToProductRecord(row: any): ProductRecord {
+  const name = row.name || row.product_name || row.id;
+  const mrp = Number(row.mrp !== undefined && row.mrp !== null ? row.mrp : (row.price || 99));
+  const discountPrice = row.discount_price !== undefined && row.discount_price !== null && Number(row.discount_price) > 0
+    ? Number(row.discount_price)
+    : undefined;
+  const effectivePrice = discountPrice && discountPrice < mrp ? discountPrice : mrp;
+  const stock = row.stock_quantity !== undefined && row.stock_quantity !== null
+    ? Number(row.stock_quantity)
+    : 50;
+  const weight = row.net_weight_or_vol || row.weight_or_volume || '100 gm';
+  const img = row.image || row.image_url || '/images/products/kesuda-palash-soap.webp';
+  const desc = row.full_description || row.description || '';
+  const shortDesc = row.short_description || '';
+  const benefits = Array.isArray(row.benefits) ? row.benefits : [];
+  const threeBenefits = Array.isArray(row.three_main_benefits) && row.three_main_benefits.length >= 3
+    ? row.three_main_benefits
+    : (benefits.length >= 3 ? benefits.slice(0, 3) : ['Handcrafted in small batches', 'Pure cold process botanical formula', 'Retains natural vegetable glycerin']);
+
+  return {
+    id: row.id,
+    name,
+    product_name: name,
+    slug: row.slug || row.id,
+    category: row.category || 'Handmade Cold Process Soap',
+    short_description: shortDesc,
+    description: desc,
+    full_description: desc,
+    ingredients: row.ingredients || '',
+    benefits,
+    three_main_benefits: threeBenefits,
+    usage_instructions: row.usage_instructions || row.how_to_use || '',
+    price: effectivePrice,
+    mrp,
+    discount_price: discountPrice,
+    stock_quantity: stock,
+    weight_or_volume: weight,
+    net_weight_or_vol: weight,
+    image_url: img,
+    image: img,
+    additional_images: Array.isArray(row.additional_images) && row.additional_images.length > 0 ? row.additional_images : [img],
+    availability_status: (row.availability_status as any) || (stock > 0 ? 'in_stock' : 'out_of_stock'),
+    is_featured: row.is_featured !== undefined ? Boolean(row.is_featured) : true,
+    created_at: row.created_at,
+    updated_at: row.updated_at
+  };
+}
+
 export const getProductsFromDb = async (): Promise<ProductRecord[]> => {
   if (isSupabaseConfigured() && supabase) {
     try {
-      const { data, error } = await supabase.from('products').select('*').order('product_name');
+      const { data, error } = await supabase.from('products').select('*').order('name');
       if (!error && data && data.length > 0) {
-        return data as ProductRecord[];
+        const records = data.map(dbRowToProductRecord);
+        saveLocalCachedProducts(records);
+        return records;
       }
     } catch (e) {
       console.warn('Database catalogue query warning:', e);
     }
   }
 
+  // Check local cache
+  const cached = getLocalCachedProducts();
+  if (cached && cached.length > 0) {
+    return cached;
+  }
+
   // Authoritative verified catalogue fallback
   return VERIFIED_PRODUCTS.map(p => ({
     id: p.id,
+    name: p.name,
     product_name: p.name,
     slug: p.id,
     category: p.category,
     short_description: p.shortDescription || p.benefits[0] || '',
     description: p.fullDescription,
+    full_description: p.fullDescription,
     ingredients: p.ingredients,
     benefits: p.benefits,
     three_main_benefits: p.threeMainBenefits || p.benefits.slice(0, 3),
     usage_instructions: p.howToUse,
     price: p.mrp,
+    mrp: p.mrp,
+    stock_quantity: 50,
     weight_or_volume: p.netWeightOrVol,
+    net_weight_or_vol: p.netWeightOrVol,
     image_url: p.image,
+    image: p.image,
     additional_images: [p.image],
     availability_status: 'in_stock',
     is_featured: true
@@ -1113,13 +1192,114 @@ export const updateProductInDb = async (
   productId: string,
   updates: Partial<ProductRecord>
 ): Promise<void> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { error } = await supabase.from('products').update(updates).eq('id', productId);
-    if (error) {
-      throw new Error(`Failed to update product in database: ${error.message}`);
-    }
-    await logAdminAction('UPDATE_PRODUCT', 'products', productId, updates);
+  const dbPayload: Record<string, any> = {
+    updated_at: new Date().toISOString()
+  };
+
+  if (updates.name !== undefined || updates.product_name !== undefined) {
+    dbPayload.name = updates.name || updates.product_name;
   }
+  if (updates.mrp !== undefined || updates.price !== undefined) {
+    dbPayload.mrp = Number(updates.mrp !== undefined ? updates.mrp : updates.price);
+  }
+  if (updates.discount_price !== undefined) {
+    dbPayload.discount_price = updates.discount_price ? Number(updates.discount_price) : null;
+  }
+  if (updates.stock_quantity !== undefined) {
+    dbPayload.stock_quantity = Number(updates.stock_quantity);
+  }
+  if (updates.availability_status !== undefined) {
+    dbPayload.availability_status = updates.availability_status;
+  }
+  if (updates.category !== undefined) {
+    dbPayload.category = updates.category;
+  }
+  if (updates.net_weight_or_vol !== undefined || updates.weight_or_volume !== undefined) {
+    dbPayload.net_weight_or_vol = updates.net_weight_or_vol || updates.weight_or_volume;
+  }
+  if (updates.short_description !== undefined) {
+    dbPayload.short_description = updates.short_description;
+  }
+  if (updates.full_description !== undefined || updates.description !== undefined) {
+    dbPayload.full_description = updates.full_description || updates.description;
+  }
+  if (updates.ingredients !== undefined) {
+    dbPayload.ingredients = updates.ingredients;
+  }
+  if (updates.benefits !== undefined) {
+    dbPayload.benefits = updates.benefits;
+  }
+  if (updates.image !== undefined || updates.image_url !== undefined) {
+    dbPayload.image = updates.image || updates.image_url;
+  }
+
+  if (isSupabaseConfigured() && supabase) {
+    const { error } = await supabase.from('products').update(dbPayload).eq('id', productId);
+    if (error) {
+      console.warn('Direct update failed, attempting upsert:', error.message);
+      const { error: upsertErr } = await supabase.from('products').upsert({ id: productId, ...dbPayload });
+      if (upsertErr) {
+        throw new Error(`Failed to update product in database: ${upsertErr.message}`);
+      }
+    }
+    await logAdminAction('UPDATE_PRODUCT', 'products', productId, dbPayload);
+  }
+
+  // Update local cache
+  const cached = getLocalCachedProducts();
+  const index = cached.findIndex(p => p.id === productId);
+  if (index >= 0) {
+    cached[index] = { ...cached[index], ...updates };
+    saveLocalCachedProducts(cached);
+  }
+};
+
+export const createProductInDb = async (
+  product: Partial<ProductRecord> & { id: string; name: string }
+): Promise<ProductRecord> => {
+  const newRecord = {
+    id: product.id,
+    name: product.name,
+    category: product.category || 'Handmade Cold Process Soap',
+    net_weight_or_vol: product.net_weight_or_vol || product.weight_or_volume || '100 gm',
+    mrp: Number(product.mrp || product.price || 99),
+    discount_price: product.discount_price ? Number(product.discount_price) : null,
+    stock_quantity: product.stock_quantity !== undefined ? Number(product.stock_quantity) : 50,
+    availability_status: product.availability_status || 'in_stock',
+    short_description: product.short_description || '',
+    full_description: product.full_description || product.description || '',
+    ingredients: product.ingredients || '',
+    benefits: product.benefits || ['Handcrafted botanical care'],
+    image: product.image || product.image_url || '/images/products/kesuda-palash-soap.webp',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+
+  if (isSupabaseConfigured() && supabase) {
+    const { error } = await supabase.from('products').insert(newRecord);
+    if (error) {
+      throw new Error(`Failed to create product in database: ${error.message}`);
+    }
+    await logAdminAction('CREATE_PRODUCT', 'products', product.id, newRecord);
+  }
+
+  const mapped = dbRowToProductRecord(newRecord);
+  const cached = getLocalCachedProducts();
+  saveLocalCachedProducts([mapped, ...cached]);
+  return mapped;
+};
+
+export const deleteProductFromDb = async (productId: string): Promise<void> => {
+  if (isSupabaseConfigured() && supabase) {
+    const { error } = await supabase.from('products').delete().eq('id', productId);
+    if (error) {
+      throw new Error(`Failed to delete product from database: ${error.message}`);
+    }
+    await logAdminAction('DELETE_PRODUCT', 'products', productId);
+  }
+
+  const cached = getLocalCachedProducts();
+  saveLocalCachedProducts(cached.filter(p => p.id !== productId));
 };
 
 // -------------------------------------------------------------

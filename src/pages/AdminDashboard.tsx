@@ -38,7 +38,10 @@ import {
   Calendar,
   Layers,
   ArrowUpRight,
-  Database
+  Database,
+  Plus,
+  SlidersHorizontal,
+  Edit2
 } from 'lucide-react';
 import { 
   Customer, 
@@ -67,6 +70,8 @@ import {
   saveRetentionSettings,
   getProductsFromDb,
   updateProductInDb,
+  createProductInDb,
+  deleteProductFromDb,
   logAdminAction,
   getAdminAuditLogs,
   getCustomerEvents,
@@ -91,7 +96,12 @@ export type AdminTab =
   | 'help';
 
 export const AdminDashboard: React.FC = () => {
-  const { updateProduct: updateContextProduct } = useProductCatalog();
+  const { 
+    updateProduct: updateContextProduct, 
+    createProduct: createContextProduct, 
+    deleteProduct: deleteContextProduct, 
+    refreshProducts: refreshContextProducts 
+  } = useProductCatalog();
 
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -147,10 +157,37 @@ export const AdminDashboard: React.FC = () => {
   const [products, setProducts] = useState<ProductRecord[]>([]);
   const [catalogueSearch, setCatalogueSearch] = useState('');
   const [catalogueCategoryFilter, setCatalogueCategoryFilter] = useState<string>('all');
+  const [catalogueStatusFilter, setCatalogueStatusFilter] = useState<string>('all');
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [editingPrice, setEditingPrice] = useState<number>(0);
+  const [editingDiscountPrice, setEditingDiscountPrice] = useState<number | undefined>(undefined);
+  const [editingStock, setEditingStock] = useState<number>(50);
   const [editingStatus, setEditingStatus] = useState<ProductRecord['availability_status']>('in_stock');
   const [isSavingProduct, setIsSavingProduct] = useState(false);
+  const [catalogueSuccessMsg, setCatalogueSuccessMsg] = useState<string | null>(null);
+
+  // Full Edit Modal State
+  const [fullEditProduct, setFullEditProduct] = useState<ProductRecord | null>(null);
+  const [isSavingFullProduct, setIsSavingFullProduct] = useState(false);
+
+  // Add New Product Modal State
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
+  const [newProductForm, setNewProductForm] = useState({
+    id: '',
+    name: '',
+    category: 'Handmade Cold Process Soap',
+    net_weight_or_vol: '100 gm / 3.52 oz',
+    mrp: 99,
+    discount_price: 89,
+    stock_quantity: 50,
+    availability_status: 'in_stock' as ProductRecord['availability_status'],
+    short_description: '',
+    full_description: '',
+    ingredients: '',
+    image: '/images/products/kesuda-palash-soap.webp',
+    benefits: ['Handcrafted with cold-process botanical oils', 'Preserves 100% natural vegetable glycerin']
+  });
 
   // Deletion Requests & Audit Logs
   const [deletionRequests, setDeletionRequests] = useState<DataDeletionRequest[]>([]);
@@ -437,25 +474,153 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveProductEdit = async (productId: string) => {
     setIsSavingProduct(true);
     try {
-      await updateProductInDb(productId, {
-        price: editingPrice,
+      const updates = {
+        mrp: editingPrice,
+        price: editingDiscountPrice && editingDiscountPrice < editingPrice ? editingDiscountPrice : editingPrice,
+        discount_price: editingDiscountPrice,
+        stock_quantity: editingStock,
         availability_status: editingStatus
-      });
+      };
+
+      await updateProductInDb(productId, updates);
 
       // Synchronize in-memory React product catalog across entire website
-      await updateContextProduct(productId, {
-        price: editingPrice,
-        availability_status: editingStatus
-      });
+      await updateContextProduct(productId, updates);
 
-      setProducts(prev => prev.map(p => p.id === productId ? { ...p, price: editingPrice, availability_status: editingStatus } : p));
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updates } : p));
       setEditingProductId(null);
-      await logAdminAction('UPDATE_PRODUCT_CATALOGUE', 'products', productId, {
-        price: editingPrice,
-        availability_status: editingStatus
-      });
+      setCatalogueSuccessMsg(`✓ Saved changes for ${productId} to Supabase & live website!`);
+      setTimeout(() => setCatalogueSuccessMsg(null), 4000);
     } catch (err: any) {
       alert(`Could not save product: ${err.message || 'Unknown database error'}`);
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
+
+  const handleSaveFullProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fullEditProduct) return;
+    setIsSavingFullProduct(true);
+    try {
+      const updates = {
+        name: fullEditProduct.name || fullEditProduct.product_name,
+        product_name: fullEditProduct.name || fullEditProduct.product_name,
+        category: fullEditProduct.category,
+        net_weight_or_vol: fullEditProduct.net_weight_or_vol || fullEditProduct.weight_or_volume,
+        weight_or_volume: fullEditProduct.net_weight_or_vol || fullEditProduct.weight_or_volume,
+        mrp: Number(fullEditProduct.mrp || fullEditProduct.price || 99),
+        price: fullEditProduct.discount_price && fullEditProduct.discount_price < (fullEditProduct.mrp || fullEditProduct.price) ? Number(fullEditProduct.discount_price) : Number(fullEditProduct.mrp || fullEditProduct.price || 99),
+        discount_price: fullEditProduct.discount_price ? Number(fullEditProduct.discount_price) : undefined,
+        stock_quantity: Number(fullEditProduct.stock_quantity !== undefined ? fullEditProduct.stock_quantity : 50),
+        availability_status: fullEditProduct.availability_status,
+        short_description: fullEditProduct.short_description,
+        full_description: fullEditProduct.full_description || fullEditProduct.description,
+        description: fullEditProduct.full_description || fullEditProduct.description,
+        ingredients: fullEditProduct.ingredients,
+        image: fullEditProduct.image || fullEditProduct.image_url,
+        image_url: fullEditProduct.image || fullEditProduct.image_url,
+        is_featured: fullEditProduct.is_featured
+      };
+
+      await updateProductInDb(fullEditProduct.id, updates);
+      await updateContextProduct(fullEditProduct.id, updates);
+
+      setProducts(prev => prev.map(p => p.id === fullEditProduct.id ? { ...p, ...updates } : p));
+      setFullEditProduct(null);
+      setCatalogueSuccessMsg(`✓ Successfully updated "${updates.name}" in Supabase & live website!`);
+      setTimeout(() => setCatalogueSuccessMsg(null), 4000);
+    } catch (err: any) {
+      alert(`Failed to save product: ${err.message}`);
+    } finally {
+      setIsSavingFullProduct(false);
+    }
+  };
+
+  const handleCreateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProductForm.name.trim()) {
+      alert('Please enter a product name');
+      return;
+    }
+    const cleanId = newProductForm.id.trim() || newProductForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (products.some(p => p.id === cleanId)) {
+      alert(`A product with ID "${cleanId}" already exists. Please choose a distinct ID or title.`);
+      return;
+    }
+
+    setIsCreatingProduct(true);
+    try {
+      const payload = {
+        ...newProductForm,
+        id: cleanId,
+        name: newProductForm.name,
+        product_name: newProductForm.name,
+        slug: cleanId,
+        weight_or_volume: newProductForm.net_weight_or_vol,
+        net_weight_or_vol: newProductForm.net_weight_or_vol,
+        description: newProductForm.full_description,
+        full_description: newProductForm.full_description,
+        image_url: newProductForm.image,
+        three_main_benefits: newProductForm.benefits.slice(0, 3),
+        price: newProductForm.discount_price && newProductForm.discount_price < newProductForm.mrp ? newProductForm.discount_price : newProductForm.mrp
+      };
+
+      await createProductInDb(payload);
+      await createContextProduct(payload);
+
+      const refreshed = await getProductsFromDb();
+      setProducts(refreshed);
+      setIsAddProductModalOpen(false);
+      setNewProductForm({
+        id: '',
+        name: '',
+        category: 'Handmade Cold Process Soap',
+        net_weight_or_vol: '100 gm / 3.52 oz',
+        mrp: 99,
+        discount_price: 89,
+        stock_quantity: 50,
+        availability_status: 'in_stock',
+        short_description: '',
+        full_description: '',
+        ingredients: '',
+        image: '/images/products/kesuda-palash-soap.webp',
+        benefits: ['Handcrafted with cold-process botanical oils', 'Preserves 100% natural vegetable glycerin']
+      });
+      setCatalogueSuccessMsg(`✓ Created new product "${newProductForm.name}" in database!`);
+      setTimeout(() => setCatalogueSuccessMsg(null), 4000);
+    } catch (err: any) {
+      alert(`Failed to create product: ${err.message}`);
+    } finally {
+      setIsCreatingProduct(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string, productName: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${productName}" (${productId}) from the catalogue and database?`)) {
+      return;
+    }
+    try {
+      await deleteProductFromDb(productId);
+      await deleteContextProduct(productId);
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      setCatalogueSuccessMsg(`✓ Removed "${productName}" from database.`);
+      setTimeout(() => setCatalogueSuccessMsg(null), 4000);
+    } catch (err: any) {
+      alert(`Failed to delete product: ${err.message}`);
+    }
+  };
+
+  const handleRefreshCatalogue = async () => {
+    setIsSavingProduct(true);
+    try {
+      const refreshed = await getProductsFromDb();
+      setProducts(refreshed);
+      await refreshContextProducts();
+      setCatalogueSuccessMsg(`✓ Synchronized ${refreshed.length} products with live Supabase database!`);
+      setTimeout(() => setCatalogueSuccessMsg(null), 3000);
+    } catch (e: any) {
+      alert(`Could not sync catalogue: ${e.message}`);
     } finally {
       setIsSavingProduct(false);
     }
@@ -677,10 +842,13 @@ export const AdminDashboard: React.FC = () => {
 
   const filteredCatalogue = products.filter(p => {
     const matchesCategory = catalogueCategoryFilter === 'all' || p.category === catalogueCategoryFilter;
-    const matchesSearch = !catalogueSearch || 
-      p.product_name.toLowerCase().includes(catalogueSearch.toLowerCase()) ||
-      p.id.toLowerCase().includes(catalogueSearch.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesStatus = catalogueStatusFilter === 'all' || p.availability_status === catalogueStatusFilter;
+    const q = catalogueSearch.toLowerCase().trim();
+    const nameMatch = (p.name && p.name.toLowerCase().includes(q)) || (p.product_name && p.product_name.toLowerCase().includes(q));
+    const idMatch = p.id.toLowerCase().includes(q);
+    const ingMatch = p.ingredients && p.ingredients.toLowerCase().includes(q);
+    const matchesSearch = !q || nameMatch || idMatch || ingMatch;
+    return matchesCategory && matchesStatus && matchesSearch;
   });
 
   const filteredAudit = auditLogs.filter(a => {
@@ -1405,142 +1573,787 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* 6. PRODUCT CATALOGUE TAB */}
+        {/* 6. PRODUCT CATALOGUE TAB & LIVE DATABASE INVENTORY MANAGER */}
         {activeTab === 'catalogue' && (
-          <div className="bg-white rounded-3xl p-6 border border-sand-200 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-sand-200 shadow-sm space-y-6">
+            {/* Header & Main Controls */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-sand-200">
               <div>
-                <h2 className="font-serif text-xl font-medium text-primary-950">
-                  Central Product Catalogue ({filteredCatalogue.length} Items)
-                </h2>
-                <p className="text-xs text-sand-700">
-                  Single source of truth: Manage live prices and stock availability status across the entire store
+                <div className="flex items-center gap-2">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary-950">
+                    Catalogue &amp; Live Inventory ({filteredCatalogue.length} Products)
+                  </h2>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                    <Database className="w-3 h-3 text-emerald-600" />
+                    <span>Supabase Connected</span>
+                  </span>
+                </div>
+                <p className="text-xs text-sand-700 mt-1">
+                  Edit stock quantities, MRP, discount prices, and botanical details. Changes synchronize immediately across the live store.
                 </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleRefreshCatalogue}
+                  disabled={isSavingProduct}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-sand-300 text-primary-950 hover:bg-sand-100 text-xs font-semibold shadow-2xs transition-colors"
+                  title="Synchronize all products directly from Supabase PostgreSQL"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSavingProduct ? 'animate-spin text-accent-600' : 'text-sand-600'}`} />
+                  <span>Sync from DB</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsAddProductModalOpen(true)}
+                  className="btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-xs font-bold shadow-sm hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  <Plus className="w-4 h-4 text-accent-400" />
+                  <span>Add New Product</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Success Feedback Alert */}
+            {catalogueSuccessMsg && (
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium flex items-center justify-between animate-fadeIn">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{catalogueSuccessMsg}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCatalogueSuccessMsg(null)}
+                  className="text-emerald-700 hover:text-emerald-900 font-bold p-1"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Quick Metrics Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3 rounded-2xl bg-sand-50 border border-sand-200">
+                <span className="text-[10px] text-sand-600 font-semibold uppercase tracking-wider block">Total Items</span>
+                <span className="text-xl font-serif font-bold text-primary-950">{products.length}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+                <span className="text-[10px] text-emerald-800 font-semibold uppercase tracking-wider block">In Stock</span>
+                <span className="text-xl font-serif font-bold text-emerald-900">
+                  {products.filter(p => p.availability_status === 'in_stock').length}
+                </span>
+              </div>
+              <div className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200">
+                <span className="text-[10px] text-amber-800 font-semibold uppercase tracking-wider block">Low Stock</span>
+                <span className="text-xl font-serif font-bold text-amber-900">
+                  {products.filter(p => p.availability_status === 'low_stock').length}
+                </span>
+              </div>
+              <div className="p-3 rounded-2xl bg-rose-50/70 border border-rose-200">
+                <span className="text-[10px] text-rose-800 font-semibold uppercase tracking-wider block">Out of Stock</span>
+                <span className="text-xl font-serif font-bold text-rose-900">
+                  {products.filter(p => p.availability_status === 'out_of_stock' || p.availability_status === 'discontinued').length}
+                </span>
+              </div>
+            </div>
+
+            {/* Search and Filters Toolbar */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-500" />
+                <input
+                  type="text"
+                  value={catalogueSearch}
+                  onChange={(e) => setCatalogueSearch(e.target.value)}
+                  placeholder="Search products by title, ID, or key ingredient..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white focus:outline-none focus:border-primary-800 transition-colors"
+                />
               </div>
 
               <div className="flex items-center gap-2">
                 <select
                   value={catalogueCategoryFilter}
                   onChange={(e) => setCatalogueCategoryFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50"
+                  className="px-3 py-2.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50 font-medium text-sand-800 focus:bg-white focus:outline-none"
                 >
                   <option value="all">All Categories</option>
                   <option value="Handmade Cold Process Soap">Cold Process Soaps</option>
-                  <option value="Botanical Face Wash">Face Washes</option>
-                  <option value="Nourishing Body Wash">Body Washes</option>
-                  <option value="Botanical Body Lotion">Body Lotions</option>
+                  <option value="Body Care">Body Care &amp; Lotions</option>
+                  <option value="Face &amp; Body Wash">Face &amp; Body Washes</option>
+                  <option value="Face Care">Face Creams</option>
+                  <option value="Hand Wash">Hand Washes</option>
+                  <option value="Lip Care">Lip Balms</option>
+                </select>
+
+                <select
+                  value={catalogueStatusFilter}
+                  onChange={(e) => setCatalogueStatusFilter(e.target.value)}
+                  className="px-3 py-2.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50 font-medium text-sand-800 focus:bg-white focus:outline-none"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="in_stock">In Stock</option>
+                  <option value="low_stock">Low Stock</option>
+                  <option value="out_of_stock">Out of Stock</option>
+                  <option value="discontinued">Discontinued</option>
                 </select>
               </div>
             </div>
 
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-500" />
-              <input
-                type="text"
-                value={catalogueSearch}
-                onChange={(e) => setCatalogueSearch(e.target.value)}
-                placeholder="Search products by title or ID..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50"
-              />
-            </div>
-
+            {/* Product Table */}
             <div className="overflow-x-auto rounded-2xl border border-sand-200">
               <table className="w-full text-left text-xs text-sand-800">
                 <thead className="bg-sand-100 text-primary-950 uppercase text-[10px] tracking-wider border-b border-sand-200">
                   <tr>
                     <th className="p-3.5">Product</th>
                     <th className="p-3.5">Category</th>
-                    <th className="p-3.5">Net Volume</th>
-                    <th className="p-3.5">Price (INR)</th>
+                    <th className="p-3.5">Net Wt</th>
+                    <th className="p-3.5">Stock</th>
+                    <th className="p-3.5">Price &amp; MRP</th>
                     <th className="p-3.5">Availability</th>
                     <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-sand-200">
-                  {filteredCatalogue.map(p => (
-                    <tr key={p.id} className="hover:bg-sand-50/80 transition-colors">
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-3">
-                          <img src={p.image_url} alt={p.product_name} className="w-10 h-10 object-cover rounded-lg bg-sand-100" />
-                          <div>
-                            <span className="font-medium text-primary-950 block">{p.product_name}</span>
-                            <span className="text-[10px] text-sand-500 font-mono">{p.id}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-3.5">{p.category}</td>
-                      <td className="p-3.5 font-medium">{p.weight_or_volume}</td>
-                      <td className="p-3.5 font-bold text-primary-950">
-                        {editingProductId === p.id ? (
-                          <input
-                            type="number"
-                            value={editingPrice}
-                            onChange={(e) => setEditingPrice(Number(e.target.value))}
-                            className="w-20 px-2 py-1 rounded border border-accent-600 text-xs bg-white"
-                          />
-                        ) : (
-                          `₹${p.price}`
-                        )}
-                      </td>
-                      <td className="p-3.5">
-                        {editingProductId === p.id ? (
-                          <select
-                            value={editingStatus}
-                            onChange={(e) => setEditingStatus(e.target.value as any)}
-                            className="px-2 py-1 rounded border border-accent-600 text-xs bg-white"
-                          >
-                            <option value="in_stock">In Stock</option>
-                            <option value="low_stock">Low Stock</option>
-                            <option value="out_of_stock">Out of Stock</option>
-                            <option value="discontinued">Discontinued</option>
-                          </select>
-                        ) : (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            p.availability_status === 'in_stock'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : p.availability_status === 'low_stock'
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-rose-100 text-rose-800'
-                          }`}>
-                            {p.availability_status}
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-3.5 text-right space-x-2">
-                        {editingProductId === p.id ? (
-                          <>
-                            <button
-                              onClick={() => handleSaveProductEdit(p.id)}
-                              disabled={isSavingProduct}
-                              className="px-2.5 py-1 rounded bg-primary-900 text-white font-medium text-xs disabled:opacity-50"
-                            >
-                              {isSavingProduct ? 'Saving...' : 'Save'}
-                            </button>
-                            <button
-                              onClick={() => setEditingProductId(null)}
-                              className="px-2.5 py-1 rounded border border-sand-300 text-sand-700 text-xs"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setEditingProductId(p.id);
-                              setEditingPrice(p.price);
-                              setEditingStatus(p.availability_status);
-                            }}
-                            className="px-2.5 py-1 rounded-lg border border-sand-300 text-primary-950 hover:bg-sand-100 font-medium"
-                          >
-                            Edit
-                          </button>
-                        )}
+                  {filteredCatalogue.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-sand-500 text-xs">
+                        No products match your search or filter criteria.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    filteredCatalogue.map(p => (
+                      <tr key={p.id} className="hover:bg-sand-50/80 transition-colors">
+                        {/* Product Info */}
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={p.image || p.image_url}
+                              alt={p.name || p.product_name}
+                              className="w-11 h-11 object-cover rounded-xl bg-sand-100 border border-sand-200 shrink-0"
+                            />
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-semibold text-primary-950 block">
+                                  {p.name || p.product_name}
+                                </span>
+                                {p.is_featured && (
+                                  <span className="px-1.5 py-0.2 rounded bg-gold-100 text-gold-800 text-[9px] font-bold">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-sand-500 font-mono block">
+                                ID: {p.id}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Category */}
+                        <td className="p-3.5">
+                          <span className="px-2 py-0.5 rounded-full bg-sand-100 text-sand-800 text-[10px] font-medium border border-sand-200 whitespace-nowrap">
+                            {p.category}
+                          </span>
+                        </td>
+
+                        {/* Net Weight */}
+                        <td className="p-3.5 font-medium text-sand-700 whitespace-nowrap">
+                          {p.net_weight_or_vol || p.weight_or_volume}
+                        </td>
+
+                        {/* Stock Units */}
+                        <td className="p-3.5">
+                          {editingProductId === p.id ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                min="0"
+                                value={editingStock}
+                                onChange={(e) => setEditingStock(Number(e.target.value))}
+                                className="w-16 px-2 py-1 rounded border border-accent-600 text-xs bg-white font-mono font-bold"
+                              />
+                              <span className="text-[10px] text-sand-500">units</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1 font-mono">
+                              <span className={`font-bold ${
+                                (p.stock_quantity ?? 50) <= 5
+                                  ? 'text-rose-700'
+                                  : (p.stock_quantity ?? 50) <= 15
+                                  ? 'text-amber-700'
+                                  : 'text-primary-950'
+                              }`}>
+                                {p.stock_quantity ?? 50}
+                              </span>
+                              <span className="text-[10px] text-sand-500">units</span>
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Price (MRP & Sale) */}
+                        <td className="p-3.5">
+                          {editingProductId === p.id ? (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] text-sand-500 w-8">MRP:</span>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={editingPrice}
+                                  onChange={(e) => setEditingPrice(Number(e.target.value))}
+                                  className="w-16 px-2 py-0.5 rounded border border-accent-600 text-xs bg-white font-bold"
+                                />
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] text-sand-500 w-8">Sale:</span>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={editingDiscountPrice !== undefined ? editingDiscountPrice : ''}
+                                  onChange={(e) => setEditingDiscountPrice(e.target.value ? Number(e.target.value) : undefined)}
+                                  placeholder="None"
+                                  className="w-16 px-2 py-0.5 rounded border border-sand-300 text-xs bg-white text-emerald-800 font-bold"
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              {p.discount_price && p.discount_price < (p.mrp || p.price) ? (
+                                <div className="space-y-0.5">
+                                  <div className="font-bold text-emerald-800 text-sm">₹{p.discount_price}</div>
+                                  <div className="text-[10px] line-through text-sand-500">MRP: ₹{p.mrp || p.price}</div>
+                                </div>
+                              ) : (
+                                <div className="font-bold text-primary-950 text-sm">
+                                  ₹{p.mrp || p.price}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Availability Status */}
+                        <td className="p-3.5">
+                          {editingProductId === p.id ? (
+                            <select
+                              value={editingStatus}
+                              onChange={(e) => setEditingStatus(e.target.value as any)}
+                              className="px-2 py-1 rounded border border-accent-600 text-xs bg-white font-medium"
+                            >
+                              <option value="in_stock">In Stock</option>
+                              <option value="low_stock">Low Stock</option>
+                              <option value="out_of_stock">Out of Stock</option>
+                              <option value="discontinued">Discontinued</option>
+                            </select>
+                          ) : (
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block ${
+                              p.availability_status === 'in_stock'
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                : p.availability_status === 'low_stock'
+                                ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                                : p.availability_status === 'out_of_stock'
+                                ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                                : 'bg-sand-200 text-sand-800 border border-sand-300'
+                            }`}>
+                              {p.availability_status?.replace('_', ' ') || 'in stock'}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="p-3.5 text-right whitespace-nowrap">
+                          {editingProductId === p.id ? (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleSaveProductEdit(p.id)}
+                                disabled={isSavingProduct}
+                                className="px-3 py-1.5 rounded-lg bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 disabled:opacity-50 shadow-xs"
+                              >
+                                {isSavingProduct ? 'Saving...' : 'Save'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingProductId(null)}
+                                className="px-2.5 py-1.5 rounded-lg border border-sand-300 text-sand-700 text-xs hover:bg-sand-100"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingProductId(p.id);
+                                  setEditingPrice(p.mrp || p.price);
+                                  setEditingDiscountPrice(p.discount_price);
+                                  setEditingStock(p.stock_quantity !== undefined ? p.stock_quantity : 50);
+                                  setEditingStatus(p.availability_status || 'in_stock');
+                                }}
+                                className="p-1.5 rounded-lg border border-sand-300 text-primary-950 hover:bg-sand-100 transition-colors"
+                                title="Quick edit price & stock"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setFullEditProduct(p)}
+                                className="p-1.5 rounded-lg border border-sand-300 text-primary-950 hover:bg-sand-100 transition-colors"
+                                title="Edit all details (Descriptions, Ingredients, Weight, Images)"
+                              >
+                                <SlidersHorizontal className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteProduct(p.id, p.name || p.product_name)}
+                                className="p-1.5 rounded-lg border border-sand-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-colors"
+                                title="Delete product"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
+
+            {/* ------------------------------------------------------------- */}
+            {/* MODAL 1: FULL PRODUCT DETAILS EDITOR */}
+            {/* ------------------------------------------------------------- */}
+            {fullEditProduct && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-botanical-950/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+                <div 
+                  className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-sand-200 my-8 max-h-[90vh] overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between pb-4 border-b border-sand-200 mb-6">
+                    <div>
+                      <h3 className="font-serif text-xl font-bold text-primary-950">
+                        Edit Product: {fullEditProduct.name || fullEditProduct.product_name}
+                      </h3>
+                      <p className="text-xs text-sand-500 font-mono mt-0.5">
+                        Product ID: {fullEditProduct.id}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFullEditProduct(null)}
+                      className="p-1.5 rounded-full hover:bg-sand-100 text-sand-500 hover:text-sand-800"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveFullProduct} className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Product Name / Title
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={fullEditProduct.name || fullEditProduct.product_name}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, name: e.target.value, product_name: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Category
+                        </label>
+                        <select
+                          value={fullEditProduct.category}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, category: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        >
+                          <option value="Handmade Cold Process Soap">Handmade Cold Process Soap</option>
+                          <option value="Body Care">Body Care</option>
+                          <option value="Face &amp; Body Wash">Face &amp; Body Wash</option>
+                          <option value="Face Care">Face Care</option>
+                          <option value="Hand Wash">Hand Wash</option>
+                          <option value="Lip Care">Lip Care</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          MRP (₹)
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          value={fullEditProduct.mrp || fullEditProduct.price}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, mrp: Number(e.target.value), price: Number(e.target.value) })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-bold"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Discount / Sale Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={fullEditProduct.discount_price !== undefined ? fullEditProduct.discount_price : ''}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, discount_price: e.target.value ? Number(e.target.value) : undefined })}
+                          placeholder="Optional"
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-bold text-emerald-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Stock Quantity (Units)
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          value={fullEditProduct.stock_quantity !== undefined ? fullEditProduct.stock_quantity : 50}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, stock_quantity: Number(e.target.value) })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-mono font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Net Weight / Volume
+                        </label>
+                        <input
+                          type="text"
+                          value={fullEditProduct.net_weight_or_vol || fullEditProduct.weight_or_volume}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, net_weight_or_vol: e.target.value, weight_or_volume: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Stock Availability Status
+                        </label>
+                        <select
+                          value={fullEditProduct.availability_status}
+                          onChange={(e) => setFullEditProduct({ ...fullEditProduct, availability_status: e.target.value as any })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        >
+                          <option value="in_stock">In Stock</option>
+                          <option value="low_stock">Low Stock</option>
+                          <option value="out_of_stock">Out of Stock</option>
+                          <option value="discontinued">Discontinued</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Image URL
+                      </label>
+                      <input
+                        type="text"
+                        value={fullEditProduct.image || fullEditProduct.image_url}
+                        onChange={(e) => setFullEditProduct({ ...fullEditProduct, image: e.target.value, image_url: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Short Tagline Description
+                      </label>
+                      <input
+                        type="text"
+                        value={fullEditProduct.short_description || ''}
+                        onChange={(e) => setFullEditProduct({ ...fullEditProduct, short_description: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Full Product Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={fullEditProduct.full_description || fullEditProduct.description || ''}
+                        onChange={(e) => setFullEditProduct({ ...fullEditProduct, full_description: e.target.value, description: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Key Ingredients List
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={fullEditProduct.ingredients || ''}
+                        onChange={(e) => setFullEditProduct({ ...fullEditProduct, ingredients: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <input
+                        type="checkbox"
+                        id="modal-featured-checkbox"
+                        checked={Boolean(fullEditProduct.is_featured)}
+                        onChange={(e) => setFullEditProduct({ ...fullEditProduct, is_featured: e.target.checked })}
+                        className="w-4 h-4 rounded text-primary-900 border-sand-300"
+                      />
+                      <label htmlFor="modal-featured-checkbox" className="text-xs font-semibold text-sand-800 cursor-pointer">
+                        Feature this product prominently on homepage
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-sand-200">
+                      <button
+                        type="button"
+                        onClick={() => setFullEditProduct(null)}
+                        className="px-4 py-2.5 rounded-xl border border-sand-300 text-sand-700 text-xs font-semibold hover:bg-sand-100"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSavingFullProduct}
+                        className="btn-primary px-6 py-2.5 rounded-xl text-white text-xs font-bold shadow-md disabled:opacity-50"
+                      >
+                        {isSavingFullProduct ? 'Saving to Database...' : 'Save All Changes'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* ------------------------------------------------------------- */}
+            {/* MODAL 2: ADD NEW PRODUCT TO STORE & DATABASE */}
+            {/* ------------------------------------------------------------- */}
+            {isAddProductModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-botanical-950/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+                <div 
+                  className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-sand-200 my-8 max-h-[90vh] overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between pb-4 border-b border-sand-200 mb-6">
+                    <div>
+                      <h3 className="font-serif text-xl font-bold text-primary-950">
+                        Add New Botanical Product
+                      </h3>
+                      <p className="text-xs text-sand-500 mt-0.5">
+                        Add a new handcrafted skincare item to your database catalogue
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddProductModalOpen(false)}
+                      className="p-1.5 rounded-full hover:bg-sand-100 text-sand-500 hover:text-sand-800"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreateProduct} className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Product Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={newProductForm.name}
+                          onChange={(e) => setNewProductForm({ 
+                            ...newProductForm, 
+                            name: e.target.value,
+                            id: newProductForm.id || e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                          })}
+                          placeholder="e.g. Saffron &amp; Sandalwood Soap"
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Product ID / Slug *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={newProductForm.id}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, id: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '') })}
+                          placeholder="e.g. saffron-sandalwood-soap"
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Category
+                        </label>
+                        <select
+                          value={newProductForm.category}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, category: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        >
+                          <option value="Handmade Cold Process Soap">Handmade Cold Process Soap</option>
+                          <option value="Body Care">Body Care</option>
+                          <option value="Face &amp; Body Wash">Face &amp; Body Wash</option>
+                          <option value="Face Care">Face Care</option>
+                          <option value="Hand Wash">Hand Wash</option>
+                          <option value="Lip Care">Lip Care</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Net Weight / Volume
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={newProductForm.net_weight_or_vol}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, net_weight_or_vol: e.target.value })}
+                          placeholder="e.g. 100 gm / 3.52 oz"
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          MRP (₹) *
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          value={newProductForm.mrp}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, mrp: Number(e.target.value) })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-bold"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Discount / Sale Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={newProductForm.discount_price}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, discount_price: Number(e.target.value) })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-bold text-emerald-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                          Initial Stock Quantity
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          value={newProductForm.stock_quantity}
+                          onChange={(e) => setNewProductForm({ ...newProductForm, stock_quantity: Number(e.target.value) })}
+                          className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-mono font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Image Path or URL
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newProductForm.image}
+                        onChange={(e) => setNewProductForm({ ...newProductForm, image: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Short Description
+                      </label>
+                      <input
+                        type="text"
+                        value={newProductForm.short_description}
+                        onChange={(e) => setNewProductForm({ ...newProductForm, short_description: e.target.value })}
+                        placeholder="Brief summary for product card"
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Full Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={newProductForm.full_description}
+                        onChange={(e) => setNewProductForm({ ...newProductForm, full_description: e.target.value })}
+                        placeholder="Detailed botanical benefits and formulation story"
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-sand-700 uppercase tracking-wider mb-1">
+                        Ingredients
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={newProductForm.ingredients}
+                        onChange={(e) => setNewProductForm({ ...newProductForm, ingredients: e.target.value })}
+                        placeholder="Coconut Oil, Kokum Butter, Essential Oils, etc."
+                        className="w-full px-3 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:bg-white"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-sand-200">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddProductModalOpen(false)}
+                        className="px-4 py-2.5 rounded-xl border border-sand-300 text-sand-700 text-xs font-semibold hover:bg-sand-100"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isCreatingProduct}
+                        className="btn-primary px-6 py-2.5 rounded-xl text-white text-xs font-bold shadow-md disabled:opacity-50"
+                      >
+                        {isCreatingProduct ? 'Creating in Database...' : 'Create &amp; Publish Product'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

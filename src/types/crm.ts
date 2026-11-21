@@ -96,18 +96,25 @@ export interface CustomerWishlist {
 
 export interface ProductRecord {
   id: string;
+  name?: string;
   product_name: string;
   slug: string;
   category: string;
   short_description: string;
   description: string;
+  full_description?: string;
   ingredients: string;
   benefits: string[];
   three_main_benefits: string[];
   usage_instructions?: string;
   price: number;
+  mrp?: number;
+  discount_price?: number;
+  stock_quantity?: number;
   weight_or_volume: string;
+  net_weight_or_vol?: string;
   image_url: string;
+  image?: string;
   additional_images?: string[];
   skin_type?: string;
   availability_status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued';

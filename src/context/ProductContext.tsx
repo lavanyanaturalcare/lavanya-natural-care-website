@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Product } from '../types';
 import { ProductRecord } from '../types/crm';
 import { productsData as defaultProductsData } from '../data/products';
-import { getProductsFromDb, updateProductInDb } from '../services/crmService';
+import { getProductsFromDb, updateProductInDb, createProductInDb, deleteProductFromDb } from '../services/crmService';
 
 interface ProductContextValue {
   products: Product[];
@@ -10,6 +10,8 @@ interface ProductContextValue {
   error: string | null;
   refreshProducts: () => Promise<void>;
   updateProduct: (id: string, updates: Partial<ProductRecord>) => Promise<boolean>;
+  createProduct: (newProduct: Partial<ProductRecord> & { id: string; name: string }) => Promise<boolean>;
+  deleteProduct: (id: string) => Promise<boolean>;
   getProductById: (id: string) => Product | undefined;
 }
 
@@ -22,23 +24,34 @@ export function recordToProduct(r: ProductRecord): Product {
     ? [r.benefits[0], r.benefits[1], r.benefits[2]]
     : ['Handcrafted in small batches', 'Pure cold process botanical formula', 'Retains natural vegetable glycerin'];
 
+  const mrp = Number(r.mrp !== undefined && r.mrp !== null ? r.mrp : (r.price || 99));
+  const discountPrice = r.discount_price !== undefined && r.discount_price !== null && Number(r.discount_price) > 0
+    ? Number(r.discount_price)
+    : undefined;
+  const stock = r.stock_quantity !== undefined && r.stock_quantity !== null
+    ? Number(r.stock_quantity)
+    : 50;
+  const name = r.name || r.product_name || r.id;
+
   return {
     id: r.id,
-    name: r.product_name || r.id,
+    name,
     category: (r.category as any) || 'Handmade Cold Process Soap',
     shortDescription: r.short_description || '',
-    fullDescription: r.description || '',
+    fullDescription: r.full_description || r.description || '',
     benefits: r.benefits || [],
     threeMainBenefits: threeBenefits,
     ingredients: r.ingredients || '',
-    netWeightOrVol: r.weight_or_volume || '',
-    mrp: Number(r.price) || 99,
-    image: r.image_url || '/images/products/kesuda-palash-soap.webp',
-    additionalImages: r.additional_images && r.additional_images.length > 0 ? r.additional_images : [r.image_url],
+    netWeightOrVol: r.net_weight_or_vol || r.weight_or_volume || '100 gm',
+    mrp,
+    discountPrice,
+    stockQuantity: stock,
+    image: r.image || r.image_url || '/images/products/kesuda-palash-soap.webp',
+    additionalImages: r.additional_images && r.additional_images.length > 0 ? r.additional_images : [r.image || r.image_url || '/images/products/kesuda-palash-soap.webp'],
     howToUse: r.usage_instructions || '',
     isFeatured: Boolean(r.is_featured),
     skinType: r.skin_type || 'All Skin Types',
-    availabilityStatus: r.availability_status || 'in_stock'
+    availabilityStatus: r.availability_status || (stock > 0 ? 'in_stock' : 'out_of_stock')
   };
 }
 
@@ -75,14 +88,25 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setProducts(prev =>
         prev.map(p => {
           if (p.id !== id) return p;
+          const newName = updates.name !== undefined ? updates.name : (updates.product_name !== undefined ? updates.product_name : p.name);
+          const newMrp = updates.mrp !== undefined ? Number(updates.mrp) : (updates.price !== undefined ? Number(updates.price) : p.mrp);
+          const newDiscount = updates.discount_price !== undefined ? (updates.discount_price ? Number(updates.discount_price) : undefined) : p.discountPrice;
+          const newStock = updates.stock_quantity !== undefined ? Number(updates.stock_quantity) : p.stockQuantity;
+          const newStatus = updates.availability_status !== undefined ? updates.availability_status : (newStock !== undefined && newStock <= 0 ? 'out_of_stock' : p.availabilityStatus);
+
           return {
             ...p,
-            name: updates.product_name !== undefined ? updates.product_name : p.name,
-            mrp: updates.price !== undefined ? Number(updates.price) : p.mrp,
-            availabilityStatus: updates.availability_status !== undefined ? updates.availability_status : p.availabilityStatus,
+            name: newName,
+            category: (updates.category as any) || p.category,
+            mrp: newMrp,
+            discountPrice: newDiscount,
+            stockQuantity: newStock,
+            availabilityStatus: newStatus,
             shortDescription: updates.short_description !== undefined ? updates.short_description : p.shortDescription,
-            fullDescription: updates.description !== undefined ? updates.description : p.fullDescription,
+            fullDescription: updates.full_description !== undefined ? updates.full_description : (updates.description !== undefined ? updates.description : p.fullDescription),
             ingredients: updates.ingredients !== undefined ? updates.ingredients : p.ingredients,
+            netWeightOrVol: updates.net_weight_or_vol !== undefined ? updates.net_weight_or_vol : (updates.weight_or_volume !== undefined ? updates.weight_or_volume : p.netWeightOrVol),
+            image: updates.image !== undefined ? updates.image : (updates.image_url !== undefined ? updates.image_url : p.image),
             isFeatured: updates.is_featured !== undefined ? updates.is_featured : p.isFeatured
           };
         })
@@ -90,6 +114,29 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return true;
     } catch (err) {
       console.error('Failed to update product in database:', err);
+      return false;
+    }
+  }, []);
+
+  const createProduct = useCallback(async (newProduct: Partial<ProductRecord> & { id: string; name: string }): Promise<boolean> => {
+    try {
+      const createdRecord = await createProductInDb(newProduct);
+      const mapped = recordToProduct(createdRecord);
+      setProducts(prev => [mapped, ...prev.filter(p => p.id !== mapped.id)]);
+      return true;
+    } catch (err) {
+      console.error('Failed to create product in database:', err);
+      return false;
+    }
+  }, []);
+
+  const deleteProduct = useCallback(async (id: string): Promise<boolean> => {
+    try {
+      await deleteProductFromDb(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+      return true;
+    } catch (err) {
+      console.error('Failed to delete product from database:', err);
       return false;
     }
   }, []);
@@ -106,6 +153,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         error,
         refreshProducts,
         updateProduct,
+        createProduct,
+        deleteProduct,
         getProductById
       }}
     >
@@ -124,6 +173,8 @@ export const useProductCatalog = (): ProductContextValue => {
       error: null,
       refreshProducts: async () => {},
       updateProduct: async () => false,
+      createProduct: async () => false,
+      deleteProduct: async () => false,
       getProductById: (id: string) => defaultProductsData.find(p => p.id === id)
     };
   }
