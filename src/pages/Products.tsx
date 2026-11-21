@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, Sparkles } from 'lucide-react';
+import { Search, X, Sparkles, Tag, Gift, Truck } from 'lucide-react';
 import { useProductCatalog } from '../context/ProductContext';
 import { ProductCard } from '../components/ProductCard';
 import { SEO } from '../components/SEO';
@@ -81,6 +81,24 @@ export const Products: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
             )}
+          </div>
+        </div>
+
+        {/* Transparent Offers & Shipping Bar */}
+        <div className="max-w-2xl mx-auto bg-sand-100/90 border border-sand-300 rounded-2xl p-3 flex flex-wrap items-center justify-around gap-2 text-xs text-primary-950 font-medium text-center shadow-2xs">
+          <div className="flex items-center gap-1.5">
+            <Tag className="w-3.5 h-3.5 text-accent-700 shrink-0" />
+            <span>Code <strong className="font-mono bg-white px-1.5 py-0.5 rounded border border-sand-300">WELCOME10</strong> (10% OFF)</span>
+          </div>
+          <span className="text-sand-400 hidden sm:inline">•</span>
+          <div className="flex items-center gap-1.5">
+            <Gift className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <span>Buy 3+ with <strong className="font-mono bg-white px-1.5 py-0.5 rounded border border-sand-300">TRIO15</strong> (15% OFF)</span>
+          </div>
+          <span className="text-sand-400 hidden sm:inline">•</span>
+          <div className="flex items-center gap-1.5">
+            <Truck className="w-3.5 h-3.5 text-primary-900 shrink-0" />
+            <span><strong>FREE Delivery</strong> over ₹499</span>
           </div>
         </div>
 

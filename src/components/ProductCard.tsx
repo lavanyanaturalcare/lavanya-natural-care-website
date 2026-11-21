@@ -124,26 +124,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div>
               <span className="text-[10px] text-sand-600 uppercase tracking-wider block font-medium">Net Weight / Vol</span>
               <span className="text-xs font-semibold text-primary-950">{product.netWeightOrVol}</span>
-              {product.availabilityStatus === 'out_of_stock' && (
-                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-100 text-rose-800 uppercase tracking-wider">
+              {product.availabilityStatus === 'out_of_stock' || (product.stockQuantity !== undefined && product.stockQuantity <= 0) ? (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-100 text-rose-800 uppercase tracking-wider border border-rose-200">
                   Out of Stock
                 </span>
-              )}
-              {product.availabilityStatus === 'low_stock' && (
-                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider">
+              ) : product.stockQuantity !== undefined && product.stockQuantity > 0 && product.stockQuantity <= 10 ? (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-900 uppercase tracking-wider border border-amber-300">
+                  ⚡ Only {product.stockQuantity} left
+                </span>
+              ) : product.availabilityStatus === 'low_stock' ? (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider border border-amber-200">
                   Low Stock
                 </span>
-              )}
+              ) : null}
             </div>
             <div className="text-right">
               <span className="text-[10px] text-sand-600 uppercase tracking-wider block font-medium">
                 {product.discountPrice && product.discountPrice < product.mrp ? 'Special Price' : 'MRP (Incl. Taxes)'}
               </span>
-              <div className="flex items-baseline justify-end gap-1.5">
+              <div className="flex items-baseline justify-end gap-1.5 flex-wrap">
                 {product.discountPrice && product.discountPrice < product.mrp ? (
                   <>
                     <span className="font-serif text-2xl font-bold text-primary-950">₹{product.discountPrice}</span>
                     <span className="text-xs line-through text-sand-500 font-medium">₹{product.mrp}</span>
+                    <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Save ₹{product.mrp - product.discountPrice} ({Math.round(((product.mrp - product.discountPrice) / product.mrp) * 100)}% OFF)
+                    </span>
                   </>
                 ) : (
                   <span className="font-serif text-2xl font-bold text-primary-950">₹{product.mrp}</span>
