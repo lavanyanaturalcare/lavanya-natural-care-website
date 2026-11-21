@@ -487,11 +487,11 @@ export const AIConsultant: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                <span>ONZNATURAL Botanical AI (Gemini 2.5 Flash)</span>
+                <span>ONZNATURAL Botanical AI (Gemini 3 Flash)</span>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-cream-200 text-xs font-medium">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>16 Verified Products Grounded</span>
+                <span>17 Verified Products Grounded</span>
               </div>
             </div>
 
@@ -922,7 +922,7 @@ export const AIConsultant: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
                   <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    ONZNATURAL Botanical AI (Gemini 2.5 Flash) • Grounded in Catalogue
+                    ONZNATURAL Botanical AI (Gemini 3 Flash) • Grounded in Catalogue
                   </span>
 
                   {storageStatus === 'saved' && (
