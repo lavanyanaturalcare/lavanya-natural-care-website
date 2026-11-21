@@ -31,6 +31,7 @@ const LEGACY_SESSION_KEY = 'lavanya_client_session_uuid';
 const CONSENT_STORAGE_PREFIX = 'onznatural_consent_';
 const RETENTION_STORAGE_KEY = 'onznatural_retention_policy';
 const WISHLIST_KEY = 'onznatural_wishlist';
+let wishlistTableAvailable: boolean | null = null;
 const LOCAL_CUSTOMERS_KEY = 'onznatural_local_customers';
 export const LOCAL_CUSTOMER_SESSION_KEY = 'onznatural_customer_session';
 const LOCAL_ENQUIRIES_KEY = 'onznatural_local_enquiries';
@@ -801,21 +802,29 @@ export const getProductInterests = async (query?: {
 // 7. Wishlist / Saved Products
 // -------------------------------------------------------------
 export const getWishlist = async (): Promise<string[]> => {
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && wishlistTableAvailable !== false) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('customer_wishlists')
           .select('product_id')
           .eq('customer_id', user.id);
-        if (data && data.length > 0) {
+        
+        if (error) {
+          if (error.code === '42P01' || error.message?.includes('not found') || error.code === 'PGRST204') {
+            wishlistTableAvailable = false;
+          }
+        } else if (data && data.length > 0) {
+          wishlistTableAvailable = true;
           const ids = data.map((d: any) => d.product_id);
           localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids));
           return ids;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      wishlistTableAvailable = false;
+    }
   }
 
   try {

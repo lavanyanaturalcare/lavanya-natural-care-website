@@ -19,7 +19,7 @@ export const blogPostsData: BlogPost[] = [
     publishDate: 'November 15, 2026',
     readTime: '4 min read',
     author: 'ONZNATURAL Artisan Team, Vadodara',
-    coverImage: '/assets/lavanya-natural-soap-collection.png',
+    coverImage: '/images/products/kesuda-palash-soap.webp',
     category: 'Soap Craft & Science',
     metaDescription: 'Learn the real difference between cold process soap, melt-and-pour, and commercial detergent bars. Discover why natural glycerin protects your skin.',
     contentHtml: `

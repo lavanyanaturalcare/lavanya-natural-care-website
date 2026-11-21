@@ -146,7 +146,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7 lg:gap-8" aria-label="Main Navigation">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8" aria-label="Main Navigation">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -210,23 +210,31 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Controls */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-1 sm:gap-2">
           <Link
             to="/wishlist"
-            className="relative p-2 text-primary-950 hover:bg-sand-200 rounded-xl"
+            className="relative p-2.5 text-primary-950 hover:bg-sand-200 rounded-xl min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
             title="Wishlist"
           >
             <Heart className="w-5 h-5" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute top-1 right-1 w-4 h-4 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
           </Link>
 
+          <Link
+            to={currentUser ? "/account" : "/login"}
+            className="p-2.5 text-primary-950 hover:bg-sand-200 rounded-xl min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
+            title={currentUser ? "My Account" : "Sign In"}
+          >
+            <User className="w-5 h-5" />
+          </Link>
+
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2.5 text-primary-950 hover:bg-sand-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-accent-600"
+            className="p-2.5 text-primary-950 hover:bg-sand-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-accent-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
             aria-expanded={isMobileMenuOpen}
           >
@@ -237,17 +245,17 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-sand-50 border-b border-sand-200 px-4 pt-2 pb-6 space-y-4 animate-fadeIn shadow-lg">
+        <div className="lg:hidden bg-[#FDFBF7] border-b border-sand-300 px-4 pt-3 pb-6 space-y-4 animate-fadeIn shadow-xl">
           <div className="flex flex-col space-y-1.5" role="menu">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`px-4 py-3 rounded-xl text-base font-semibold transition-colors flex items-center justify-between ${
+                className={`px-4 py-3 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-between min-h-[44px] ${
                   isActive(link.path)
-                    ? 'btn-primary shadow-sm'
-                    : 'text-sand-900 hover:bg-sand-200'
+                    ? 'bg-primary-950 text-white shadow-sm'
+                    : 'text-primary-950 hover:bg-sand-200 active:bg-sand-300'
                 }`}
                 role="menuitem"
               >

@@ -23,6 +23,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
   const [cityPincode, setCityPincode] = useState('');
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobileClient, setIsMobileClient] = useState(false);
 
   // Growth & CRO state: coupon, add-on upsell, restock reminder
   const [couponInput, setCouponInput] = useState('');
@@ -33,6 +34,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
 
   useEffect(() => {
     setMounted(true);
+    setIsMobileClient(
+      typeof window !== 'undefined' &&
+      (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768)
+    );
   }, []);
 
   useEffect(() => {
@@ -176,7 +181,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
       role="dialog"
       aria-modal="true"
       aria-labelledby="order-modal-title"
-      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
       <div
@@ -347,20 +352,20 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
 
         {/* Coupon Code Input */}
         <div className="space-y-1.5">
-          <form onSubmit={handleApplyCoupon} className="flex gap-2">
+          <form onSubmit={handleApplyCoupon} className="flex gap-2 items-center">
             <div className="relative flex-1">
-              <Tag className="w-3.5 h-3.5 text-sand-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Tag className="w-3.5 h-3.5 text-sand-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Enter promo code (e.g. WELCOME10)"
+                placeholder="Promo code (e.g. WELCOME10)"
                 value={couponInput}
                 onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-sand-300 rounded-xl uppercase font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-accent-600"
+                className="w-full pl-8 pr-2 py-2.5 text-xs bg-white border border-sand-300 rounded-xl uppercase font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-accent-600 min-h-[44px]"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-primary-900 text-white text-xs font-bold hover:bg-primary-950 transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-primary-900 text-white text-xs font-bold hover:bg-primary-950 transition-colors cursor-pointer shrink-0 min-h-[44px] min-w-[68px] flex items-center justify-center"
             >
               Apply
             </button>
@@ -511,17 +516,28 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-2 pt-1">
-              <a
-                href={upiPayUrl}
-                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-primary-950 text-white text-xs font-bold text-center hover:bg-primary-900 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-              >
-                <CreditCard className="w-3.5 h-3.5" />
-                <span>Open UPI App (Mobile)</span>
-              </a>
+              {isMobileClient ? (
+                <a
+                  href={upiPayUrl}
+                  className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-primary-950 text-white text-xs font-bold text-center hover:bg-primary-900 transition-colors flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
+                >
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>Open UPI App (Mobile)</span>
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleCopyUpi}
+                  className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-primary-950 text-white text-xs font-bold text-center hover:bg-primary-900 transition-colors flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
+                >
+                  {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedUpi ? 'UPI ID Copied!' : 'Copy UPI ID'}</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleDirectWhatsAppOrder}
-                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl btn-whatsapp-3d text-white text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
+                className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl btn-whatsapp-3d text-white text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow-md cursor-pointer min-h-[44px]"
               >
                 <MessageCircle className="w-3.5 h-3.5 fill-current" />
                 <span>Confirm on WhatsApp</span>
