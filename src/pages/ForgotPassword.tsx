@@ -52,20 +52,15 @@ export const ForgotPassword: React.FC = () => {
       />
 
       <div className="max-w-md w-full">
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
-            <span className="font-serif text-3xl font-bold tracking-widest text-primary-900 block">
-              ONZNATURAL
-            </span>
-            <span className="text-xs uppercase tracking-widest text-sand-700 block mt-1">
-              Handcrafted Botanical Care • Vadodara
-            </span>
-          </Link>
-          <h1 className="mt-6 text-2xl font-serif text-primary-950 font-medium">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-100 text-primary-900 mb-3 shadow-inner">
+            <Mail className="w-5 h-5 text-primary-800" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-serif text-primary-950 font-medium">
             Reset Password
           </h1>
-          <p className="mt-2 text-sm text-sand-800">
+          <p className="mt-1 text-sm text-sand-700">
             Enter your email and we'll send a secure link to reset your password
           </p>
         </div>
@@ -84,7 +79,7 @@ export const ForgotPassword: React.FC = () => {
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-primary-900 text-white text-sm font-medium hover:bg-primary-950"
+                className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 min-h-[48px] rounded-xl bg-primary-900 text-white text-sm font-medium hover:bg-primary-950"
               >
                 Return to Sign In
               </Link>
@@ -110,7 +105,7 @@ export const ForgotPassword: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                    className="w-full pl-10 pr-4 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                   />
                 </div>
               </div>
@@ -118,7 +113,7 @@ export const ForgotPassword: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full py-3 px-4 rounded-xl text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 cursor-pointer"
+                className="btn-primary w-full py-3 px-4 min-h-[48px] rounded-xl text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 cursor-pointer"
               >
                 {loading ? (
                   <span>Sending reset link...</span>

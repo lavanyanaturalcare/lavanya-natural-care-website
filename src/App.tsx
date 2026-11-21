@@ -43,13 +43,16 @@ const FloatingActions = () => {
   const { pathname } = useLocation();
   const isProductDetailPage = (pathname.startsWith('/products/') && pathname !== '/products') || (pathname.startsWith('/product/') && pathname !== '/product');
   const isAdmin = pathname.startsWith('/admin');
+  const isAuthPage = ['/signin', '/signup', '/register', '/login', '/forgot-password'].includes(pathname);
+  const isContactPage = pathname === '/contact';
 
-  if (isAdmin) return null;
+  // Do not show floating overlays on admin or focused auth forms
+  if (isAdmin || isAuthPage) return null;
 
   return (
     <>
-      <AIAssistantWidget />
-      {!isProductDetailPage && <WhatsAppButton variant="floating" />}
+      {!isProductDetailPage && <AIAssistantWidget />}
+      {!isProductDetailPage && !isContactPage && <WhatsAppButton variant="floating" />}
     </>
   );
 };

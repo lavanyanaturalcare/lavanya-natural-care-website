@@ -17,6 +17,7 @@ export const ProductDetail: React.FC = () => {
   const { getProductById, products } = useProductCatalog();
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
+  const [activeTab, setActiveTab] = useState<'benefits' | 'ingredients' | 'howToUse'>('benefits');
 
   const product = getProductById(id || '');
 
@@ -359,33 +360,78 @@ export const ProductDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* Benefits Checklist */}
-          <div className="space-y-3 pt-3 border-t border-sand-200">
-            <h3 className="font-serif text-xl font-bold text-primary-950">Product Benefits</h3>
-            <ul className="space-y-2">
-              {product.benefits.map((benefit, index) => (
-                <li key={index} className="flex items-start gap-2.5 text-xs sm:text-sm text-sand-800 leading-snug">
-                  <CheckCircle2 className="w-4 h-4 text-accent-700 shrink-0 mt-0.5" />
-                  <span className="font-medium">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Detailed Specifications & Botanical Details Tabs */}
+          <div className="pt-4 border-t border-sand-200 space-y-4">
+            <div className="flex border-b border-sand-200 gap-4 text-xs font-bold uppercase tracking-wider">
+              <button
+                type="button"
+                onClick={() => setActiveTab('benefits')}
+                className={`pb-2.5 transition-all relative min-h-[44px] flex items-center ${
+                  activeTab === 'benefits'
+                    ? 'text-primary-950 font-bold border-b-2 border-primary-950'
+                    : 'text-sand-600 hover:text-primary-950'
+                }`}
+              >
+                Key Benefits
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('ingredients')}
+                className={`pb-2.5 transition-all relative min-h-[44px] flex items-center ${
+                  activeTab === 'ingredients'
+                    ? 'text-primary-950 font-bold border-b-2 border-primary-950'
+                    : 'text-sand-600 hover:text-primary-950'
+                }`}
+              >
+                Ingredients
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('howToUse')}
+                className={`pb-2.5 transition-all relative min-h-[44px] flex items-center ${
+                  activeTab === 'howToUse'
+                    ? 'text-primary-950 font-bold border-b-2 border-primary-950'
+                    : 'text-sand-600 hover:text-primary-950'
+                }`}
+              >
+                How to Use
+              </button>
+            </div>
 
-          {/* How to Use Block */}
-          <div className="space-y-2 pt-3 border-t border-sand-200">
-            <h3 className="font-serif text-xl font-bold text-primary-950">How to Use</h3>
-            <p className="text-xs sm:text-sm text-sand-800 leading-relaxed bg-sand-50 p-4 rounded-2xl border border-sand-200">
-              {getHowToUseGuide(product.category)}
-            </p>
-          </div>
+            {/* Tab 1: Benefits */}
+            {activeTab === 'benefits' && (
+              <div className="space-y-2 animate-fadeIn">
+                <ul className="space-y-2">
+                  {product.benefits.map((benefit, index) => (
+                    <li key={index} className="flex items-start gap-2.5 text-xs sm:text-sm text-sand-800 leading-snug">
+                      <CheckCircle2 className="w-4 h-4 text-accent-700 shrink-0 mt-0.5" />
+                      <span className="font-medium">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-          {/* Full Ingredients List */}
-          <div className="space-y-2 pt-3 border-t border-sand-200">
-            <h3 className="font-serif text-xl font-bold text-primary-950">Full Ingredients Transparency</h3>
-            <p className="text-xs sm:text-sm text-sand-800 leading-relaxed bg-sand-50 p-4 rounded-2xl border border-sand-200 font-mono">
-              {product.ingredients}
-            </p>
+            {/* Tab 2: Ingredients */}
+            {activeTab === 'ingredients' && (
+              <div className="space-y-2 animate-fadeIn">
+                <p className="text-xs sm:text-sm text-sand-800 leading-relaxed bg-sand-50 p-4 rounded-2xl border border-sand-200 font-mono">
+                  {product.ingredients}
+                </p>
+                <p className="text-[11px] text-sand-600 italic">
+                  🌱 100% plant-derived cold-process formulation. Retains all natural glycerin produced during curing.
+                </p>
+              </div>
+            )}
+
+            {/* Tab 3: How to Use */}
+            {activeTab === 'howToUse' && (
+              <div className="space-y-2 animate-fadeIn">
+                <p className="text-xs sm:text-sm text-sand-800 leading-relaxed bg-sand-50 p-4 rounded-2xl border border-sand-200">
+                  {getHowToUseGuide(product.category)}
+                </p>
+              </div>
+            )}
           </div>
 
         </div>
@@ -584,7 +630,7 @@ export const ProductDetail: React.FC = () => {
               trackProductInterest(product.id, 'order_intent');
               setIsOrderModalOpen(true);
             }}
-            className="btn-primary px-3.5 py-2 rounded-xl text-white text-xs font-bold shadow-sm active:scale-95 transition-transform"
+            className="btn-primary px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-sm active:scale-95 transition-transform min-h-[44px] flex items-center justify-center cursor-pointer"
           >
             Buy (UPI/COD)
           </button>
@@ -593,7 +639,7 @@ export const ProductDetail: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="btn-whatsapp-3d flex items-center gap-1.5 px-3 py-2 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-transform cursor-pointer"
+            className="btn-whatsapp-3d flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-transform cursor-pointer min-h-[44px]"
           >
             <MessageCircle className="w-3.5 h-3.5 fill-current" />
             <span>WhatsApp</span>

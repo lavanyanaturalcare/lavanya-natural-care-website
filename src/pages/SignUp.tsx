@@ -111,21 +111,16 @@ export const SignUp: React.FC = () => {
       />
 
       <div className="max-w-md w-full">
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
-            <span className="font-serif text-3xl font-bold tracking-widest text-primary-900 block">
-              ONZNATURAL
-            </span>
-            <span className="text-xs uppercase tracking-widest text-sand-700 block mt-1">
-              Handcrafted Botanical Care • Vadodara
-            </span>
-          </Link>
-          <h1 className="mt-6 text-2xl font-serif text-primary-950 font-medium">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-100 text-primary-900 mb-3 shadow-inner">
+            <User className="w-5 h-5 text-primary-800" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-serif text-primary-950 font-medium">
             Create Your Account
           </h1>
-          <p className="mt-2 text-sm text-sand-800">
-            Save your customized Ayurvedic consultations and track artisan orders
+          <p className="mt-1 text-sm text-sand-700">
+            Save consultations, routines, and track artisan orders
           </p>
         </div>
 
@@ -151,7 +146,7 @@ export const SignUp: React.FC = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Radhika Sharma"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-4 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
               </div>
             </div>
@@ -168,7 +163,7 @@ export const SignUp: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-4 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
               </div>
             </div>
@@ -185,7 +180,7 @@ export const SignUp: React.FC = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 98250..."
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-xs bg-sand-50/50"
+                    className="w-full pl-9 pr-3 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                   />
                 </div>
               </div>
@@ -199,7 +194,7 @@ export const SignUp: React.FC = () => {
                   <select
                     value={preferredLanguage}
                     onChange={(e) => setPreferredLanguage(e.target.value as PreferredLanguage)}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-xs bg-sand-50/50"
+                    className="w-full pl-9 pr-3 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                   >
                     <option value="en">English</option>
                     <option value="hi">हिंदी (Hindi)</option>
@@ -222,12 +217,12 @@ export const SignUp: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full pl-10 pr-11 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-11 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-1"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -247,12 +242,12 @@ export const SignUp: React.FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-type password"
-                  className="w-full pl-10 pr-11 py-2 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
+                  className="w-full pl-10 pr-11 py-2.5 min-h-[44px] rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-sm bg-sand-50/50"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-1"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sand-500 hover:text-primary-950 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -278,7 +273,7 @@ export const SignUp: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-3 px-4 rounded-xl text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
+              className="btn-primary w-full py-3 px-4 min-h-[48px] rounded-xl text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
             >
               {loading ? (
                 <span>Creating Account...</span>

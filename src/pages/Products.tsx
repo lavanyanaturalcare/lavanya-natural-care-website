@@ -103,7 +103,7 @@ export const Products: React.FC = () => {
         </div>
 
         {/* Category Pills with Count Badges */}
-        <div className="flex items-center justify-center flex-wrap gap-2.5">
+        <div className="flex items-center sm:justify-center overflow-x-auto no-scrollbar gap-2 py-1 px-1 -mx-4 sm:mx-0 px-4 sm:px-0 flex-nowrap sm:flex-wrap">
           {categories.map((category) => {
             const isSelected = selectedCategory === category;
 
@@ -120,7 +120,7 @@ export const Products: React.FC = () => {
                 key={category}
                 type="button"
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 min-h-[44px] ${
                   isSelected
                     ? 'btn-primary shadow-md border-2 border-primary-950'
                     : 'bg-white text-primary-950 border-2 border-sand-300 hover:border-primary-900 hover:bg-sand-100 shadow-xs'

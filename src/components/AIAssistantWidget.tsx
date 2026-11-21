@@ -88,17 +88,18 @@ export const AIAssistantWidget: React.FC = () => {
   return (
     <>
       {/* Floating Trigger Button */}
-      <div className="fixed bottom-24 right-4 sm:right-6 z-40">
+      <div className="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 z-40">
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="btn-primary flex items-center gap-2 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full text-white font-bold text-xs shadow-xl hover:shadow-2xl transition-all border border-accent-500/30 group hover:scale-105 active:scale-95"
+            className="btn-primary flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-3 rounded-full text-white font-bold text-xs shadow-xl hover:shadow-2xl transition-all border border-accent-500/30 group hover:scale-105 active:scale-95 min-w-[44px] min-h-[44px]"
             aria-label="Open ONZNATURAL Botanical AI Skincare Assistant"
+            title="Ask ONZNATURAL Botanical AI"
           >
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center font-bold shrink-0 shadow-xs">
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <div className="w-6 h-6 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center font-bold shrink-0 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
-            <span className="tracking-wide text-[11px] sm:text-xs">Ask Botanical AI</span>
+            <span className="hidden sm:inline-block tracking-wide text-xs">Ask Botanical AI</span>
             <span className="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           </button>
         )}
