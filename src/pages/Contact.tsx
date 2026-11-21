@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, MessageCircle, Clock, CheckCircle2, AlertCircle, S
 import { SEO } from '../components/SEO';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { socialAccounts } from '../data/social';
+import { sanitizeInput, validateEmail, validatePhone, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,10 @@ export const Contact: React.FC = () => {
     message: ''
   });
 
+  const [honeypot, setHoneypot] = useState('');
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [rateLimitMessage, setRateLimitMessage] = useState<string | null>(null);
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,28 +25,37 @@ export const Contact: React.FC = () => {
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.name.trim()) {
+    const cleanName = sanitizeInput(formData.name);
+    const cleanEmail = sanitizeInput(formData.email);
+    const cleanPhone = sanitizeInput(formData.phone);
+    const cleanMessage = sanitizeInput(formData.message);
+
+    if (!cleanName) {
       newErrors.name = 'Please enter your full name.';
-    } else if (formData.name.trim().length < 2) {
+    } else if (cleanName.length < 2) {
       newErrors.name = 'Name must be at least 2 characters.';
     }
 
-    if (!formData.email.trim()) {
+    if (!cleanEmail) {
       newErrors.email = 'Please enter your email address.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+    } else if (!validateEmail(cleanEmail)) {
       newErrors.email = 'Please enter a valid email address.';
     }
 
-    if (!formData.phone.trim()) {
+    if (!cleanPhone) {
       newErrors.phone = 'Please enter your phone number.';
-    } else if (!/^[0-9+ -]{8,15}$/.test(formData.phone.trim())) {
-      newErrors.phone = 'Please enter a valid contact number.';
+    } else if (!validatePhone(cleanPhone)) {
+      newErrors.phone = 'Please enter a valid contact number (at least 8 digits).';
     }
 
-    if (!formData.message.trim()) {
+    if (!cleanMessage) {
       newErrors.message = 'Please enter your inquiry or message.';
-    } else if (formData.message.trim().length < 10) {
+    } else if (cleanMessage.length < 10) {
       newErrors.message = 'Message must be at least 10 characters.';
+    }
+
+    if (!privacyConsent) {
+      newErrors.privacy = 'Please accept the privacy consent to allow us to reply to your inquiry.';
     }
 
     setErrors(newErrors);
@@ -50,16 +64,46 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setRateLimitMessage(null);
+
+    // 1. Honeypot check (anti-bot)
+    if (isBotDetected(honeypot)) {
+      console.warn('Bot submission blocked via honeypot.');
+      setIsSubmitting(true);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+      }, 500);
+      return;
+    }
+
+    // 2. Client-side rate limiting (max 3 submissions per 3 minutes)
+    const rl = checkRateLimit('contact_form', 3, 180000, 180000);
+    if (!rl.allowed) {
+      setRateLimitMessage(`Submission limit reached. Please wait ${rl.remainingSeconds} seconds before sending another message.`);
+      return;
+    }
 
     if (!validate()) {
+      recordFailedAttempt('contact_form', 3, 180000, 180000);
       return;
     }
 
     setIsSubmitting(true);
-    // Simulate brief processing
+    // Sanitize input payload
+    const sanitizedPayload = {
+      name: sanitizeInput(formData.name),
+      email: sanitizeInput(formData.email),
+      phone: sanitizeInput(formData.phone),
+      subject: sanitizeInput(formData.subject),
+      message: sanitizeInput(formData.message)
+    };
+
     setTimeout(() => {
+      resetRateLimit('contact_form');
       setIsSubmitting(false);
       setIsSubmitted(true);
+      setFormData(sanitizedPayload);
     }, 600);
   };
 
@@ -305,8 +349,28 @@ export const Contact: React.FC = () => {
             ) : (
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 
+                {/* Honeypot anti-bot protection (hidden from humans) */}
+                <div style={{ display: 'none', position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                  <input
+                    type="text"
+                    name="_bot_honey"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
+                {/* Rate limit warning */}
+                {rateLimitMessage && (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5 animate-fadeIn">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+                    <span>{rateLimitMessage}</span>
+                  </div>
+                )}
+
                 {/* Global Error Notice if validation failed */}
-                {Object.keys(errors).length > 0 && (
+                {Object.keys(errors).length > 0 && !rateLimitMessage && (
                   <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2.5 animate-fadeIn">
                     <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
                     <span>Please correct the highlighted fields below before submitting.</span>
@@ -443,6 +507,33 @@ export const Contact: React.FC = () => {
                     <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                       <span>{errors.message}</span>
+                    </p>
+                  )}
+                </div>
+
+                {/* Privacy Consent Checkbox (DPDP Act 2023 - Unchecked by default) */}
+                <div className="pt-1">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={privacyConsent}
+                      onChange={(e) => {
+                        setPrivacyConsent(e.target.checked);
+                        if (errors.privacy) setErrors({ ...errors, privacy: '' });
+                      }}
+                      className="mt-1 w-4 h-4 rounded text-primary-900 focus:ring-accent-600 border-sand-300 cursor-pointer"
+                    />
+                    <span className="text-xs text-sand-700 leading-relaxed">
+                      I consent to ONZNATURAL securely storing and processing my contact information solely to respond to my inquiry in accordance with the{' '}
+                      <a href="/privacy-policy" target="_blank" className="text-primary-950 underline font-semibold">
+                        Privacy Policy (DPDP Act)
+                      </a>.
+                    </span>
+                  </label>
+                  {errors.privacy && (
+                    <p className="text-xs text-red-600 flex items-center gap-1 mt-1 pl-6.5">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{errors.privacy}</span>
                     </p>
                   )}
                 </div>

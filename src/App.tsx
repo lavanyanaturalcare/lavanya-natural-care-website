@@ -16,6 +16,7 @@ import { ShippingDelivery } from './pages/ShippingDelivery';
 import { RefundPolicy } from './pages/RefundPolicy';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Terms } from './pages/Terms';
+import { CookiePolicy } from './pages/CookiePolicy';
 import { Blog } from './pages/Blog';
 import { BlogPost } from './pages/BlogPost';
 import { AdminDashboard } from './pages/AdminDashboard';
@@ -26,6 +27,7 @@ import { Account } from './pages/Account';
 import { Wishlist } from './pages/Wishlist';
 import { NotFound } from './pages/NotFound';
 import { ProductProvider } from './context/ProductContext';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
 
 // Scroll to top automatically on route change
 const ScrollToTop = () => {
@@ -87,6 +89,7 @@ const AppContent: React.FC = () => {
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           
@@ -104,6 +107,7 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
       <FloatingActions />
+      <CookieConsentBanner />
     </div>
   );
 };

@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
 import { SEO } from '../components/SEO';
 import { Mail, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { sanitizeInput, validateEmail, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
 
 export const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -14,8 +16,28 @@ export const ForgotPassword: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!email.trim()) {
+    // 1. Honeypot check
+    if (isBotDetected(honeypot)) {
+      setErrorMessage('Invalid request.');
+      return;
+    }
+
+    // 2. Rate limiting (max 3 requests per 5 minutes)
+    const rl = checkRateLimit('forgot_password', 3, 300000, 300000);
+    if (!rl.allowed) {
+      setErrorMessage(`Too many reset attempts. Please wait ${rl.remainingSeconds} seconds before trying again.`);
+      return;
+    }
+
+    const cleanEmail = sanitizeInput(email).toLowerCase();
+
+    if (!cleanEmail) {
       setErrorMessage('Please enter your account email address.');
+      return;
+    }
+
+    if (!validateEmail(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
@@ -27,16 +49,19 @@ export const ForgotPassword: React.FC = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
         redirectTo: `${window.location.origin}/account`
       });
 
       if (error) {
+        recordFailedAttempt('forgot_password', 3, 300000, 300000);
         setErrorMessage(error.message);
       } else {
+        resetRateLimit('forgot_password');
         setSubmitted(true);
       }
     } catch (err: any) {
+      recordFailedAttempt('forgot_password', 3, 300000, 300000);
       setErrorMessage(err.message || 'Failed to send password reset request.');
     } finally {
       setLoading(false);
@@ -86,6 +111,18 @@ export const ForgotPassword: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Honeypot field for bot suppression */}
+              <div style={{ display: 'none', position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                <input
+                  type="text"
+                  name="_bot_honey"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
               {errorMessage && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3 text-red-800 text-sm">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />

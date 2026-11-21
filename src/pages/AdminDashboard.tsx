@@ -81,6 +81,7 @@ import { isSupabaseConfigured, supabase } from '../services/supabaseClient';
 import { useProductCatalog } from '../context/ProductContext';
 import { VERIFIED_PRODUCTS } from '../data/productKnowledge';
 import { SEO } from '../components/SEO';
+import { checkRateLimit, recordFailedAttempt, resetRateLimit, sanitizeInput } from '../utils/security';
 
 export type AdminTab = 
   | 'overview' 
@@ -325,38 +326,40 @@ export const AdminDashboard: React.FC = () => {
     loadAll();
   }, [isAuthenticated]);
 
-  // Strict Supabase Authentication (No Mock Fallbacks)
+  // Strict Supabase Authentication with Rate Limiting & Zero Plaintext Secrets
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
-    setIsLoggingIn(true);
 
-    if (!adminEmail.trim() || !adminPassword) {
+    // 1. Rate Limiting Check (Anti Brute-Force)
+    const rl = checkRateLimit('admin_login', 5, 120000, 180000);
+    if (!rl.allowed) {
+      setLoginError(`Security lockout: Too many failed administrator login attempts. Please wait ${rl.remainingSeconds} seconds.`);
+      return;
+    }
+
+    const cleanEmail = sanitizeInput(adminEmail).toLowerCase();
+
+    if (!cleanEmail || !adminPassword) {
       setLoginError('Please enter both your administrator email and password.');
-      setIsLoggingIn(false);
       return;
     }
 
     if (!isSupabaseConfigured() || !supabase) {
-      setLoginError('Supabase is not configured. VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required for administrator authentication.');
-      setIsLoggingIn(false);
+      setLoginError('Authentication service is currently offline. Please check your Supabase connection.');
       return;
     }
 
-    try {
-      const normalizedEmail = adminEmail.trim().toLowerCase();
-      const isOwnerMaster = (
-        (normalizedEmail === 'owner@onznatural.com' || normalizedEmail === 'care@onznatural.com') &&
-        (adminPassword === 'OnzNatural@Owner2026' || adminPassword === 'OnzNatural2026!')
-      );
+    setIsLoggingIn(true);
 
+    try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: adminEmail.trim(),
+        email: cleanEmail,
         password: adminPassword
       });
 
       if (!error && data?.user) {
-        // Check admin_users table for authorized admin role
+        // Verify administrator role in admin_users table
         const { data: adminRow, error: adminCheckError } = await supabase
           .from('admin_users')
           .select('*')
@@ -364,36 +367,50 @@ export const AdminDashboard: React.FC = () => {
           .maybeSingle();
 
         if (adminRow && !adminCheckError) {
+          resetRateLimit('admin_login');
           setCurrentUser(data.user);
           setAdminRole(adminRow.role || 'super_admin');
           setIsAuthenticated(true);
           sessionStorage.setItem('onznatural_admin_session', 'owner-verified');
           await logAdminAction('ADMIN_LOGIN', 'admin_users', data.user.id, { 
-            email: adminEmail.trim(), 
+            email: cleanEmail, 
             role: adminRow.role 
           });
+          setIsLoggingIn(false);
+          return;
+        } else {
+          recordFailedAttempt('admin_login', 5, 120000, 180000);
+          setLoginError('Access Denied: Your account is not authorized as an ONZNATURAL administrator.');
           setIsLoggingIn(false);
           return;
         }
       }
 
-      // If owner master credentials match
-      if (isOwnerMaster) {
-        setCurrentUser({ id: data?.user?.id || 'owner-master', email: adminEmail.trim() });
+      // Check secure environment override token if configured
+      const envFallbackKey = (import.meta as any).env?.VITE_ADMIN_FALLBACK_TOKEN;
+      if (
+        envFallbackKey && 
+        cleanEmail === 'owner@onznatural.com' && 
+        adminPassword === envFallbackKey
+      ) {
+        resetRateLimit('admin_login');
+        setCurrentUser({ id: 'owner-master', email: cleanEmail });
         setAdminRole('super_admin');
         setIsAuthenticated(true);
         sessionStorage.setItem('onznatural_admin_session', 'owner-verified');
-        await logAdminAction('ADMIN_LOGIN_OWNER_MASTER', 'admin_users', null, { 
-          email: adminEmail.trim(), 
+        await logAdminAction('ADMIN_LOGIN_ENV_OVERRIDE', 'admin_users', null, { 
+          email: cleanEmail, 
           role: 'super_admin' 
         });
         setIsLoggingIn(false);
         return;
       }
 
-      setLoginError(error?.message || 'Invalid administrator email or password.');
+      recordFailedAttempt('admin_login', 5, 120000, 180000);
+      setLoginError('Invalid administrator credentials or unauthorized user.');
     } catch (err: any) {
-      setLoginError(err.message || 'Authentication error.');
+      recordFailedAttempt('admin_login', 5, 120000, 180000);
+      setLoginError('Authentication encountered an unexpected issue.');
     } finally {
       setIsLoggingIn(false);
     }
