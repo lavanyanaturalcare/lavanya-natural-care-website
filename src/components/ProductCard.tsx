@@ -124,10 +124,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div>
               <span className="text-[10px] text-sand-600 uppercase tracking-wider block font-medium">Net Weight / Vol</span>
               <span className="text-xs font-semibold text-primary-950">{product.netWeightOrVol}</span>
+              {product.availabilityStatus === 'out_of_stock' && (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-100 text-rose-800 uppercase tracking-wider">
+                  Out of Stock
+                </span>
+              )}
+              {product.availabilityStatus === 'low_stock' && (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider">
+                  Low Stock
+                </span>
+              )}
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-sand-600 uppercase tracking-wider block font-medium">MRP (Incl. Taxes)</span>
-              <span className="font-serif text-2xl font-bold text-primary-950">₹{product.mrp}</span>
+              <span className="text-[10px] text-sand-600 uppercase tracking-wider block font-medium">
+                {product.discountPrice && product.discountPrice < product.mrp ? 'Special Price' : 'MRP (Incl. Taxes)'}
+              </span>
+              <div className="flex items-baseline justify-end gap-1.5">
+                {product.discountPrice && product.discountPrice < product.mrp ? (
+                  <>
+                    <span className="font-serif text-2xl font-bold text-primary-950">₹{product.discountPrice}</span>
+                    <span className="text-xs line-through text-sand-500 font-medium">₹{product.mrp}</span>
+                  </>
+                ) : (
+                  <span className="font-serif text-2xl font-bold text-primary-950">₹{product.mrp}</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -142,7 +163,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Link>
             <WhatsAppButton
               productName={product.name}
-              mrp={product.mrp}
+              mrp={product.discountPrice && product.discountPrice < product.mrp ? product.discountPrice : product.mrp}
               className="w-full justify-center py-2.5 text-xs cursor-pointer font-bold"
             />
           </div>

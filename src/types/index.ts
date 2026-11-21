@@ -9,6 +9,8 @@ export interface Product {
   ingredients: string;
   netWeightOrVol: string;
   mrp: number;
+  discountPrice?: number;
+  stockQuantity?: number;
   image: string;
   additionalImages?: string[];
   howToUse?: string;

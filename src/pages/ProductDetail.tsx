@@ -194,9 +194,38 @@ export const ProductDetail: React.FC = () => {
                 </span>
               </div>
             )}
+            {product.stockQuantity !== undefined && (
+              <div>
+                <span className="text-xs text-sand-600 font-medium block">Inventory Status</span>
+                <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full inline-block mt-0.5 ${
+                  product.availabilityStatus === 'out_of_stock' || product.stockQuantity <= 0
+                    ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                    : product.availabilityStatus === 'low_stock' || product.stockQuantity <= 10
+                    ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                    : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                }`}>
+                  {product.availabilityStatus === 'out_of_stock' || product.stockQuantity <= 0
+                    ? 'Out of Stock'
+                    : product.availabilityStatus === 'low_stock' || product.stockQuantity <= 10
+                    ? `Low Stock (${product.stockQuantity} left)`
+                    : `In Stock (${product.stockQuantity} units)`}
+                </span>
+              </div>
+            )}
             <div className="col-span-2 sm:col-span-1 text-left sm:text-right">
-              <span className="text-xs text-sand-600 uppercase tracking-wider block font-semibold">MRP (Incl. all taxes)</span>
-              <span className="font-serif text-3xl font-bold text-primary-950">₹{product.mrp}</span>
+              <span className="text-xs text-sand-600 uppercase tracking-wider block font-semibold">
+                {product.discountPrice && product.discountPrice < product.mrp ? 'Special Price (MRP Incl. taxes)' : 'MRP (Incl. all taxes)'}
+              </span>
+              <div className="flex items-baseline sm:justify-end gap-2">
+                {product.discountPrice && product.discountPrice < product.mrp ? (
+                  <>
+                    <span className="font-serif text-3xl font-bold text-primary-950">₹{product.discountPrice}</span>
+                    <span className="text-base line-through text-sand-500 font-medium">₹{product.mrp}</span>
+                  </>
+                ) : (
+                  <span className="font-serif text-3xl font-bold text-primary-950">₹{product.mrp}</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -217,7 +246,7 @@ export const ProductDetail: React.FC = () => {
 
               <WhatsAppButton
                 productName={product.name}
-                mrp={product.mrp}
+                mrp={product.discountPrice && product.discountPrice < product.mrp ? product.discountPrice : product.mrp}
                 className="w-full py-4 text-sm sm:text-base justify-center shadow-md font-bold"
                 label="Order via WhatsApp"
               />
@@ -318,7 +347,14 @@ export const ProductDetail: React.FC = () => {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-sand-200 px-3.5 py-2.5 flex items-center justify-between shadow-2xl safe-area-bottom">
         <div>
           <span className="text-[10px] text-sand-600 block uppercase tracking-wider font-semibold truncate max-w-[110px]">{product.name}</span>
-          <span className="font-serif text-lg font-bold text-primary-950">₹{product.mrp}</span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-serif text-lg font-bold text-primary-950">
+              ₹{product.discountPrice && product.discountPrice < product.mrp ? product.discountPrice : product.mrp}
+            </span>
+            {product.discountPrice && product.discountPrice < product.mrp && (
+              <span className="text-[10px] line-through text-sand-500">₹{product.mrp}</span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -332,7 +368,7 @@ export const ProductDetail: React.FC = () => {
             Buy (UPI/COD)
           </button>
           <a
-            href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello! I would like to order ${product.name} (₹${product.mrp}) from ONZNATURAL. Please provide delivery details.`)}`}
+            href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent(`Hello! I would like to order ${product.name} (₹${product.discountPrice && product.discountPrice < product.mrp ? product.discountPrice : product.mrp}) from ONZNATURAL. Please provide delivery details.`)}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
