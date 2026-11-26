@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { socialAccounts } from '../data/social';
+import { useProductCatalog } from '../context/ProductContext';
 
 export const Footer: React.FC = () => {
+  const { products } = useProductCatalog();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -66,7 +68,7 @@ export const Footer: React.FC = () => {
               <li>
                 <Link to="/products" className="hover:text-accent-400 transition-colors inline-flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-accent-500/60" />
-                  <span>Product Collection (16 Items)</span>
+                  <span>Product Collection ({products.length} Items)</span>
                 </Link>
               </li>
               <li>

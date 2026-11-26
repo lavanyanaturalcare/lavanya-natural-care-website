@@ -11,6 +11,7 @@ export interface VerifiedProductKnowledge {
   gujaratiName?: string;
   category: Product['category'];
   mrp: number;
+  discountPrice?: number;
   netWeightOrVol: string;
   image: string;
   shortDescription: string;
@@ -164,6 +165,7 @@ export const VERIFIED_PRODUCTS: VerifiedProductKnowledge[] = productsData.map(p 
   name: p.name,
   category: p.category,
   mrp: p.mrp,
+  discountPrice: p.discountPrice,
   netWeightOrVol: p.netWeightOrVol,
   image: p.image,
   shortDescription: p.shortDescription,

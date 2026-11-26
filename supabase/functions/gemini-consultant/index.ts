@@ -29,25 +29,25 @@ const checkRateLimit = (key: string): boolean => {
   return true;
 };
 
-// ONZNATURAL Verified Product Catalogue Grounding
+// ONZNATURAL Verified Product Catalogue Grounding (Synced with src/data/products.ts)
 const ONZ_CATALOGUE = `
-1. Neem & Tulsi Soap (ID: "neem-tulsi-soap" | Price: ₹99 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Neem, Kokum Butter, Sunflower, Castor oils, Neem & Tulsi powder, Clay | Best For: Oily, Blemish-Prone Skin)
-2. Kesuda Palash Soap (ID: "kesuda-palash-soap" | Price: ₹99 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Kesuda Palash flower infusion | Best For: Sensitive, Sun-Exposed, Prickly Heat Skin)
-3. Hibiscus Soap (ID: "hibiscus-soap" | Price: ₹99 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Hibiscus powder, Clay | Best For: Normal to Dry, Mature, Dull Skin)
-4. Ubtan Soap (ID: "ubtan-soap" | Price: ₹99 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Sunflower, Castor oils, Besan, Haldi, Milk, Multani Mitti | Best For: All Skin Types, Tan Removal, Bridal Glow)
-5. Charcoal Rice Soap (ID: "charcoal-rice-soap" | Price: ₹99 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Activated Charcoal, Rice powder | Best For: Oily, Congested Pores)
-6. Aparajita Body Lotion (ID: "aparajita-body-lotion" | Price: ₹599 | Net: 150 ml | Ingredients: Butterfly Pea flower extract, Sunflower & Rice Bran oils, Shea butter | Best For: Normal, Dry, Dull Skin)
-7. Lavender Body Lotion (ID: "lavender-body-lotion" | Price: ₹599 | Net: 150 ml | Ingredients: French Lavender essential oil, Almond & Sunflower oils, Shea butter | Best For: Evening Relaxation, Dry Skin)
-8. Honey Almond Body Lotion (ID: "honey-almond-body-lotion" | Price: ₹599 | Net: 150 ml | Ingredients: Pure Honey, Sweet Almond oil, Shea butter | Best For: Rough, Dry Skin)
-9. Kesuda Body Lotion (ID: "kesuda-body-lotion" | Price: ₹599 | Net: 150 ml | Ingredients: Kesuda Palash flower infusion, Sunflower oil, Shea butter | Best For: Summer Heat, Sun-Exposed Skin)
-10. Aparajita Body Cream (ID: "aparajita-body-cream" | Price: ₹399 | Net: 100 gm | Ingredients: Butterfly Pea distilled water, Sunflower & Rice Bran oils, Shea butter | Best For: Extremely Dry Body Skin)
-11. Kesuda Palash Body Cream (ID: "kesuda-palash-body-cream" | Price: ₹399 | Net: 100 gm | Ingredients: Kesuda extract, Shea butter, Vitamin E | Best For: Dry, Sensitive, Sun-Stressed Skin)
-12. Honey Almond Body Cream (ID: "honey-almond-body-cream" | Price: ₹399 | Net: 100 gm | Ingredients: Honey, Sweet Almond oil, Shea butter | Best For: Rough, Flaking Skin)
-13. Neem Tulsi Face & Body Wash (ID: "face-body-wash-neem-tulsi" | Price: ₹599 | Net: 300 ml | Ingredients: Saponified Coconut, Mahua, Sunflower, Castor, Neem oils, Tulsi | Best For: Oily, Acne-Prone Face & Body)
-14. Kesuda Face & Body Wash (ID: "face-body-wash-kesuda" | Price: ₹599 | Net: 300 ml | Ingredients: Saponified oils, Kesuda flower water, Glycerin | Best For: Heat-Sensitive, Normal Skin)
-15. Lemon Hand Wash (ID: "hand-wash-lemon" | Price: ₹599 | Net: 300 ml | Ingredients: Saponified oils, Lemon essential oil, Glycerin | Best For: Frequent Handwashing)
-16. Rice Aloe Face Cream (ID: "rice-aloe-face-cream" | Price: ₹399 | Net: 100 gm | Ingredients: Aloe Vera, Rice starch, Jojoba oil | Best For: Daily Facial Hydration, Brightening)
-17. Natural Lip Balm (ID: "lip-balm" | Price: ₹70 | Net: 10 g | Ingredients: Coconut, Almond oils, Shea butter, Beeswax | Best For: Dry, Chapped Lips)
+1. Neem & Tulsi Soap (ID: "neem-tulsi-soap" | Selling Price: ₹99, MRP: ₹149 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Neem, Kokum Butter, Sunflower, Castor oils, Neem & Tulsi powder, Clay | Best For: Oily, Blemish-Prone Skin)
+2. Kesuda Palash Soap (ID: "kesuda-palash-soap" | Selling Price: ₹99, MRP: ₹149 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Kesuda Palash flower infusion | Best For: Sensitive, Sun-Exposed, Prickly Heat Skin)
+3. Hibiscus Soap (ID: "hibiscus-soap" | Selling Price: ₹99, MRP: ₹149 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Hibiscus powder, Clay | Best For: Normal to Dry, Mature, Dull Skin)
+4. Ubtan Soap (ID: "ubtan-soap" | Selling Price: ₹99, MRP: ₹149 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Sunflower, Castor oils, Besan, Haldi, Milk, Multani Mitti | Best For: All Skin Types, Tan Removal, Bridal Glow)
+5. Charcoal Rice Soap (ID: "charcoal-rice-soap" | Selling Price: ₹99, MRP: ₹149 | Net: 100 gm / 3.52 oz | Ingredients: Coconut, Mahua, Kokum Butter, Sunflower, Castor oils, Activated Charcoal, Rice powder | Best For: Oily, Congested Pores)
+6. Aparajita Body Lotion (ID: "aparajita-body-lotion" | Selling Price: ₹299, MRP: ₹399 | Net: 150 ml | Ingredients: Butterfly Pea flower extract, Sunflower & Rice Bran oils, Shea butter | Best For: Normal, Dry, Dull Skin)
+7. Lavender Body Lotion (ID: "lavender-body-lotion" | Selling Price: ₹299, MRP: ₹399 | Net: 150 ml | Ingredients: French Lavender essential oil, Almond & Sunflower oils, Shea butter | Best For: Evening Relaxation, Dry Skin)
+8. Honey Almond Body Lotion (ID: "honey-almond-body-lotion" | Selling Price: ₹299, MRP: ₹399 | Net: 150 ml | Ingredients: Pure Honey, Sweet Almond oil, Shea butter | Best For: Rough, Dry Skin)
+9. Kesuda Body Lotion (ID: "kesuda-body-lotion" | Selling Price: ₹299, MRP: ₹399 | Net: 150 ml | Ingredients: Kesuda Palash flower infusion, Sunflower oil, Shea butter | Best For: Summer Heat, Sun-Exposed Skin)
+10. Aparajita Body Cream (ID: "aparajita-body-cream" | Selling Price: ₹249, MRP: ₹349 | Net: 100 gm | Ingredients: Butterfly Pea distilled water, Sunflower & Rice Bran oils, Shea butter | Best For: Extremely Dry Body Skin)
+11. Kesuda Palash Natural Body Cream (ID: "kesuda-palash-body-cream" | Selling Price: ₹249, MRP: ₹349 | Net: 100 gm | Ingredients: Kesuda extract, Shea butter, Vitamin E | Best For: Dry, Sensitive, Sun-Stressed Skin)
+12. Honey Almond Body Cream (ID: "honey-almond-body-cream" | Selling Price: ₹249, MRP: ₹349 | Net: 100 gm | Ingredients: Honey, Sweet Almond oil, Shea butter | Best For: Rough, Flaking Skin)
+13. Neem Tulsi Face & Body Wash (ID: "face-body-wash-neem-tulsi" | Selling Price: ₹249, MRP: ₹349 | Net: 300 ml | Ingredients: Saponified Coconut, Mahua, Sunflower, Castor, Neem oils, Tulsi | Best For: Oily, Acne-Prone Face & Body)
+14. Kesuda Face & Body Wash (ID: "face-body-wash-kesuda" | Selling Price: ₹249, MRP: ₹349 | Net: 300 ml | Ingredients: Saponified oils, Kesuda flower water, Glycerin | Best For: Heat-Sensitive, Normal Skin)
+15. Lemon Hand Wash (ID: "hand-wash-lemon" | Selling Price: ₹149, MRP: ₹199 | Net: 300 ml | Ingredients: Saponified oils, Lemon essential oil, Glycerin | Best For: Frequent Handwashing)
+16. Rice Aloe Face Cream (ID: "rice-aloe-face-cream" | Selling Price: ₹249, MRP: ₹349 | Net: 100 gm | Ingredients: Aloe Vera, Rice starch, Jojoba oil | Best For: Daily Facial Hydration, Brightening)
+17. Natural Lip Balm (ID: "lip-balm" | Selling Price: ₹89, MRP: ₹129 | Net: 10 g | Ingredients: Coconut, Almond oils, Shea butter, Beeswax | Best For: Dry, Chapped Lips)
 `;
 
 serve(async (req) => {
@@ -64,7 +64,7 @@ serve(async (req) => {
       );
     }
 
-    const { action, message, history, language, quizAnswers, product1Id, product2Id } = await req.json();
+    const { action, message, history, language, quizAnswers, product1Id, product2Id, image } = await req.json();
 
     // Input length limit
     if (message && typeof message === 'string' && message.length > 1000) {
@@ -113,6 +113,11 @@ MEDICAL & SAFETY RULES:
 Language: ${lang}`;
     } else if (action === 'compare' && product1Id && product2Id) {
       userPrompt = `Compare these two ONZNATURAL products side-by-side in terms of key actives, skin benefits, price, and ideal skin types: "${product1Id}" and "${product2Id}".`;
+    } else if (action === 'image') {
+      userPrompt = `You are ONZNATURAL's botanical cosmetic analyst. User context: "${message || 'Please analyze this skin concern or cosmetic ingredient label.'}".
+1. If this is an ingredient label: Evaluate synthetic surfactants (SLS, SLES), parabens, mineral oil, or alcohol. Explain why ONZNATURAL's cold-process saponified bars with retained vegetable glycerin offer a gentler botanical alternative.
+2. If this is a photo of skin: Provide ONLY general cosmetic botanical comfort suggestions. NEVER diagnose medical conditions or promise treatment. Include mandatory 24-hour patch test reminder.
+3. Keep under 200 words in ${lang} and end with [RECOMMENDED_IDS: "id1", "id2"].`;
     }
 
     const contents: any[] = [];
@@ -124,7 +129,17 @@ Language: ${lang}`;
         });
       });
     }
-    contents.push({ role: 'user', parts: [{ text: userPrompt }] });
+
+    const userParts: any[] = [{ text: userPrompt }];
+    if (action === 'image' && image?.data && image?.mimeType) {
+      userParts.push({
+        inlineData: {
+          mimeType: image.mimeType,
+          data: image.data
+        }
+      });
+    }
+    contents.push({ role: 'user', parts: userParts });
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
     const geminiResp = await fetch(geminiUrl, {

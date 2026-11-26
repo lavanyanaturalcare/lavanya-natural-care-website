@@ -66,11 +66,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
     if (!product || !products || products.length === 0) return null;
     if (product.category === 'Handmade Cold Process Soap') {
       return products.find(p => p.id === 'rice-aloe-face-cream') || 
-             products.find(p => p.id === 'kesuda-soap') || 
+             products.find(p => p.id === 'kesuda-palash-soap') || 
              products.find(p => p.id !== product.id);
     } else {
       return products.find(p => p.id === 'neem-tulsi-soap') || 
-             products.find(p => p.id === 'kesuda-soap') || 
+             products.find(p => p.id === 'kesuda-palash-soap') || 
              products.find(p => p.id !== product.id);
     }
   }, [product, products]);
@@ -79,8 +79,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
 
   // Base pricing
   const unitPrice = product.discountPrice && product.discountPrice < product.mrp ? product.discountPrice : product.mrp;
+  const compUnitPrice = complementaryProduct
+    ? (complementaryProduct.discountPrice && complementaryProduct.discountPrice < complementaryProduct.mrp
+        ? complementaryProduct.discountPrice
+        : complementaryProduct.mrp)
+    : 0;
   const originalFullMrp = (product.mrp * quantity) + (addComplementary && complementaryProduct ? complementaryProduct.mrp : 0);
-  const itemsSubtotal = (unitPrice * quantity) + (addComplementary && complementaryProduct ? complementaryProduct.mrp : 0);
+  const itemsSubtotal = (unitPrice * quantity) + (addComplementary && complementaryProduct ? compUnitPrice : 0);
 
   // Volume tier discounts (honest multi-pack saving)
   let volumeDiscountRate = 0;
@@ -626,6 +631,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
             <span className="text-[10px] text-sand-500">Pure Plant Oils</span>
           </div>
         </div>
+
+        {/* Transparent Order Process & Policy Notice */}
+        <p className="text-[11px] text-sand-600 text-center leading-relaxed pt-1">
+          Orders are confirmed via WhatsApp or direct UPI verification (no online card gateway is used). By placing a request, you agree to our{' '}
+          <a href="/shipping-delivery" target="_blank" rel="noopener noreferrer" className="underline text-primary-900 font-medium">Shipping</a>,{' '}
+          <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline text-primary-900 font-medium">Refund</a>, and{' '}
+          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline text-primary-900 font-medium">Privacy Policy</a>.
+        </p>
       </div>
     </div>,
     document.body

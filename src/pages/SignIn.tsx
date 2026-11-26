@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
-import { getLocalCustomers } from '../services/crmService';
 import { SEO } from '../components/SEO';
 import { ArrowRight, Lock, Mail, AlertCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { sanitizeInput, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
@@ -57,16 +56,6 @@ export const SignIn: React.FC = () => {
 
       if (error) {
         recordFailedAttempt('customer_login', 5, 60000, 60000);
-        if (error.message.toLowerCase().includes('confirm') || error.message.toLowerCase().includes('rate')) {
-          const localList = getLocalCustomers();
-          const match = localList.find(c => c.email.toLowerCase() === cleanEmail);
-          if (match) {
-            resetRateLimit('customer_login');
-            localStorage.setItem('onznatural_customer_session', JSON.stringify(match));
-            navigate(from, { replace: true });
-            return;
-          }
-        }
         setErrorMessage(error.message || 'Invalid email or password.');
       } else if (data.user) {
         resetRateLimit('customer_login');

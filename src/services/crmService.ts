@@ -422,14 +422,17 @@ export const getCustomerEvents = async (query?: {
       }
       const limit = query?.limit || 50;
       const { data, error } = await sbQuery.order('created_at', { ascending: false }).limit(limit);
-      if (!error && data && data.length > 0) {
-        return data as CustomerEvent[];
+      if (error) {
+        console.warn('Supabase getCustomerEvents error:', error.message);
+        throw new Error('Unable to load customer activity events from database.');
       }
-    } catch (err) {
-      console.warn('Supabase getCustomerEvents error:', err);
+      return (data || []) as CustomerEvent[];
+    } catch (err: any) {
+      console.warn('Supabase getCustomerEvents error:', err?.message);
+      throw err;
     }
   }
-  return SEED_EVENTS;
+  return [];
 };
 
 // -------------------------------------------------------------
@@ -460,118 +463,70 @@ export const getCustomers = async (query?: {
       const to = from + limit - 1;
 
       const { data, count, error } = await sbQuery.order('created_at', { ascending: false }).range(from, to);
-      if (!error && data && data.length > 0) {
-        dbCustomers = data.map((d: any) => ({
-          ...d,
-          name: d.full_name || d.name || 'Anonymous Customer',
-          full_name: d.full_name || d.name || 'Anonymous Customer'
-        }));
-        dbCount = count || data.length;
-      } else if (error) {
+      if (error) {
         console.warn('Supabase getCustomers notice:', error.message);
+        throw new Error('Unable to load customer records from database.');
       }
-    } catch (err) {
-      console.warn('Supabase getCustomers query exception:', err);
+      dbCustomers = (data || []).map((d: any) => ({
+        ...d,
+        name: d.full_name || d.name || 'Anonymous Customer',
+        full_name: d.full_name || d.name || 'Anonymous Customer'
+      }));
+      dbCount = count || dbCustomers.length;
+      return { customers: dbCustomers, total: dbCount };
+    } catch (err: any) {
+      console.warn('Supabase getCustomers query exception:', err?.message);
+      throw err;
     }
   }
 
-  // Retrieve locally saved customers
-  const localList = getLocalCustomers();
-  const customerMap = new Map<string, Customer>();
-
-  // Use DB customers if available, otherwise SEED_CUSTOMERS
-  const basePool = dbCustomers.length > 0 ? dbCustomers : SEED_CUSTOMERS;
-  basePool.forEach(c => customerMap.set(c.email.toLowerCase(), c));
-  localList.forEach(c => customerMap.set(c.email.toLowerCase(), c));
-
-  let finalCustomers = Array.from(customerMap.values());
-
-  // Filter if needed
-  if (query?.status && query.status !== 'all') {
-    finalCustomers = finalCustomers.filter(c => c.status === query.status);
-  }
-  if (query?.search && query.search.trim()) {
-    const term = query.search.trim().toLowerCase();
-    finalCustomers = finalCustomers.filter(c =>
-      (c.name && c.name.toLowerCase().includes(term)) ||
-      (c.full_name && c.full_name.toLowerCase().includes(term)) ||
-      (c.email && c.email.toLowerCase().includes(term)) ||
-      (c.phone && c.phone.includes(term))
-    );
-  }
-
-  return { customers: finalCustomers, total: finalCustomers.length };
+  return { customers: [], total: 0 };
 };
 
 export const registerCustomer = async (
   customerData: Omit<Customer, 'id' | 'created_at' | 'updated_at' | 'registration_date'>
 ): Promise<Customer> => {
   const fullName = customerData.full_name || customerData.name || 'Valued Customer';
-  const now = new Date().toISOString();
 
-  // Create local profile immediately
-  const localCustomer: Customer = {
-    id: 'cust_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now(),
+  if (!isSupabaseConfigured() || !supabase) {
+    throw new Error('Customer registration service is currently unavailable. Please try again later.');
+  }
+
+  const payload: any = {
     name: fullName,
     full_name: fullName,
     email: customerData.email,
     phone: customerData.phone || null,
     preferred_language: customerData.preferred_language || 'en',
     status: customerData.status || 'active',
-    registration_date: now,
-    created_at: now,
-    updated_at: now,
-    notes: customerData.notes || null,
-    auth_user_id: customerData.auth_user_id || null
+    notes: customerData.notes || null
   };
-
-  saveLocalCustomer(localCustomer);
-  localStorage.setItem(LOCAL_CUSTOMER_SESSION_KEY, JSON.stringify(localCustomer));
-
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      const payload: any = {
-        name: fullName,
-        full_name: fullName,
-        email: customerData.email,
-        phone: customerData.phone || null,
-        preferred_language: customerData.preferred_language || 'en',
-        status: customerData.status || 'active',
-        notes: customerData.notes || null
-      };
-      if (customerData.auth_user_id) {
-        payload.auth_user_id = customerData.auth_user_id;
-      }
-
-      const { data, error } = await supabase.from('customers').insert([payload]).select().single();
-      if (!error && data) {
-        const syncedCustomer: Customer = {
-          ...data,
-          name: data.full_name || data.name || fullName,
-          full_name: data.full_name || data.name || fullName
-        };
-        saveLocalCustomer(syncedCustomer);
-        localStorage.setItem(LOCAL_CUSTOMER_SESSION_KEY, JSON.stringify(syncedCustomer));
-
-        // Claim session
-        const tokenHash = await getClientSessionTokenHash();
-        try {
-          await supabase.rpc('claim_guest_session', {
-            p_token_hash: tokenHash
-          });
-        } catch (claimErr) {}
-
-        return syncedCustomer;
-      }
-      if (error) {
-        console.warn('Supabase customer insert warning (falling back to verified local profile):', error.message);
-      }
-    } catch (err: any) {
-      console.warn('Supabase registerCustomer network warning:', err.message);
-    }
+  if (customerData.auth_user_id) {
+    payload.auth_user_id = customerData.auth_user_id;
   }
 
-  return localCustomer;
+  const { data, error } = await supabase.from('customers').insert([payload]).select().single();
+  if (error || !data) {
+    console.warn('Supabase customer insert failed:', error?.message);
+    throw new Error(error?.message || 'Unable to save your customer profile to the database. Please try again.');
+  }
+
+  const syncedCustomer: Customer = {
+    ...data,
+    name: data.full_name || data.name || fullName,
+    full_name: data.full_name || data.name || fullName
+  };
+  localStorage.setItem(LOCAL_CUSTOMER_SESSION_KEY, JSON.stringify(syncedCustomer));
+
+  // Claim session
+  const tokenHash = await getClientSessionTokenHash();
+  try {
+    await supabase.rpc('claim_guest_session', {
+      p_token_hash: tokenHash
+    });
+  } catch (claimErr) {}
+
+  return syncedCustomer;
 };
 
 export const updateCustomerStatus = async (
@@ -725,15 +680,18 @@ export const getConversations = async (query?: {
         sbQuery = sbQuery.lte('started_at', query.dateTo);
       }
       const { data, error } = await sbQuery.order('last_activity_at', { ascending: false });
-      if (!error && data && data.length > 0) {
-        dbConvs = data as Conversation[];
+      if (error) {
+        console.warn('Supabase getConversations query error:', error.message);
+        throw new Error('Unable to load AI conversations from database.');
       }
-    } catch (err) {
-      console.warn('Supabase getConversations query error:', err);
+      dbConvs = (data || []) as Conversation[];
+    } catch (err: any) {
+      console.warn('Supabase getConversations query error:', err?.message);
+      throw err;
     }
   }
 
-  let results = dbConvs.length > 0 ? dbConvs : SEED_CONVERSATIONS;
+  let results = dbConvs;
   if (query?.search && query.search.trim()) {
     const q = query.search.toLowerCase().trim();
     results = results.filter(c =>
@@ -788,14 +746,17 @@ export const getProductInterests = async (query?: {
       }
       const limit = query?.limit || 100;
       const { data, error } = await sbQuery.order('created_at', { ascending: false }).limit(limit);
-      if (!error && data && data.length > 0) {
-        return data as ProductInterest[];
+      if (error) {
+        console.warn('Supabase getProductInterests error:', error.message);
+        throw new Error('Unable to load product interest analytics.');
       }
-    } catch (err) {
-      console.warn('Supabase getProductInterests error:', err);
+      return (data || []) as ProductInterest[];
+    } catch (err: any) {
+      console.warn('Supabase getProductInterests error:', err?.message);
+      throw err;
     }
   }
-  return SEED_INTERESTS;
+  return [];
 };
 
 // -------------------------------------------------------------
@@ -877,59 +838,36 @@ export const createEnquiry = async (
   enquiryData: Omit<CustomerEnquiry, 'id' | 'created_at' | 'updated_at'>
 ): Promise<CustomerEnquiry> => {
   const sessionId = getClientSessionId();
-  const now = new Date().toISOString();
   const contact = enquiryData.contact_details || enquiryData.contact_info || '';
   const eType = enquiryData.enquiry_type || 'whatsapp';
 
-  const localEnquiry: CustomerEnquiry = {
-    id: 'enq_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now(),
-    customer_id: enquiryData.customer_id || null,
+  if (!isSupabaseConfigured() || !supabase) {
+    throw new Error('Enquiry submission service is currently offline. Please message us directly on WhatsApp.');
+  }
+
+  const payload: any = {
     session_id: sessionId,
     customer_name: enquiryData.customer_name || 'Anonymous Customer',
     contact_details: contact,
     contact_info: contact,
     enquiry_type: eType,
     message: enquiryData.message,
+    product_id: enquiryData.product_id || null,
     status: enquiryData.status || 'new',
-    created_at: now,
-    updated_at: now
+    customer_id: enquiryData.customer_id || null
   };
-
-  saveLocalEnquiry(localEnquiry);
-
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      const payload: any = {
-        session_id: sessionId,
-        customer_name: enquiryData.customer_name || 'Anonymous Customer',
-        contact_details: contact,
-        contact_info: contact,
-        enquiry_type: eType,
-        message: enquiryData.message,
-        product_id: enquiryData.product_id || null,
-        status: enquiryData.status || 'new',
-        customer_id: enquiryData.customer_id || null
-      };
-      const { data, error } = await supabase.from('customer_enquiries').insert([payload]).select().single();
-      if (!error && data) {
-        const syncedEnquiry = {
-          ...data,
-          customer_name: data.customer_name || localEnquiry.customer_name,
-          contact_details: data.contact_details || data.contact_info || contact,
-          enquiry_type: data.enquiry_type || eType
-        } as CustomerEnquiry;
-        saveLocalEnquiry(syncedEnquiry);
-        return syncedEnquiry;
-      }
-      if (error) {
-        console.warn('Supabase enquiry insert notice (using local enquiry):', error.message);
-      }
-    } catch (err: any) {
-      console.warn('Supabase createEnquiry exception:', err.message);
-    }
+  const { data, error } = await supabase.from('customer_enquiries').insert([payload]).select().single();
+  if (error || !data) {
+    console.warn('Supabase enquiry insert failed:', error?.message);
+    throw new Error(error?.message || 'Unable to save your enquiry to the database. Please try again or contact us on WhatsApp.');
   }
 
-  return localEnquiry;
+  return {
+    ...data,
+    customer_name: data.customer_name || payload.customer_name,
+    contact_details: data.contact_details || data.contact_info || contact,
+    enquiry_type: data.enquiry_type || eType
+  } as CustomerEnquiry;
 };
 
 export const getEnquiries = async (filter?: { status?: string; search?: string }): Promise<CustomerEnquiry[]> => {
@@ -942,27 +880,23 @@ export const getEnquiries = async (filter?: { status?: string; search?: string }
         sbQuery = sbQuery.eq('status', filter.status);
       }
       const { data, error } = await sbQuery.order('created_at', { ascending: false });
-      if (!error && data && data.length > 0) {
-        dbEnquiries = data.map((d: any) => ({
-          ...d,
-          customer_name: d.customer_name || 'Store Inquirer',
-          contact_details: d.contact_details || d.contact_info || '',
-          enquiry_type: d.enquiry_type || 'whatsapp'
-        })) as CustomerEnquiry[];
+      if (error) {
+        console.warn('Supabase getEnquiries error:', error.message);
+        throw new Error('Unable to load enquiries from database.');
       }
-    } catch (e) {
-      console.warn('Supabase getEnquiries error:', e);
+      dbEnquiries = (data || []).map((d: any) => ({
+        ...d,
+        customer_name: d.customer_name || 'Store Inquirer',
+        contact_details: d.contact_details || d.contact_info || '',
+        enquiry_type: d.enquiry_type || 'whatsapp'
+      })) as CustomerEnquiry[];
+    } catch (e: any) {
+      console.warn('Supabase getEnquiries error:', e?.message);
+      throw e;
     }
   }
 
-  const localList = getLocalEnquiries();
-  const enquiryMap = new Map<string, CustomerEnquiry>();
-
-  const basePool = dbEnquiries.length > 0 ? dbEnquiries : SEED_ENQUIRIES;
-  basePool.forEach(e => enquiryMap.set(e.id, e));
-  localList.forEach(e => enquiryMap.set(e.id, e));
-
-  let results = Array.from(enquiryMap.values());
+  let results = dbEnquiries;
 
   if (filter?.status && filter.status !== 'all') {
     results = results.filter(e => e.status === filter.status);

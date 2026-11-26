@@ -17,7 +17,7 @@ export const ProductDetail: React.FC = () => {
   const { getProductById, products } = useProductCatalog();
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
-  const [activeTab, setActiveTab] = useState<'benefits' | 'ingredients' | 'howToUse'>('benefits');
+  const [activeTab, setActiveTab] = useState<'benefits' | 'ingredients' | 'howToUse' | 'safety'>('benefits');
 
   const product = getProductById(id || '');
 
@@ -396,6 +396,17 @@ export const ProductDetail: React.FC = () => {
               >
                 How to Use
               </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('safety')}
+                className={`pb-2.5 transition-all relative min-h-[44px] flex items-center ${
+                  activeTab === 'safety'
+                    ? 'text-primary-950 font-bold border-b-2 border-primary-950'
+                    : 'text-sand-600 hover:text-primary-950'
+                }`}
+              >
+                Safety &amp; Info
+              </button>
             </div>
 
             {/* Tab 1: Benefits */}
@@ -430,6 +441,32 @@ export const ProductDetail: React.FC = () => {
                 <p className="text-xs sm:text-sm text-sand-800 leading-relaxed bg-sand-50 p-4 rounded-2xl border border-sand-200">
                   {getHowToUseGuide(product.category)}
                 </p>
+              </div>
+            )}
+
+            {/* Tab 4: Safety, Shelf-Life & Manufacturer Info */}
+            {activeTab === 'safety' && (
+              <div className="space-y-3 animate-fadeIn bg-sand-50 p-4 rounded-2xl border border-sand-200 text-xs sm:text-sm text-sand-800 leading-relaxed">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <p>
+                    <strong>Directions &amp; Safety Advisory:</strong> For external cosmetic use only. Perform a 24-hour patch test on your inner arm before full use. Avoid direct contact with eyes; discontinue use if irritation occurs.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-sand-200 text-xs">
+                  <div>
+                    <span className="font-bold text-primary-950 block">Net Quantity</span>
+                    <span>{product.netWeightOrVol}</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-primary-950 block">Shelf Life &amp; Storage</span>
+                    <span>18–24 months from batch date. Store in a cool, dry place.</span>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <span className="font-bold text-primary-950 block">Manufactured &amp; Marketed By</span>
+                    <span>ONZNATURAL • FF-22 Pujar Complex, Subhanpura, Vadodara, Gujarat 390023, India</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>

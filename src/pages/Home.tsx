@@ -48,8 +48,8 @@ export const Home: React.FC = () => {
       a: 'Our Neem & Tulsi Soap (₹99, 100g) and Charcoal Rice Soap (₹99, 100g) are ideal. Neem and Tulsi provide purifying herbal action to clear clogged pores, while activated charcoal and rice extract draw out excess sebum without triggering rebound oiliness.'
     },
     {
-      q: 'Which products are recommended for sensitive or sun-exposed summer skin?',
-      a: 'Kesuda Palash Soap (₹99, 100g), Kesuda Body Lotion (₹599, 150ml), and Kesuda Palash Body Cream (₹399, 100g) are specially crafted for sensitive and heat-stressed skin. Kesuda flowers (Flame of the Forest) have been celebrated in Gujarat for generations to soothe prickly heat and redness.'
+      q: 'Which products are recommended for sensitive or sun-exposed skin?',
+      a: 'Kesuda Palash Soap (₹99, 100g), Kesuda Body Lotion (₹299, 150ml), and Kesuda Palash Natural Body Cream (₹249, 100g) are specially crafted for sensitive and heat-stressed skin. Kesuda flowers (Flame of the Forest) have been celebrated in Gujarat for generations to soothe prickly heat and redness.'
     },
     {
       q: 'What is the shelf life and proper care for cold process soaps?',
@@ -62,41 +62,6 @@ export const Home: React.FC = () => {
     {
       q: 'Do you accept Cash on Delivery (COD) and UPI payments?',
       a: 'Yes! We accept Instant UPI (Google Pay, PhonePe, Paytm to 9726739515@upi), Cash on Delivery (COD), and direct 1-click WhatsApp orders. Our team verifies every order with you on WhatsApp for complete peace of mind.'
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: 'Pooja Patel',
-      location: 'Vadodara, Gujarat',
-      skinType: 'Oily & Blemish-Prone Skin',
-      rating: 5,
-      review: 'The Neem Tulsi soap is a game-changer for Vadodara’s humid weather! My skin feels thoroughly clean and refreshed without any of the harsh tightness from commercial soap. Quick local delivery too.',
-      product: 'Neem & Tulsi Soap'
-    },
-    {
-      name: 'Ananya Sharma',
-      location: 'Mumbai, Maharashtra',
-      skinType: 'Sensitive & Prickly Heat',
-      rating: 5,
-      review: 'I bought the Kesuda Palash Soap for summer heat rashes after learning about Palash flowers. It completely calmed my skin irritation. The creamy lather and subtle herbal touch are wonderful.',
-      product: 'Kesuda Palash Soap'
-    },
-    {
-      name: 'Dr. Rajesh Shah',
-      location: 'Ahmedabad, Gujarat',
-      skinType: 'Dry & Sensitive Skin',
-      rating: 5,
-      review: 'As someone conscious about synthetic additives, I appreciate that ONZNATURAL retains 100% natural plant glycerin. The Ubtan soap provides gentle exfoliation and leaves skin visibly soft.',
-      product: 'Ubtan Soap'
-    },
-    {
-      name: 'Meera Desai',
-      location: 'Surat, Gujarat',
-      skinType: 'Normal to Dry Skin',
-      rating: 5,
-      review: 'The Aparajita Body Lotion and Rice Aloe Face Cream absorb instantly without any heavy stickiness. Fast dispatch in eco-friendly packaging. Proud to support Gujarat’s handcrafted artisans.',
-      product: 'Aparajita Body Lotion'
     }
   ];
 
@@ -136,7 +101,7 @@ export const Home: React.FC = () => {
                   to="/products"
                   className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-sm shadow-md hover:shadow-lg transition-all text-center"
                 >
-                  <span>Explore All 17 Artisanal Botanicals</span>
+                  <span>Explore All {products.length} Artisanal Botanicals</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
@@ -295,7 +260,7 @@ export const Home: React.FC = () => {
             to="/products"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-primary-900 text-primary-950 font-semibold text-sm hover:bg-primary-900 hover:text-white transition-colors"
           >
-            <span>View All 17 Artisanal Products</span>
+            <span>View All {products.length} Artisanal Products</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -379,7 +344,7 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Combo 2: Summer Heat Relief Ritual */}
+            {/* Combo 2: Kesuda Cooling Ritual Trio */}
             <div className="bg-white rounded-2xl p-6 border-2 border-primary-900 shadow-md flex flex-col justify-between space-y-5 relative">
               <span className="absolute top-4 right-4 bg-primary-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                 Best Value Set
@@ -388,18 +353,15 @@ export const Home: React.FC = () => {
                 <div className="w-full h-44 rounded-xl overflow-hidden bg-sand-50 p-3 border border-sand-200 flex items-center justify-center">
                   <img
                     src="/images/products/kesuda-palash-soap.webp"
-                    alt="Summer Heat Relief Ritual"
+                    alt="Kesuda Cooling Ritual Trio"
                     className="w-full h-full object-contain"
                   />
                 </div>
                 <div>
-                  <div className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200 mb-1">
-                    Summer Seasonal Care (Apr–Jun 2026)
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-primary-950">Summer Heat Relief Ritual</h3>
-                  <p className="text-xs text-sand-600 font-medium mt-0.5">Soap + Body Wash + Hydrating Lotion</p>
+                  <h3 className="font-serif text-xl font-bold text-primary-950">Kesuda Cooling Ritual Trio</h3>
+                  <p className="text-xs text-sand-600 font-medium mt-0.5">Kesuda Soap + Face &amp; Body Wash + Body Lotion</p>
                   <p className="text-xs text-sand-700 mt-2 leading-relaxed">
-                    Full Kesuda (Flame of the Forest) body care ritual to calm prickly heat, reduce sun redness, and restore skin barrier hydration.
+                    Full Kesuda (Flame of the Forest) body care ritual to soothe sensitive skin, calm redness, and restore moisture barrier hydration.
                   </p>
                 </div>
               </div>
@@ -409,20 +371,20 @@ export const Home: React.FC = () => {
                   <div>
                     <span className="text-[10px] text-sand-500 uppercase tracking-wider block">Combo Price</span>
                     <div className="flex items-baseline gap-2">
-                      <span className="font-serif text-2xl font-bold text-primary-950">₹849</span>
-                      <span className="text-xs line-through text-sand-400">₹947</span>
-                      <span className="text-[10px] font-bold text-emerald-700">Save ₹98 (10% OFF)</span>
+                      <span className="font-serif text-2xl font-bold text-primary-950">₹550</span>
+                      <span className="text-xs line-through text-sand-400">₹647</span>
+                      <span className="text-[10px] font-bold text-emerald-700">Save ₹97 (15% OFF)</span>
                     </div>
                   </div>
                 </div>
                 <a
-                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Summer Heat Relief Ritual (Kesuda Soap + Wash + Lotion) for ₹849. Please confirm delivery.')}`}
+                  href={`https://api.whatsapp.com/send?phone=919726739515&text=${encodeURIComponent('Hello ONZNATURAL! I would like to order the Kesuda Cooling Ritual Trio (Kesuda Soap + Face & Body Wash + Body Lotion) for ₹550. Please confirm delivery.')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center"
                 >
                   <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>Order Summer Ritual (₹849)</span>
+                  <span>Order Kesuda Trio (₹550)</span>
                 </a>
               </div>
             </div>
@@ -724,63 +686,6 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Customer Reviews & Testimonials Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-          <div className="inline-flex items-center gap-1 text-accent-600">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-current text-accent-500" />
-            ))}
-          </div>
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent-700 block">
-            Real Customer Experiences
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-primary-950">
-            Loved Across Gujarat &amp; India
-          </h2>
-          <p className="text-sand-700 text-sm">
-            Verified feedback on our small-batch cold process soaps and herbal lotions.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((t, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 border border-sand-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-accent-600">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
-                </div>
-
-                <p className="text-xs text-sand-800 leading-relaxed italic">
-                  "{t.review}"
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-sand-100 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary-100 text-primary-950 font-serif font-bold text-sm flex items-center justify-center shrink-0 border border-primary-200">
-                  {t.name.charAt(0)}
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1">
-                    <span className="font-bold text-xs text-primary-950 truncate">{t.name}</span>
-                    <span title="Verified Customer" className="inline-flex items-center">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-sand-600 block truncate">{t.location}</span>
-                  <span className="text-[10px] text-accent-700 font-semibold block">{t.product}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Frequently Asked Questions (FAQ) Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
@@ -865,15 +770,12 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* VIP Club / WhatsApp Offer & Retention Circle */}
+      {/* VIP Club / WhatsApp Offer Circle */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-primary-950 text-sand-50 rounded-3xl p-8 sm:p-10 border border-primary-900 text-center space-y-5">
           <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="text-xs uppercase tracking-widest text-accent-400 font-bold bg-primary-900/80 px-3.5 py-1.5 rounded-full border border-accent-500/30 inline-block">
               Join the Botanical Circle
-            </span>
-            <span className="text-xs text-emerald-400 font-bold bg-emerald-950/60 px-3 py-1.5 rounded-full border border-emerald-500/30">
-              🎁 50 Welcome Points
             </span>
           </div>
 
@@ -881,7 +783,7 @@ export const Home: React.FC = () => {
             Get 10% Off Your First Order
           </h2>
           <p className="text-xs sm:text-sm text-sand-300 max-w-lg mx-auto leading-relaxed">
-            Join thousands of natural skincare lovers across India. Receive promo code <strong className="text-accent-300 font-mono">WELCOME10</strong>, seasonal batch alerts, and 30-day restock reminders so you never run out of cured soap.
+            Receive promo code <strong className="text-accent-300 font-mono">WELCOME10</strong> (valid on your first order), fresh batch announcements, and optional restock reminders on WhatsApp.
           </p>
 
           <form onSubmit={handleVipSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-2 pt-2">
@@ -916,19 +818,15 @@ export const Home: React.FC = () => {
             </p>
           )}
 
-          {/* Retention & Loyalty Highlights */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-primary-900/60 text-xs text-sand-300">
+          {/* Verified Offer Highlights */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-primary-900/60 text-xs text-sand-300 max-w-lg mx-auto">
             <div className="flex items-center justify-center gap-2">
-              <Sparkles className="w-4 h-4 text-accent-400 shrink-0" />
-              <span>Earn 50 Points on Every Order</span>
+              <Tag className="w-4 h-4 text-accent-400 shrink-0" />
+              <span>10% Off First Order (Code: WELCOME10)</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <RefreshCw className="w-4 h-4 text-accent-400 shrink-0" />
-              <span>30-Day WhatsApp Restock Alert</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <Gift className="w-4 h-4 text-accent-400 shrink-0" />
-              <span>Refer a Friend: Both Get ₹50</span>
+              <span>Optional Batch &amp; Restock Updates</span>
             </div>
           </div>
         </div>

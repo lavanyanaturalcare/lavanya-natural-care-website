@@ -1,7 +1,7 @@
 // =====================================================================
 // ONZNATURAL — High-Performance Botanical Skincare AI Service
-// Powered by Google Gemini 3 Flash with Ayurvedic Knowledge Grounding
-// Features: Direct Gemini API + Resilient Multi-Lingual Ayurvedic Engine
+// Powered by Server-Side Supabase Edge Function (gemini-consultant)
+// Zero client-side API keys; falls back gracefully to deterministic engine
 // =====================================================================
 
 import { VERIFIED_PRODUCTS, SupportedLanguage, I18N } from '../data/productKnowledge';
@@ -15,180 +15,12 @@ export interface AIChatResponse {
   isError?: boolean;
 }
 
-// Secure fallback key safely resolved to avoid exposing raw patterns in source repositories
-const resolveEmbeddedKey = (): string => {
-  try {
-    const encoded = 'QVEuQWI4Uk42SmdyU1dGUTVma25FUDhNcC1oR1pTRGdxcHF2YXpwR2ptMFJjcUNxMmw3VkE=';
-    if (typeof atob === 'function') {
-      return atob(encoded);
-    }
-    const buf = (globalThis as any).Buffer;
-    if (buf) {
-      return buf.from(encoded, 'base64').toString('utf-8');
-    }
-    return '';
-  } catch (e) {
-    return '';
-  }
-};
-
-const PRIMARY_MODEL = 'gemini-3-flash-preview';
-const BACKUP_MODEL = 'gemini-3.8-flash';
-const FALLBACK_MODEL = 'gemini-flash-latest';
-
-const LOCAL_KEY_STORAGE = 'onz_gemini_api_key';
-const LEGACY_KEY_STORAGE = 'gemini_api_key';
-
 /**
- * Retrieve active Gemini API key from localStorage, Vite env, or default verified key
- */
-export const getGeminiApiKey = (): string => {
-  try {
-    const userKey = localStorage.getItem(LOCAL_KEY_STORAGE) || localStorage.getItem(LEGACY_KEY_STORAGE);
-    if (userKey && userKey.trim().length > 10) {
-      return userKey.trim();
-    }
-  } catch (e) {
-    // localStorage might be unavailable in restricted contexts
-  }
-
-  const envKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
-  if (envKey && envKey.trim().length > 10 && !envKey.includes('your_gemini')) {
-    return envKey.trim();
-  }
-
-  return resolveEmbeddedKey();
-};
-
-/**
- * Store user or admin custom Gemini API key
- */
-export const setGeminiApiKey = (key: string): void => {
-  try {
-    if (!key || key.trim() === '') {
-      localStorage.removeItem(LOCAL_KEY_STORAGE);
-      localStorage.removeItem(LEGACY_KEY_STORAGE);
-    } else {
-      localStorage.setItem(LOCAL_KEY_STORAGE, key.trim());
-    }
-  } catch (e) {
-    console.warn('Could not persist Gemini API key:', e);
-  }
-};
-
-/**
- * Check if a valid API key is present
+ * Check if server-side Edge Function AI service is configured
  */
 export const hasGeminiApiKey = (): boolean => {
-  const key = getGeminiApiKey();
-  return Boolean(key && key.length > 10);
+  return Boolean(supabase);
 };
-
-// =====================================================================
-// SYSTEM GROUNDING PROMPT FOR GEMINI
-// Grounded strictly in the 17 verified ONZNATURAL products & Vadodara heritage
-// =====================================================================
-
-const CATALOGUE_GROUNDING = VERIFIED_PRODUCTS.map(p => 
-  `- ID: "${p.id}" | Name: "${p.name}" | Category: ${p.category} | MRP: ₹${p.mrp} | Weight/Vol: ${p.netWeightOrVol}
-   Key Actives: ${p.ingredients}
-   Benefits: ${p.benefits.slice(0, 3).join(', ')}
-   How to Use: ${p.howToUse}`
-).join('\n\n');
-
-function buildSystemInstruction(language: SupportedLanguage): string {
-  const langGuide = {
-    en: 'Respond in clear, warm, elegant, premium English with Ayurvedic skincare terminology.',
-    hi: 'हिंदी में अत्यंत शुद्ध, विनम्र, प्राकृतिक व प्रामाणिक शैली में उत्तर दें। तकनीकी शब्दों को कोष्ठक में अंग्रेजी में भी समझाएं।',
-    gu: 'ગુજરાતીમાં અત્યંત સરળ, નમ્ર અને શુદ્ધ આયુર્વેદિક શૈલીમાં જવાબ આપો. વડોદરાની કારીગરી અને કુદરતી વારસાને પ્રાધાન્ય આપો.'
-  }[language];
-
-  return `You are the Official Ayurvedic Skincare Consultant for "ONZNATURAL" (formerly Lavanya Natural Care), an artisanal botanical skincare atelier handcrafted in Vadodara, Gujarat, India.
-
-BRAND HERITAGE & FORMULATION PILLARS:
-1. Cold Process Saponification: Unlike industrial detergent bars that strip glycerin for commercial resale, ONZNATURAL cold-process soaps cure slowly over 4 to 6 weeks, retaining 100% of the natural vegetable glycerin naturally produced from coconut and mahua oils.
-2. Artisanal Purity: Zero synthetic sulfates (SLS/SLES), zero parabens, zero phthalates, zero mineral oils, and zero animal tallow. 100% vegetarian.
-3. Botanical Actives: Kesuda (Palash/Flame of the Forest flowers) for cooling heat rashes and soothing Pitta flare-ups; Neem & Tulsi for clarifying acne and balancing Kapha; Royal Ubtan (Besan, Turmeric, Milk, Multani Mitti) for bridal radiance and tan removal; Hibiscus for natural AHAs; Activated Bamboo Charcoal & Rice for micro-polishing; Kokum Butter and Rice Aloe for lipid barrier moisture.
-4. WhatsApp Contact: +91 97267 39515 | Email: care@onznatural.com | Atelier: Vadodara, Gujarat.
-
-STRICT ACCREDITATION & SAFETY RULES:
-- Ground all product recommendations ONLY in the verified catalogue below. NEVER fabricate product names, prices, or ingredients.
-- Cosmetic Care Only: Never diagnose or claim to cure medical dermatological conditions (e.g. eczema, psoriasis, severe cystic acne, fungal infections).
-- Mandatory Patch Test: Always advise customers to perform a 24-hour patch test on the inner wrist before regular use.
-- Storage Wisdom: Remind customers that cold-process artisanal soaps must be stored on a well-draining slotted wooden or ceramic dish away from standing water so they remain firm and last long.
-
-LANGUAGE & FORMAT:
-- ${langGuide}
-- At the very end of your response, if you recommend any of our products, you MUST append a tag formatted exactly as:
-  [RECOMMENDED: product-id-1, product-id-2]
-  using ONLY valid IDs from our verified catalogue.
-
-VERIFIED ONZNATURAL PRODUCT CATALOGUE:
-${CATALOGUE_GROUNDING}`;
-}
-
-/**
- * Execute raw Gemini REST call with model fallback, timeout, and retry
- */
-async function callGeminiREST(
-  payload: any,
-  models: string[] = [PRIMARY_MODEL, BACKUP_MODEL, FALLBACK_MODEL]
-): Promise<any> {
-  const apiKey = getGeminiApiKey();
-  if (!apiKey) {
-    throw new Error('Gemini API key is not configured.');
-  }
-
-  let lastError: Error | null = null;
-
-  for (const model of models) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.warn(`Gemini model ${model} (attempt ${attempt}) status ${response.status}:`, errorText);
-          lastError = new Error(`Gemini API ${model} returned ${response.status}: ${errorText}`);
-          // If 404 or model decommissioned, don't retry same model
-          if (response.status === 404) break;
-          continue;
-        }
-
-        const data = await response.json();
-        if (data && data.candidates && data.candidates.length > 0) {
-          return data;
-        }
-
-        if (data && data.promptFeedback?.blockReason) {
-          throw new Error(`Content blocked: ${data.promptFeedback.blockReason}`);
-        }
-      } catch (err: any) {
-        clearTimeout(timeoutId);
-        console.warn(`Attempt ${attempt} with ${model} failed:`, err.message);
-        lastError = err;
-        // Brief pause before retry
-        if (attempt === 1) {
-          await new Promise(r => setTimeout(r, 400));
-        }
-      }
-    }
-  }
-
-  throw lastError || new Error('All Gemini API models failed to respond.');
-}
 
 /**
  * Extract recommended product IDs from AI response text
@@ -197,12 +29,12 @@ function extractProductIds(text: string): { cleanedText: string; ids: string[] }
   let ids: string[] = [];
   let cleanedText = text;
 
-  // Pattern: [RECOMMENDED: id1, id2] or [RECOMMENDED_IDS: id1, id2]
-  const tagRegex = /\[RECOMMENDED(?:_IDS)?:\s*([a-zA-Z0-9_,\s-]+)\]/i;
+  // Pattern: [RECOMMENDED: id1, id2] or [RECOMMENDED_IDS: "id1", "id2"]
+  const tagRegex = /\[RECOMMENDED(?:_IDS)?:\s*([^\]]+)\]/i;
   const match = text.match(tagRegex);
 
   if (match) {
-    const rawIds = match[1].split(',').map(s => s.trim().toLowerCase());
+    const rawIds = match[1].split(',').map(s => s.replace(/["']/g, '').trim().toLowerCase());
     ids = rawIds.filter(id => VERIFIED_PRODUCTS.some(p => p.id === id));
     cleanedText = text.replace(tagRegex, '').trim();
   }
@@ -244,56 +76,7 @@ export async function askOnzAI(
     };
   }
 
-  // Attempt 1: Call Google Gemini Direct API
-  try {
-    const systemInstruction = buildSystemInstruction(language);
-
-    // Build multi-turn contents array
-    const contents: any[] = [];
-
-    // Include recent history (last 6 messages)
-    const recentHistory = chatHistory.slice(-6);
-    for (const msg of recentHistory) {
-      if (!msg.text || msg.text.startsWith('⚠️')) continue;
-      contents.push({
-        role: msg.role === 'model' ? 'model' : 'user',
-        parts: [{ text: msg.text }]
-      });
-    }
-
-    // Add current user query
-    contents.push({
-      role: 'user',
-      parts: [{ text: trimmed }]
-    });
-
-    const payload = {
-      systemInstruction: {
-        parts: [{ text: systemInstruction }]
-      },
-      contents,
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1024,
-        topP: 0.95
-      }
-    };
-
-    const geminiData = await callGeminiREST(payload);
-    const candidateText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (candidateText && candidateText.trim().length > 0) {
-      const { cleanedText, ids } = extractProductIds(candidateText);
-      return {
-        text: cleanedText,
-        recommendedProductIds: ids.length > 0 ? ids : getRelevantProductIdsForQuery(trimmed)
-      };
-    }
-  } catch (err: any) {
-    console.warn('Gemini direct API chat error, utilizing intelligent local Ayurvedic engine:', err?.message);
-  }
-
-  // Attempt 2: Optional Supabase Edge Function invoke (if deployed)
+  // Call secure server-side Supabase Edge Function
   if (supabase) {
     try {
       const { data, error } = await supabase.functions.invoke('gemini-consultant', {
@@ -307,19 +90,19 @@ export async function askOnzAI(
       if (!error && data && (data.text || data.reply)) {
         const text = data.text || data.reply;
         const { cleanedText, ids } = extractProductIds(text);
+        const mergedIds = ids.length > 0 ? ids : (Array.isArray(data.recommendedProductIds) ? data.recommendedProductIds : []);
         return {
           text: cleanedText,
-          recommendedProductIds: ids.length > 0 ? ids : (data.recommendedProductIds || [])
+          recommendedProductIds: mergedIds.length > 0 ? mergedIds : getRelevantProductIdsForQuery(trimmed)
         };
       }
     } catch (e) {
-      // Edge function failed or not deployed; proceed to resilient local fallback
+      console.warn('Edge function AI chat unavailable; using verified local Ayurvedic engine.');
     }
   }
 
-  // Attempt 3: Intelligent Local Ayurvedic Skincare Engine (Zero-Failure Guarantee)
-  const localResponse = generateLocalAyurvedicChatReply(trimmed, language);
-  return localResponse;
+  // Resilient Local Ayurvedic Skincare Engine (Grounded strictly in verified catalogue)
+  return generateLocalAyurvedicChatReply(trimmed, language);
 }
 
 // Backwards-compatible alias
@@ -334,117 +117,63 @@ export async function generateSkincareConsultation(
 ): Promise<ConsultationResult> {
   const lang = answers.language || 'en';
 
-  // Attempt 1: Call Gemini for rich custom JSON consultation
-  try {
-    const prompt = `Perform an Ayurvedic Skincare Consultation for this customer profile:
-- Skin Type: ${answers.skinType}
-- Primary Concern: ${answers.primaryConcern}
-- Known Sensitivity: ${answers.knownSensitivity}
-- Climate/Season: ${answers.climateSeason}
-- Routine Preference: ${answers.routinePreference}
-- Additional Notes: ${answers.notes || 'None'}
-- Language for all text values: ${lang} (en = English, hi = Hindi, gu = Gujarati)
-
-STRICT REQUIREMENTS:
-1. Recommend ONLY real products from ONZNATURAL:
-   Available IDs: neem-tulsi-soap, kesuda-palash-soap, hibiscus-soap, ubtan-soap, charcoal-rice-soap, aparajita-body-lotion, lavender-body-lotion, honey-almond-body-lotion, kesuda-body-lotion, aparajita-body-cream, kesuda-palash-body-cream, honey-almond-body-cream, face-body-wash-neem-tulsi, face-body-wash-kesuda, hand-wash-lemon, rice-aloe-face-cream, lip-balm.
-2. Return ONLY a valid JSON object with EXACTLY this structure:
-{
-  "prakritiSkinAnalysis": "Detailed Ayurvedic Dosha diagnosis (Vata/Pitta/Kapha) in ${lang}",
-  "ayurvedicWisdom": "Deep insight on cold-process natural glycerin retention & herbs in ${lang}",
-  "routine": [
-    {
-      "step": "Morning Cleansing",
-      "stepTitleLocalized": "Localized step title in ${lang}",
-      "recommendedProductId": "neem-tulsi-soap",
-      "productName": "Neem & Tulsi Soap",
-      "whyThisProduct": "Why this product restores dosha balance in ${lang}",
-      "keyIngredients": ["Cold Pressed Coconut Oil", "Neem", "Tulsi"],
-      "howToUse": "Specific application instructions in ${lang}"
-    },
-    {
-      "step": "Morning Moisture & Protection",
-      "stepTitleLocalized": "Localized step title in ${lang}",
-      "recommendedProductId": "rice-aloe-face-cream",
-      "productName": "Rice & Aloe Vera Face Cream",
-      "whyThisProduct": "Barrier hydration without clogging pores in ${lang}",
-      "keyIngredients": ["Aloe Vera", "Rice Extract", "Kokum Butter"],
-      "howToUse": "Dot gently onto face and neck in ${lang}"
-    },
-    {
-      "step": "Evening Cleansing",
-      "stepTitleLocalized": "Localized step title in ${lang}",
-      "recommendedProductId": "kesuda-palash-soap",
-      "productName": "Kesuda (Palash) Flower Soap",
-      "whyThisProduct": "Soothes heat and removes daily environmental grime in ${lang}",
-      "keyIngredients": ["Kesuda Infusion", "Coconut Oil", "Mahua Oil"],
-      "howToUse": "Lather with lukewarm water in ${lang}"
-    }
-  ],
-  "lifestyleTips": [
-    "Tip 1 in ${lang}",
-    "Tip 2 in ${lang}",
-    "Tip 3 in ${lang}"
-  ],
-  "seasonalAdvice": "Climate-specific advice for ${answers.climateSeason} in ${lang}",
-  "patchTestWarning": "Mandatory 24h patch test reminder in ${lang}"
-}`;
-
-    const payload = {
-      systemInstruction: {
-        parts: [{ text: buildSystemInstruction(lang) }]
-      },
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: prompt }]
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke('gemini-consultant', {
+        body: {
+          action: 'quiz',
+          quizAnswers: answers,
+          language: lang
         }
-      ],
-      generationConfig: {
-        temperature: 0.5,
-        responseMimeType: 'application/json'
-      }
-    };
+      });
 
-    const data = await callGeminiREST(payload);
-    const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (rawJson) {
-      const parsed = JSON.parse(rawJson);
-
-      // Hydrate recommended products
-      const recommendedProducts: Product[] = [];
-      if (Array.isArray(parsed.routine)) {
-        parsed.routine.forEach((step: RecommendedRoutineStep) => {
-          const found = VERIFIED_PRODUCTS.find(
-            p => p.id === step.recommendedProductId || p.name.toLowerCase() === step.productName?.toLowerCase()
-          );
-          if (found && !recommendedProducts.some(p => p.id === found.id)) {
-            recommendedProducts.push(found as any);
+      if (!error && data && (data.text || data.reply)) {
+        const rawText = data.text || data.reply;
+        // Extract JSON if Edge Function returned structured JSON, otherwise use local deterministic builder enriched with server reply
+        try {
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            const recommendedProducts: Product[] = [];
+            if (Array.isArray(parsed.routine)) {
+              parsed.routine.forEach((step: RecommendedRoutineStep) => {
+                const found = VERIFIED_PRODUCTS.find(
+                  p => p.id === step.recommendedProductId || p.name.toLowerCase() === step.productName?.toLowerCase()
+                );
+                if (found && !recommendedProducts.some(p => p.id === found.id)) {
+                  recommendedProducts.push(found as any);
+                }
+              });
+            }
+            if (recommendedProducts.length === 0) {
+              recommendedProducts.push(...getMatchingProductsForQuiz(answers));
+            }
+            return {
+              prakritiSkinAnalysis: parsed.prakritiSkinAnalysis || getDefaultAnalysis(answers),
+              ayurvedicWisdom: parsed.ayurvedicWisdom || getDefaultWisdom(lang),
+              routine: Array.isArray(parsed.routine) && parsed.routine.length > 0 ? parsed.routine : getDefaultRoutine(answers),
+              lifestyleTips: Array.isArray(parsed.lifestyleTips) && parsed.lifestyleTips.length > 0 ? parsed.lifestyleTips : getDefaultTips(lang),
+              recommendedProducts,
+              seasonalAdvice: parsed.seasonalAdvice || getDefaultSeasonalAdvice(answers),
+              patchTestWarning: parsed.patchTestWarning || I18N[lang].patchTestReminder,
+              sensitivityNotes: answers.knownSensitivity !== 'none' ? getSensitivityNotice(answers.knownSensitivity, lang) : undefined
+            };
           }
-        });
+        } catch (parseErr) {
+          // Proceed with deterministic routine enriched with server analysis text
+          const fallback = buildLocalConsultationResult(answers);
+          const { cleanedText } = extractProductIds(rawText);
+          if (cleanedText.length > 40) {
+            fallback.ayurvedicWisdom = cleanedText;
+          }
+          return fallback;
+        }
       }
-
-      if (recommendedProducts.length === 0) {
-        recommendedProducts.push(...getMatchingProductsForQuiz(answers));
-      }
-
-      return {
-        prakritiSkinAnalysis: parsed.prakritiSkinAnalysis || getDefaultAnalysis(answers),
-        ayurvedicWisdom: parsed.ayurvedicWisdom || getDefaultWisdom(lang),
-        routine: Array.isArray(parsed.routine) && parsed.routine.length > 0 ? parsed.routine : getDefaultRoutine(answers),
-        lifestyleTips: Array.isArray(parsed.lifestyleTips) && parsed.lifestyleTips.length > 0 ? parsed.lifestyleTips : getDefaultTips(lang),
-        recommendedProducts,
-        seasonalAdvice: parsed.seasonalAdvice || getDefaultSeasonalAdvice(answers),
-        patchTestWarning: parsed.patchTestWarning || I18N[lang].patchTestReminder,
-        sensitivityNotes: answers.knownSensitivity !== 'none' ? getSensitivityNotice(answers.knownSensitivity, lang) : undefined
-      };
+    } catch (err: any) {
+      console.warn('Edge function consultation fallback to deterministic Ayurvedic engine.');
     }
-  } catch (err: any) {
-    console.warn('Gemini consultation generation fell back to deterministic Ayurvedic engine:', err?.message);
   }
 
-  // Attempt 2: Resilient Local Deterministic Consultation Result
   return buildLocalConsultationResult(answers);
 }
 
@@ -468,35 +197,25 @@ export async function compareProductsWithAI(
       : 'One or both products were not found in the verified catalogue.';
   }
 
-  try {
-    const prompt = `Compare these two ONZNATURAL handcrafted products in ${language}:
-Product 1: ${p1.name} (Category: ${p1.category}, MRP: ₹${p1.mrp}, Weight: ${p1.netWeightOrVol}, Ingredients: ${p1.ingredients}, Benefits: ${p1.benefits.join(', ')})
-Product 2: ${p2.name} (Category: ${p2.category}, MRP: ₹${p2.mrp}, Weight: ${p2.netWeightOrVol}, Ingredients: ${p2.ingredients}, Benefits: ${p2.benefits.join(', ')})
-
-Provide a comprehensive, elegant, structured Ayurvedic comparison highlighting:
-1. Ideal skin type and Dosha for each
-2. Active botanicals and action (cold process saponification, retained glycerin, pH balance)
-3. How to choose between them based on individual needs
-Keep it under 250 words.`;
-
-    const payload = {
-      systemInstruction: {
-        parts: [{ text: buildSystemInstruction(language) }]
-      },
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.6 }
-    };
-
-    const geminiData = await callGeminiREST(payload);
-    const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (reply && reply.trim().length > 0) {
-      return reply.trim();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke('gemini-consultant', {
+        body: {
+          action: 'compare',
+          product1Id,
+          product2Id,
+          language
+        }
+      });
+      if (!error && data && (data.text || data.reply)) {
+        const { cleanedText } = extractProductIds(data.text || data.reply);
+        if (cleanedText.length > 20) return cleanedText;
+      }
+    } catch (e) {
+      console.warn('Edge function comparison fell back to verified factual catalogue comparison.');
     }
-  } catch (e) {
-    console.warn('Gemini comparison fell back to verified factual catalogue comparison.');
   }
 
-  // Local Factual Comparison
   return buildLocalProductComparison(p1, p2, language);
 }
 
@@ -509,54 +228,30 @@ export async function analyzeSkinOrLabelImage(
   userContext = '',
   language: SupportedLanguage = 'en'
 ): Promise<{ analysis: string; recommendedProductIds: string[] }> {
-  try {
-    const prompt = `You are ONZNATURAL's botanical cosmetic analyst.
-User context or question: "${userContext || 'Please analyze this skin concern or cosmetic ingredient label.'}"
-Language: ${language}
-
-Instructions:
-1. If this is an ingredient label: Evaluate synthetic surfactants (SLS, SLES), parabens, mineral oil, or alcohol. Explain why ONZNATURAL's cold-process saponified bars with retained vegetable glycerin offer a gentler botanical alternative.
-2. If this is a photo of skin: Provide ONLY general cosmetic botanical comfort suggestions (e.g. soothing heat rash with Kesuda, clarifying with Neem & Tulsi, nourishing dryness with Kokum Butter). NEVER diagnose medical conditions or fungal infections. Include mandatory patch test reminder.
-3. Keep under 200 words. Conclude with: [RECOMMENDED: product-id-1, product-id-2]`;
-
-    const payload = {
-      systemInstruction: {
-        parts: [{ text: buildSystemInstruction(language) }]
-      },
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: prompt },
-            {
-              inlineData: {
-                mimeType: base64Image.mimeType,
-                data: base64Image.data
-              }
-            }
-          ]
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke('gemini-consultant', {
+        body: {
+          action: 'image',
+          message: userContext,
+          image: base64Image,
+          language
         }
-      ],
-      generationConfig: {
-        temperature: 0.4
+      });
+
+      if (!error && data && (data.text || data.reply)) {
+        const { cleanedText, ids } = extractProductIds(data.text || data.reply);
+        const mergedIds = ids.length > 0 ? ids : (Array.isArray(data.recommendedProductIds) ? data.recommendedProductIds : []);
+        return {
+          analysis: cleanedText,
+          recommendedProductIds: mergedIds.length > 0 ? mergedIds : ['neem-tulsi-soap', 'kesuda-palash-soap']
+        };
       }
-    };
-
-    const data = await callGeminiREST(payload);
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (text) {
-      const { cleanedText, ids } = extractProductIds(text);
-      return {
-        analysis: cleanedText,
-        recommendedProductIds: ids.length > 0 ? ids : ['neem-tulsi-soap', 'kesuda-palash-soap']
-      };
+    } catch (err: any) {
+      console.warn('Edge function multimodal analysis fell back to local botanical advisory.');
     }
-  } catch (err: any) {
-    console.warn('Gemini multimodal image analysis fell back to local botanical advisory:', err?.message);
   }
 
-  // Resilient Local Botanical Image Fallback
   return getLocalImageAnalysisFallback(userContext, language);
 }
 

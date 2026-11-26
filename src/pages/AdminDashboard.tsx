@@ -218,17 +218,7 @@ export const AdminDashboard: React.FC = () => {
       }
 
       try {
-        const storedSession = sessionStorage.getItem('onznatural_admin_session');
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-        if (storedSession === 'owner-verified') {
-          if (isMounted) {
-            setCurrentUser(session?.user || { id: 'owner-master', email: 'owner@onznatural.com' });
-            setAdminRole('super_admin');
-            setIsAuthenticated(true);
-          }
-          return;
-        }
 
         if (sessionError || !session?.user) {
           if (isMounted) {
@@ -371,7 +361,6 @@ export const AdminDashboard: React.FC = () => {
           setCurrentUser(data.user);
           setAdminRole(adminRow.role || 'super_admin');
           setIsAuthenticated(true);
-          sessionStorage.setItem('onznatural_admin_session', 'owner-verified');
           await logAdminAction('ADMIN_LOGIN', 'admin_users', data.user.id, { 
             email: cleanEmail, 
             role: adminRow.role 
@@ -379,6 +368,7 @@ export const AdminDashboard: React.FC = () => {
           setIsLoggingIn(false);
           return;
         } else {
+          await supabase.auth.signOut();
           recordFailedAttempt('admin_login', 5, 120000, 180000);
           setLoginError('Access Denied: Your account is not authorized as an ONZNATURAL administrator.');
           setIsLoggingIn(false);
@@ -386,28 +376,8 @@ export const AdminDashboard: React.FC = () => {
         }
       }
 
-      // Check secure environment override token if configured
-      const envFallbackKey = (import.meta as any).env?.VITE_ADMIN_FALLBACK_TOKEN;
-      if (
-        envFallbackKey && 
-        cleanEmail === 'owner@onznatural.com' && 
-        adminPassword === envFallbackKey
-      ) {
-        resetRateLimit('admin_login');
-        setCurrentUser({ id: 'owner-master', email: cleanEmail });
-        setAdminRole('super_admin');
-        setIsAuthenticated(true);
-        sessionStorage.setItem('onznatural_admin_session', 'owner-verified');
-        await logAdminAction('ADMIN_LOGIN_ENV_OVERRIDE', 'admin_users', null, { 
-          email: cleanEmail, 
-          role: 'super_admin' 
-        });
-        setIsLoggingIn(false);
-        return;
-      }
-
       recordFailedAttempt('admin_login', 5, 120000, 180000);
-      setLoginError('Invalid administrator credentials or unauthorized user.');
+      setLoginError(error?.message || 'Invalid administrator email or password.');
     } catch (err: any) {
       recordFailedAttempt('admin_login', 5, 120000, 180000);
       setLoginError('Authentication encountered an unexpected issue.');
@@ -424,7 +394,6 @@ export const AdminDashboard: React.FC = () => {
     } catch (err) {
       console.warn('Sign out warning:', err);
     }
-    sessionStorage.removeItem('onznatural_admin_session');
     setIsAuthenticated(false);
     setCurrentUser(null);
     setAdminRole('store_manager');

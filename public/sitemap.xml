@@ -61,8 +61,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://onznatural.com/cookie-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
 
-  <!-- Product Pages (All 16 Handcrafted Items) -->
+  <!-- Product Pages (All 17 Handcrafted Items) -->
   <url>
     <loc>https://onznatural.com/products/neem-tulsi-soap</loc>
     <changefreq>weekly</changefreq>
