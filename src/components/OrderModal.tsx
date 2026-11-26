@@ -31,6 +31,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [addComplementary, setAddComplementary] = useState(false);
   const [restockReminder, setRestockReminder] = useState(true);
+  const [orderPersistError, setOrderPersistError] = useState<string | null>(null);
+  const [confirmedOrderRef, setConfirmedOrderRef] = useState<string | null>(null);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -167,15 +170,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
   };
 
   const handleDirectWhatsAppOrder = async () => {
+    setOrderPersistError(null);
+    setIsSubmittingOrder(true);
+    const refCode = `ONZ-${Date.now().toString().slice(-6)}`;
+
     try {
       await createEnquiry({
         product_id: product.id,
-        customer_name: customerName || 'WhatsApp Customer',
-        contact_details: customerPhone || 'WhatsApp (+91 97267 39515)',
-        message: `Order for ${quantity}x ${product.name} ${addComplementary && complementaryProduct ? `+ ${complementaryProduct.name}` : ''} (₹${finalTotal}) via ${selectedMethod.toUpperCase()}. Address: ${deliveryAddress} ${cityPincode}. Restock: ${restockReminder ? 'Yes' : 'No'}`,
+        customer_name: customerName.trim() || 'Storefront Customer',
+        contact_details: customerPhone.trim() || 'WhatsApp (+91 97267 39515)',
+        enquiry_type: 'order_checkout',
+        message: `[${refCode}] Order for ${quantity}x ${product.name}${addComplementary && complementaryProduct ? ` + ${complementaryProduct.name}` : ''} (₹${finalTotal}) via ${selectedMethod.toUpperCase()}.${deliveryAddress ? ` Address: ${deliveryAddress}` : ''}${cityPincode ? ` (${cityPincode})` : ''}. Restock: ${restockReminder ? 'Yes' : 'No'}`,
         status: 'new'
       });
-    } catch (e) {}
+      setConfirmedOrderRef(refCode);
+    } catch (e: any) {
+      setOrderPersistError(e?.message || 'Could not save order record to database, opening WhatsApp fallback.');
+    } finally {
+      setIsSubmittingOrder(false);
+    }
 
     const url = `https://api.whatsapp.com/send?phone=919726739515&text=${generateWhatsAppMessage()}`;
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -610,6 +623,23 @@ export const OrderModal: React.FC<OrderModalProps> = ({ product, onClose }) => {
               <Truck className="w-4 h-4 text-accent-400" />
               <span>Submit Cash on Delivery Request (₹{finalTotal})</span>
             </button>
+          </div>
+        )}
+
+        {/* Order Confirmation / Persistence Status */}
+        {confirmedOrderRef && (
+          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-start gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Order Request Logged ({confirmedOrderRef})</p>
+              <p className="text-[11px] text-emerald-800">Saved in our Vadodara workshop queue. Complete confirmation on WhatsApp.</p>
+            </div>
+          </div>
+        )}
+        {orderPersistError && (
+          <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>{orderPersistError}</span>
           </div>
         )}
 

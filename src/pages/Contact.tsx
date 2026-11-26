@@ -4,6 +4,7 @@ import { SEO } from '../components/SEO';
 import { WhatsAppButton } from '../components/WhatsAppButton';
 import { socialAccounts } from '../data/social';
 import { sanitizeInput, validateEmail, validatePhone, checkRateLimit, recordFailedAttempt, resetRateLimit, isBotDetected } from '../utils/security';
+import { createEnquiry } from '../services/crmService';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -62,7 +63,7 @@ export const Contact: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setRateLimitMessage(null);
 
@@ -99,12 +100,23 @@ export const Contact: React.FC = () => {
       message: sanitizeInput(formData.message)
     };
 
-    setTimeout(() => {
+    try {
+      await createEnquiry({
+        customer_name: sanitizedPayload.name,
+        contact_details: `${sanitizedPayload.email} | ${sanitizedPayload.phone}`,
+        enquiry_type: 'contact_form',
+        message: `[${sanitizedPayload.subject}] ${sanitizedPayload.message}`,
+        status: 'new'
+      });
+
       resetRateLimit('contact_form');
-      setIsSubmitting(false);
-      setIsSubmitted(true);
       setFormData(sanitizedPayload);
-    }, 600);
+      setIsSubmitted(true);
+    } catch (err: any) {
+      setRateLimitMessage(err?.message || 'Unable to save your message right now. Please retry or reach us directly on WhatsApp.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {

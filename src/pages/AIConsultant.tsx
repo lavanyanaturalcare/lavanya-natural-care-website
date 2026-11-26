@@ -297,17 +297,23 @@ export const AIConsultant: React.FC = () => {
     let activeConvId = conversationId;
     if (hasChatConsent && !activeConvId) {
       try {
-        const conv = await createConversation();
+        const conv = await createConversation(undefined, undefined, `Consultant (${language}): ${userMsg.text.slice(0, 50)}`);
         activeConvId = conv.id;
         setConversationId(conv.id);
       } catch (e) {
         console.warn('Could not initialize conversation record', e);
+        setStorageStatus('failed');
       }
     }
 
     if (hasChatConsent && activeConvId) {
       setStorageStatus('saving');
-      saveMessage(activeConvId, 'customer', userMsg.text).catch(() => {});
+      try {
+        await saveMessage(activeConvId, 'customer', userMsg.text, [], { source: 'ai_consultant', language });
+      } catch (e) {
+        console.warn('Could not save customer message:', e);
+        setStorageStatus('failed');
+      }
     } else {
       setStorageStatus('temporary');
     }
@@ -328,7 +334,11 @@ export const AIConsultant: React.FC = () => {
 
       if (hasChatConsent && activeConvId) {
         try {
-          await saveMessage(activeConvId, 'ai', response.text, response.recommendedProductIds);
+          await saveMessage(activeConvId, 'ai', response.text, response.recommendedProductIds, {
+            source: 'ai_consultant',
+            language,
+            model: 'gemini-consultant'
+          });
           setStorageStatus('saved');
         } catch (saveErr) {
           console.warn('Could not save AI reply to database:', saveErr);

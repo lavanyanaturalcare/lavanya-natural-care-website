@@ -550,17 +550,22 @@ export const updateCustomerStatus = async (
 // -------------------------------------------------------------
 export const createConversation = async (
   customerId?: string,
-  consentId?: string
+  consentId?: string,
+  summary: string = 'Botanical AI Consultation'
 ): Promise<Conversation> => {
   const sessionId = getClientSessionId();
   const tokenHash = await getClientSessionTokenHash();
   const now = new Date().toISOString();
 
-  if (isSupabaseConfigured() && supabase) {
+  if (!isSupabaseConfigured() || !supabase) {
+    throw new Error('Database connection unavailable. Conversation not persisted.');
+  }
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const { data: rpcConvId, error: rpcErr } = await supabase.rpc('start_guest_conversation', {
         p_token_hash: tokenHash,
-        p_summary: 'Botanical AI Consultation'
+        p_summary: summary
       });
 
       if (!rpcErr && rpcConvId) {
@@ -570,7 +575,7 @@ export const createConversation = async (
           session_id: sessionId,
           started_at: now,
           last_activity_at: now,
-          summary: 'Botanical AI Consultation',
+          summary,
           status: 'active',
           consent_id: consentId || null,
           created_at: now,
@@ -579,90 +584,125 @@ export const createConversation = async (
         };
       }
     } catch (rpcEx) {
-      // Fall through to direct insert
-    }
-
-    const { data, error } = await supabase.from('conversations').insert({
-      customer_id: customerId || null,
-      session_id: sessionId,
-      started_at: now,
-      last_activity_at: now,
-      summary: 'Botanical AI Consultation',
-      status: 'active',
-      consent_id: consentId || null
-    }).select().single();
-
-    if (!error && data) {
-      return data as Conversation;
-    }
-    if (error) {
-      throw new Error(error.message);
+      if (attempt === 1) await new Promise(r => setTimeout(r, 300));
     }
   }
 
-  throw new Error('Database connection unavailable. Conversation not persisted.');
+  // Fallback insert without .select() so anon visitors succeed under strict RLS
+  const convId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : undefined;
+  const insertPayload: Record<string, any> = {
+    customer_id: customerId || null,
+    session_id: sessionId,
+    started_at: now,
+    last_activity_at: now,
+    summary,
+    status: 'active',
+    consent_id: consentId || null
+  };
+  if (convId) insertPayload.id = convId;
+
+  const { error } = await supabase.from('conversations').insert(insertPayload);
+  if (error) {
+    throw new Error(`Unable to start saved conversation: ${error.message}`);
+  }
+
+  return {
+    id: convId || `conv_${Date.now()}`,
+    customer_id: customerId || null,
+    session_id: sessionId,
+    started_at: now,
+    last_activity_at: now,
+    summary,
+    status: 'active',
+    consent_id: consentId || null,
+    created_at: now,
+    updated_at: now,
+    messages: []
+  };
 };
 
 export const saveMessage = async (
   conversationId: string,
   sender: MessageSender,
   content: string,
-  recommendedProductIds: string[] = []
+  recommendedProductIds: string[] = [],
+  metadata: Record<string, any> = {}
 ): Promise<CRMMessage> => {
   const now = new Date().toISOString();
   const tokenHash = await getClientSessionTokenHash();
 
-  if (isSupabaseConfigured() && supabase) {
+  if (!isSupabaseConfigured() || !supabase) {
+    throw new Error('Database connection unavailable. Message could not be saved.');
+  }
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const { data: rpcMsgId, error: rpcErr } = await supabase.rpc('append_guest_message', {
+      // Try RPC with p_metadata; fallback to 5-arg RPC if migration hasn't run yet
+      let rpcRes = await supabase.rpc('append_guest_message', {
         p_conversation_id: conversationId,
         p_token_hash: tokenHash,
         p_sender: sender,
         p_content: content,
-        p_recommended_products: recommendedProductIds
+        p_recommended_products: recommendedProductIds,
+        p_metadata: metadata
       });
 
-      if (!rpcErr && rpcMsgId) {
+      if (rpcRes.error && rpcRes.error.message?.includes('p_metadata')) {
+        rpcRes = await supabase.rpc('append_guest_message', {
+          p_conversation_id: conversationId,
+          p_token_hash: tokenHash,
+          p_sender: sender,
+          p_content: content,
+          p_recommended_products: recommendedProductIds
+        });
+      }
+
+      if (!rpcRes.error && rpcRes.data) {
         return {
-          id: rpcMsgId,
+          id: rpcRes.data,
           conversation_id: conversationId,
           sender,
           message_content: content,
           recommended_product_ids: recommendedProductIds,
+          metadata,
           created_at: now
         };
       }
     } catch (rpcEx) {
-      // Fall through to direct insert
-    }
-
-    const { data, error } = await supabase.from('messages').insert({
-      conversation_id: conversationId,
-      sender,
-      message_content: content,
-      recommended_product_ids: recommendedProductIds
-    }).select().single();
-
-    if (!error && data) {
-      await supabase.from('conversations').update({
-        last_activity_at: now,
-        updated_at: now
-      }).eq('id', conversationId);
-
-      return data as CRMMessage;
-    }
-
-    if (error) {
-      throw new Error(error.message);
+      if (attempt === 1) await new Promise(r => setTimeout(r, 300));
     }
   }
 
-  throw new Error('Database connection unavailable. Message could not be saved.');
+  // Fallback insert without .select() so anon visitors succeed under strict RLS
+  const msgId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : undefined;
+  const msgPayload: Record<string, any> = {
+    conversation_id: conversationId,
+    sender,
+    message_content: content,
+    recommended_product_ids: recommendedProductIds
+  };
+  if (msgId) msgPayload.id = msgId;
+
+  const { error } = await supabase.from('messages').insert(msgPayload);
+  if (error) {
+    throw new Error(`Unable to save message: ${error.message}`);
+  }
+
+  return {
+    id: msgId || `msg_${Date.now()}`,
+    conversation_id: conversationId,
+    sender,
+    message_content: content,
+    recommended_product_ids: recommendedProductIds,
+    metadata,
+    created_at: now
+  };
 };
 
 export const getConversations = async (query?: {
   search?: string;
   customerId?: string;
+  status?: string;
   dateFrom?: string;
   dateTo?: string;
 }): Promise<Conversation[]> => {
@@ -672,6 +712,9 @@ export const getConversations = async (query?: {
       let sbQuery = supabase.from('conversations').select('*, messages(*), customer:customers(*)');
       if (query?.customerId) {
         sbQuery = sbQuery.eq('customer_id', query.customerId);
+      }
+      if (query?.status && query.status !== 'all') {
+        sbQuery = sbQuery.eq('status', query.status);
       }
       if (query?.dateFrom) {
         sbQuery = sbQuery.gte('started_at', query.dateFrom);
@@ -684,7 +727,12 @@ export const getConversations = async (query?: {
         console.warn('Supabase getConversations query error:', error.message);
         throw new Error('Unable to load AI conversations from database.');
       }
-      dbConvs = (data || []) as Conversation[];
+      dbConvs = ((data || []) as Conversation[]).map(conv => ({
+        ...conv,
+        messages: Array.isArray(conv.messages)
+          ? [...conv.messages].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+          : []
+      }));
     } catch (err: any) {
       console.warn('Supabase getConversations query error:', err?.message);
       throw err;
@@ -845,9 +893,46 @@ export const createEnquiry = async (
     throw new Error('Enquiry submission service is currently offline. Please message us directly on WhatsApp.');
   }
 
+  const now = new Date().toISOString();
+  const tokenHash = await getClientSessionTokenHash();
+  const custName = enquiryData.customer_name || 'Anonymous Customer';
+
+  // Try secure guest RPC first (works for anon visitors under strict RLS)
+  try {
+    const { data: rpcId, error: rpcErr } = await supabase.rpc('submit_guest_enquiry', {
+      p_token_hash: tokenHash,
+      p_customer_name: custName,
+      p_contact_details: contact,
+      p_message: enquiryData.message,
+      p_enquiry_type: eType,
+      p_product_id: enquiryData.product_id || null,
+      p_customer_id: enquiryData.customer_id || null
+    });
+
+    if (!rpcErr && rpcId) {
+      return {
+        id: rpcId,
+        session_id: sessionId,
+        customer_id: enquiryData.customer_id || null,
+        customer_name: custName,
+        contact_details: contact,
+        contact_info: contact,
+        enquiry_type: eType,
+        product_id: enquiryData.product_id || null,
+        message: enquiryData.message,
+        status: enquiryData.status || 'new',
+        created_at: now,
+        updated_at: now
+      } as CustomerEnquiry;
+    }
+  } catch (rpcEx) {
+    // Fall through to direct insert without .select()
+  }
+
+  const enqId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : undefined;
   const payload: any = {
     session_id: sessionId,
-    customer_name: enquiryData.customer_name || 'Anonymous Customer',
+    customer_name: custName,
     contact_details: contact,
     contact_info: contact,
     enquiry_type: eType,
@@ -856,17 +941,19 @@ export const createEnquiry = async (
     status: enquiryData.status || 'new',
     customer_id: enquiryData.customer_id || null
   };
-  const { data, error } = await supabase.from('customer_enquiries').insert([payload]).select().single();
-  if (error || !data) {
-    console.warn('Supabase enquiry insert failed:', error?.message);
-    throw new Error(error?.message || 'Unable to save your enquiry to the database. Please try again or contact us on WhatsApp.');
+  if (enqId) payload.id = enqId;
+
+  const { error } = await supabase.from('customer_enquiries').insert([payload]);
+  if (error) {
+    console.warn('Supabase enquiry insert failed:', error.message);
+    throw new Error(error.message || 'Unable to save your enquiry to the database. Please try again or contact us on WhatsApp.');
   }
 
   return {
-    ...data,
-    customer_name: data.customer_name || payload.customer_name,
-    contact_details: data.contact_details || data.contact_info || contact,
-    enquiry_type: data.enquiry_type || eType
+    id: enqId || `enq_${Date.now()}`,
+    ...payload,
+    created_at: now,
+    updated_at: now
   } as CustomerEnquiry;
 };
 
@@ -980,40 +1067,76 @@ export const processDeletionRequest = async (requestId: string): Promise<void> =
 // -------------------------------------------------------------
 export const logAdminAction = async (
   action: string,
-  recordType: string,
-  recordId?: string | null,
-  metadata: Record<string, any> = {}
+  targetEntity: string,
+  targetId?: string | null,
+  details?: Record<string, any>
 ): Promise<void> => {
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      await supabase.rpc('log_admin_action', {
-        p_action: action,
-        p_record_type: recordType,
-        p_record_id: recordId || null,
-        p_metadata: metadata
-      });
-      return;
-    } catch (e) {
-      try {
-        await supabase.from('admin_audit_logs').insert({
-          action,
-          record_type: recordType,
-          record_id: recordId || null,
-          metadata
-        });
-      } catch (insertErr) {}
+  if (!isSupabaseConfigured() || !supabase) return;
+
+  try {
+    const { error: rpcErr } = await supabase.rpc('log_admin_action', {
+      p_action: action,
+      p_target_entity: targetEntity,
+      p_target_id: targetId || null,
+      p_details: details || {}
+    });
+    if (!rpcErr) return;
+  } catch (e) {
+    // Fall through to direct insert matching admin_audit_logs schema
+  }
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    const adminEmail = user?.email || 'admin@onznatural.com';
+
+    const { error } = await supabase.from('admin_audit_logs').insert({
+      admin_user_id: user?.id || null,
+      admin_email: adminEmail,
+      action,
+      target_entity: targetEntity,
+      target_id: targetId || null,
+      details: details || {}
+    });
+    if (error) {
+      console.warn('Audit log insert warning:', error.message);
     }
+  } catch (insertErr: any) {
+    console.warn('Audit log exception:', insertErr?.message);
   }
 };
 
 export const getAdminAuditLogs = async (): Promise<AdminAuditLog[]> => {
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase.from('admin_audit_logs').select('*').order('timestamp', { ascending: false }).limit(100);
-      if (!error && data) return data as AdminAuditLog[];
-    } catch (e) {}
+  if (!isSupabaseConfigured() || !supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from('admin_audit_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(200);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return (data || []).map((row: any) => ({
+      id: row.id,
+      admin_user_id: row.admin_user_id,
+      admin_email: row.admin_email || 'admin@onznatural.com',
+      action: row.action,
+      target_entity: row.target_entity || row.record_type || 'system',
+      target_id: row.target_id || row.record_id || null,
+      details: row.details || row.metadata || {},
+      created_at: row.created_at || row.timestamp,
+      record_type: row.target_entity || row.record_type || 'system',
+      record_id: row.target_id || row.record_id || null,
+      metadata: row.details || row.metadata || {},
+      timestamp: row.created_at || row.timestamp
+    })) as AdminAuditLog[];
+  } catch (e: any) {
+    console.warn('Supabase getAdminAuditLogs error:', e?.message);
+    throw e;
   }
-  return [];
 };
 
 // -------------------------------------------------------------

@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bot, Sparkles, X, Send, ArrowRight, RefreshCw } from 'lucide-react';
+import { Bot, Sparkles, X, Send, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 import { askOnzAI } from '../services/geminiService';
 import { productsData } from '../data/products';
+import { createConversation, saveMessage } from '../services/crmService';
+
+const WIDGET_CONV_STORAGE_KEY = 'onznatural_widget_conv_id';
 
 export const AIAssistantWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(() => {
+    try {
+      return sessionStorage.getItem(WIDGET_CONV_STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  });
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [messages, setMessages] = useState<{ id: string; role: 'user' | 'model'; text: string; recommendedProductIds?: string[] }[]>([
     {
       id: 'init',
@@ -57,6 +68,24 @@ export const AIAssistantWidget: React.FC = () => {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
+    setSaveError(null);
+
+    // 1. Ensure persistent conversation session exists and save user message immediately
+    let activeConvId = conversationId;
+    try {
+      if (!activeConvId) {
+        const conv = await createConversation(undefined, undefined, `Widget: ${userMsg.text.slice(0, 60)}`);
+        activeConvId = conv.id;
+        setConversationId(activeConvId);
+        try {
+          sessionStorage.setItem(WIDGET_CONV_STORAGE_KEY, activeConvId);
+        } catch {}
+      }
+      await saveMessage(activeConvId, 'customer', userMsg.text, [], { source: 'floating_widget' });
+    } catch (persistErr: any) {
+      console.warn('Widget user message persistence warning:', persistErr?.message);
+      setSaveError('Chat history sync failed. Your message is shown below, but could not be saved to server.');
+    }
 
     try {
       const history = messages.map(m => ({ role: m.role, text: m.text }));
@@ -71,15 +100,35 @@ export const AIAssistantWidget: React.FC = () => {
           recommendedProductIds: response.recommendedProductIds
         }
       ]);
+
+      // 2. Save AI response immediately with metadata
+      if (activeConvId) {
+        try {
+          await saveMessage(
+            activeConvId,
+            'ai',
+            response.text,
+            response.recommendedProductIds || [],
+            { source: 'floating_widget', model: 'gemini-consultant' }
+          );
+        } catch (aiPersistErr: any) {
+          console.warn('Widget AI reply persistence warning:', aiPersistErr?.message);
+          setSaveError('AI reply could not be saved to history.');
+        }
+      }
     } catch (err: any) {
+      const errText = `⚠️ Error: ${err.message || 'Please check your connection.'}`;
       setMessages(prev => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'model' as const,
-          text: `⚠️ Error: ${err.message || 'Please check your connection.'}`
+          text: errText
         }
       ]);
+      if (activeConvId) {
+        saveMessage(activeConvId, 'ai', errText, [], { source: 'floating_widget', error: err?.message }).catch(() => {});
+      }
     } finally {
       setIsLoading(false);
     }
@@ -176,7 +225,7 @@ export const AIAssistantWidget: React.FC = () => {
                               onClick={() => setIsOpen(false)}
                               className="p-1.5 rounded-lg bg-sand-50 hover:bg-accent-50 border border-sand-200 font-semibold text-primary-950 flex items-center justify-between"
                             >
-                              <span>{p.name} (₹{p.mrp})</span>
+                              <span>{p.name} (₹{p.discountPrice || p.mrp})</span>
                               <ArrowRight className="w-3 h-3 text-accent-700" />
                             </Link>
                           );
@@ -197,6 +246,13 @@ export const AIAssistantWidget: React.FC = () => {
 
             <div ref={chatBottomRef} />
           </div>
+
+          {saveError && (
+            <div className="px-3.5 py-2 bg-amber-50 border-t border-amber-200 text-amber-900 text-[11px] flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>{saveError}</span>
+            </div>
+          )}
 
           {/* Prompt pills */}
           <div className="px-3 py-2 bg-white border-t border-sand-100 overflow-x-auto whitespace-nowrap flex gap-1.5">

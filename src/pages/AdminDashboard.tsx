@@ -146,7 +146,14 @@ export const AdminDashboard: React.FC = () => {
   const [chatSearch, setChatSearch] = useState('');
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [chatDateFilter, setChatDateFilter] = useState<string>('all');
+  const [chatStatusFilter, setChatStatusFilter] = useState<string>('all');
+  const [chatPage, setChatPage] = useState<number>(1);
   const [isLoadingChats, setIsLoadingChats] = useState(false);
+
+  // Live Sync & Error State
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [dataLoadError, setDataLoadError] = useState<string | null>(null);
 
   // Enquiries Data
   const [enquiries, setEnquiries] = useState<CustomerEnquiry[]>([]);
@@ -194,6 +201,7 @@ export const AdminDashboard: React.FC = () => {
   const [deletionRequests, setDeletionRequests] = useState<DataDeletionRequest[]>([]);
   const [auditLogs, setAuditLogs] = useState<AdminAuditLog[]>([]);
   const [auditSearch, setAuditSearch] = useState('');
+  const [auditPage, setAuditPage] = useState<number>(1);
 
   // Settings
   const [retentionSettings, setRetentionSettings] = useState<RetentionPolicySettings>(getRetentionSettings());
@@ -267,53 +275,90 @@ export const AdminDashboard: React.FC = () => {
     };
   }, []);
 
-  // Load all dashboard operational data once authenticated
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const loadAll = async () => {
+  const fetchDashboardData = async (silent = false) => {
+    if (!silent) {
       setIsLoadingMetrics(true);
       setIsLoadingCustomers(true);
       setIsLoadingEvents(true);
       setIsLoadingInterests(true);
       setIsLoadingChats(true);
       setIsLoadingEnquiries(true);
+    } else {
+      setIsRefreshing(true);
+    }
+    setDataLoadError(null);
 
-      try {
-        const [m, cData, evs, ints, convs, enqs, prods, dels, logs] = await Promise.all([
-          getCRMOverviewMetrics(),
-          getCustomers({ page: 1, limit: 100 }),
-          getCustomerEvents({ limit: 100 }),
-          getProductInterests({ limit: 100 }),
-          getConversations(),
-          getEnquiries(),
-          getProductsFromDb(),
-          getDeletionRequests(),
-          getAdminAuditLogs()
-        ]);
+    try {
+      const [m, cData, evs, ints, convs, enqs, prods, dels, logs] = await Promise.all([
+        getCRMOverviewMetrics(),
+        getCustomers({ page: 1, limit: 100 }),
+        getCustomerEvents({ limit: 100 }),
+        getProductInterests({ limit: 100 }),
+        getConversations(),
+        getEnquiries(),
+        getProductsFromDb(),
+        getDeletionRequests(),
+        getAdminAuditLogs()
+      ]);
 
-        setMetrics(m);
-        setCustomers(cData.customers);
-        setEvents(evs);
-        setInterests(ints);
-        setConversations(convs);
-        setEnquiries(enqs);
-        setProducts(prods);
-        setDeletionRequests(dels);
-        setAuditLogs(logs);
-      } catch (err) {
-        console.warn('Dashboard data fetch error:', err);
-      } finally {
-        setIsLoadingMetrics(false);
-        setIsLoadingCustomers(false);
-        setIsLoadingEvents(false);
-        setIsLoadingInterests(false);
-        setIsLoadingChats(false);
-        setIsLoadingEnquiries(false);
+      setMetrics(m);
+      setCustomers(cData.customers);
+      setEvents(evs);
+      setInterests(ints);
+      setConversations(convs);
+      // Keep selectedConversation synced with latest messages
+      setSelectedConversation(prev => {
+        if (!prev) return null;
+        return convs.find(c => c.id === prev.id) || prev;
+      });
+      setEnquiries(enqs);
+      setProducts(prods);
+      setDeletionRequests(dels);
+      setAuditLogs(logs);
+      setLastSyncedAt(new Date().toLocaleTimeString());
+    } catch (err: any) {
+      console.warn('Dashboard data fetch error:', err);
+      setDataLoadError(err?.message || 'Unable to sync latest data from Supabase.');
+    } finally {
+      setIsLoadingMetrics(false);
+      setIsLoadingCustomers(false);
+      setIsLoadingEvents(false);
+      setIsLoadingInterests(false);
+      setIsLoadingChats(false);
+      setIsLoadingEnquiries(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  // Load all dashboard operational data once authenticated + subscribe to live changes
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    fetchDashboardData(false);
+
+    // Live polling fallback every 25s
+    const intervalId = setInterval(() => {
+      fetchDashboardData(true);
+    }, 25000);
+
+    // Supabase Realtime listener for live AI chats, enquiries, and audit logs
+    let channel: any = null;
+    if (supabase) {
+      channel = supabase
+        .channel('admin-live-history')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => fetchDashboardData(true))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, () => fetchDashboardData(true))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'customer_enquiries' }, () => fetchDashboardData(true))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'admin_audit_logs' }, () => fetchDashboardData(true))
+        .subscribe();
+    }
+
+    return () => {
+      clearInterval(intervalId);
+      if (channel && supabase) {
+        supabase.removeChannel(channel);
       }
     };
-
-    loadAll();
   }, [isAuthenticated]);
 
   // Strict Supabase Authentication with Rate Limiting & Zero Plaintext Secrets
@@ -460,6 +505,16 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveProductEdit = async (productId: string) => {
     setIsSavingProduct(true);
     try {
+      const existing = products.find(p => p.id === productId);
+      const oldValue = existing
+        ? {
+            mrp: existing.mrp,
+            discount_price: existing.discount_price,
+            stock_quantity: existing.stock_quantity,
+            availability_status: existing.availability_status
+          }
+        : null;
+
       const updates = {
         mrp: editingPrice,
         price: editingDiscountPrice && editingDiscountPrice < editingPrice ? editingDiscountPrice : editingPrice,
@@ -472,6 +527,16 @@ export const AdminDashboard: React.FC = () => {
 
       // Synchronize in-memory React product catalog across entire website
       await updateContextProduct(productId, updates);
+
+      await logAdminAction('UPDATE_PRODUCT_INLINE', 'products', productId, {
+        old_value: oldValue,
+        new_value: {
+          mrp: updates.mrp,
+          discount_price: updates.discount_price,
+          stock_quantity: updates.stock_quantity,
+          availability_status: updates.availability_status
+        }
+      });
 
       setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updates } : p));
       setEditingProductId(null);
@@ -795,6 +860,9 @@ export const AdminDashboard: React.FC = () => {
   });
 
   const filteredChats = conversations.filter(c => {
+    if (chatStatusFilter !== 'all' && c.status !== chatStatusFilter) {
+      return false;
+    }
     if (chatDateFilter !== 'all') {
       const chatDate = new Date(c.started_at);
       const now = new Date();
@@ -816,6 +884,11 @@ export const AdminDashboard: React.FC = () => {
       (c.messages && c.messages.some(m => m.message_content.toLowerCase().includes(q)))
     );
   });
+
+  const CHATS_PER_PAGE = 10;
+  const totalChatPages = Math.max(1, Math.ceil(filteredChats.length / CHATS_PER_PAGE));
+  const safeChatPage = Math.min(chatPage, totalChatPages);
+  const paginatedChats = filteredChats.slice((safeChatPage - 1) * CHATS_PER_PAGE, safeChatPage * CHATS_PER_PAGE);
 
   const filteredEnquiries = enquiries.filter(e => {
     const matchesFilter = enquiryFilter === 'all' || e.status === enquiryFilter;
@@ -842,10 +915,16 @@ export const AdminDashboard: React.FC = () => {
     const q = auditSearch.toLowerCase();
     return (
       a.action.toLowerCase().includes(q) ||
-      a.record_type.toLowerCase().includes(q) ||
-      (a.record_id && a.record_id.toLowerCase().includes(q))
+      (a.target_entity || a.record_type || '').toLowerCase().includes(q) ||
+      ((a.target_id || a.record_id) && (a.target_id || a.record_id || '').toLowerCase().includes(q)) ||
+      (a.admin_email && a.admin_email.toLowerCase().includes(q))
     );
   });
+
+  const AUDIT_PER_PAGE = 15;
+  const totalAuditPages = Math.max(1, Math.ceil(filteredAudit.length / AUDIT_PER_PAGE));
+  const safeAuditPage = Math.min(auditPage, totalAuditPages);
+  const paginatedAudit = filteredAudit.slice((safeAuditPage - 1) * AUDIT_PER_PAGE, safeAuditPage * AUDIT_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-sand-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -882,21 +961,18 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {lastSyncedAt && (
+              <span className="hidden sm:inline-block text-[11px] text-sand-500 font-mono">
+                Synced {lastSyncedAt}
+              </span>
+            )}
             <button
-              onClick={async () => {
-                setMetrics(await getCRMOverviewMetrics());
-                setCustomers((await getCustomers({ page: 1, limit: 100 })).customers);
-                setEvents(await getCustomerEvents({ limit: 100 }));
-                setInterests(await getProductInterests({ limit: 100 }));
-                setConversations(await getConversations());
-                setEnquiries(await getEnquiries());
-                setProducts(await getProductsFromDb());
-                setAuditLogs(await getAdminAuditLogs());
-              }}
-              className="p-2.5 rounded-xl border border-sand-200 text-sand-700 hover:bg-sand-100 transition-colors"
+              onClick={() => fetchDashboardData(true)}
+              disabled={isRefreshing}
+              className="p-2.5 rounded-xl border border-sand-200 text-sand-700 hover:bg-sand-100 transition-colors disabled:opacity-50"
               title="Refresh Live Data"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-primary-900' : ''}`} />
             </button>
 
             <button
@@ -908,6 +984,22 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {dataLoadError && (
+          <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+              <span>{dataLoadError}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => fetchDashboardData(false)}
+              className="px-3 py-1.5 rounded-lg bg-red-700 text-white font-semibold hover:bg-red-800 shrink-0"
+            >
+              Retry Sync
+            </button>
+          </div>
+        )}
 
         {/* 11-Tab Selector Navigation */}
         <div className="bg-white rounded-2xl p-2 border border-sand-200 shadow-sm flex items-center overflow-x-auto gap-1">
@@ -1334,10 +1426,21 @@ export const AdminDashboard: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <select
+                  value={chatStatusFilter}
+                  onChange={(e) => { setChatStatusFilter(e.target.value); setChatPage(1); }}
+                  className="px-3 py-1.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="abandoned">Abandoned</option>
+                </select>
+
                 <select
                   value={chatDateFilter}
-                  onChange={(e) => setChatDateFilter(e.target.value)}
+                  onChange={(e) => { setChatDateFilter(e.target.value); setChatPage(1); }}
                   className="px-3 py-1.5 rounded-xl border border-sand-300 text-xs bg-sand-50/50"
                 >
                   <option value="all">All Dates</option>
@@ -1360,46 +1463,72 @@ export const AdminDashboard: React.FC = () => {
               <input
                 type="text"
                 value={chatSearch}
-                onChange={(e) => setChatSearch(e.target.value)}
+                onChange={(e) => { setChatSearch(e.target.value); setChatPage(1); }}
                 placeholder="Search transcripts by customer, query, or botanical mention..."
                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-sand-300 text-xs bg-sand-50/50 focus:outline-none focus:ring-2 focus:ring-accent-600"
               />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1 space-y-3 max-h-[600px] overflow-y-auto pr-1">
-                {filteredChats.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-sand-500 border border-dashed border-sand-200 rounded-2xl">
-                    No consultation sessions found.
-                  </div>
-                ) : (
-                  filteredChats.map(c => (
+              <div className="lg:col-span-1 space-y-3">
+                <div className="space-y-3 max-h-[540px] overflow-y-auto pr-1">
+                  {paginatedChats.length === 0 ? (
+                    <div className="p-8 text-center text-xs text-sand-500 border border-dashed border-sand-200 rounded-2xl">
+                      No consultation sessions found.
+                    </div>
+                  ) : (
+                    paginatedChats.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setSelectedConversation(c)}
+                        className={`w-full text-left p-4 rounded-2xl border transition-all ${
+                          selectedConversation?.id === c.id
+                            ? 'border-primary-900 bg-sand-100 shadow-sm'
+                            : 'border-sand-200 bg-sand-50/50 hover:bg-sand-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-semibold text-primary-950 truncate max-w-[150px]">
+                            {c.customer?.name || (c.customer_id ? `User ${c.customer_id.substring(0, 8)}` : 'Guest Visitor')}
+                          </span>
+                          <span className="text-[10px] text-sand-600">
+                            {new Date(c.started_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-xs text-sand-700 line-clamp-2">
+                          {c.summary || 'Botanical skincare inquiry'}
+                        </p>
+                        <div className="mt-2 flex items-center justify-between text-[10px] text-sand-500 font-mono">
+                          <span>Messages: {c.messages?.length || 0}</span>
+                          <span className="capitalize">{c.status}</span>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {totalChatPages > 1 && (
+                  <div className="flex items-center justify-between pt-2 border-t border-sand-200 text-xs">
                     <button
-                      key={c.id}
-                      onClick={() => setSelectedConversation(c)}
-                      className={`w-full text-left p-4 rounded-2xl border transition-all ${
-                        selectedConversation?.id === c.id
-                          ? 'border-primary-900 bg-sand-100 shadow-sm'
-                          : 'border-sand-200 bg-sand-50/50 hover:bg-sand-100'
-                      }`}
+                      type="button"
+                      disabled={safeChatPage <= 1}
+                      onClick={() => setChatPage(p => Math.max(1, p - 1))}
+                      className="px-3 py-1.5 rounded-lg border border-sand-200 disabled:opacity-40 hover:bg-sand-100"
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-semibold text-primary-950 truncate max-w-[150px]">
-                          {c.customer?.name || (c.customer_id ? `User ${c.customer_id.substring(0, 8)}` : 'Guest Visitor')}
-                        </span>
-                        <span className="text-[10px] text-sand-600">
-                          {new Date(c.started_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-xs text-sand-700 line-clamp-2">
-                        {c.summary || 'Botanical skincare inquiry'}
-                      </p>
-                      <div className="mt-2 flex items-center justify-between text-[10px] text-sand-500 font-mono">
-                        <span>Messages: {c.messages?.length || 0}</span>
-                        <span className="capitalize">{c.status}</span>
-                      </div>
+                      Prev
                     </button>
-                  ))
+                    <span className="text-sand-600 font-mono text-[11px]">
+                      Page {safeChatPage} / {totalChatPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={safeChatPage >= totalChatPages}
+                      onClick={() => setChatPage(p => Math.min(totalChatPages, p + 1))}
+                      className="px-3 py-1.5 rounded-lg border border-sand-200 disabled:opacity-40 hover:bg-sand-100"
+                    >
+                      Next
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -1424,30 +1553,44 @@ export const AdminDashboard: React.FC = () => {
                           No messages recorded in this conversation session.
                         </div>
                       ) : (
-                        selectedConversation.messages.map(m => (
-                          <div
-                            key={m.id}
-                            className={`p-3.5 rounded-2xl text-xs max-w-xl ${
-                              m.sender === 'ai'
-                                ? 'bg-white border border-sand-200 mr-auto text-primary-950'
-                                : 'bg-primary-900 text-white ml-auto'
-                            }`}
-                          >
-                            <span className="block text-[10px] uppercase font-bold mb-1 opacity-75">
-                              {m.sender === 'ai' ? 'ONZNATURAL Botanical AI' : 'Customer'}
-                            </span>
-                            <p className="whitespace-pre-line">{m.message_content}</p>
-                            {m.recommended_product_ids && m.recommended_product_ids.length > 0 && (
-                              <div className="mt-2 pt-2 border-t border-sand-100 flex flex-wrap gap-1.5">
-                                {m.recommended_product_ids.map(pid => (
-                                  <span key={pid} className="px-2 py-0.5 rounded-full bg-accent-100 text-accent-800 text-[10px] font-bold">
-                                    {pid}
-                                  </span>
-                                ))}
+                        [...selectedConversation.messages]
+                          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                          .map(m => (
+                            <div
+                              key={m.id}
+                              className={`p-3.5 rounded-2xl text-xs max-w-xl ${
+                                m.sender === 'ai'
+                                  ? 'bg-white border border-sand-200 mr-auto text-primary-950'
+                                  : 'bg-primary-900 text-white ml-auto'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-4 mb-1">
+                                <span className="text-[10px] uppercase font-bold opacity-80">
+                                  {m.sender === 'ai' ? 'ONZNATURAL Botanical AI' : 'Customer'}
+                                </span>
+                                <span className="text-[10px] font-mono opacity-65">
+                                  {new Date(m.created_at).toLocaleString()}
+                                </span>
                               </div>
-                            )}
-                          </div>
-                        ))
+                              <p className="whitespace-pre-line">{m.message_content}</p>
+                              {m.metadata && Object.keys(m.metadata).length > 0 && (
+                                <div className="mt-1.5 text-[10px] font-mono opacity-65">
+                                  {m.metadata.model && <span className="mr-2">model: {m.metadata.model}</span>}
+                                  {m.metadata.source && <span className="mr-2">source: {m.metadata.source}</span>}
+                                  {m.metadata.error && <span className="text-rose-400">err: {m.metadata.error}</span>}
+                                </div>
+                              )}
+                              {m.recommended_product_ids && m.recommended_product_ids.length > 0 && (
+                                <div className="mt-2 pt-2 border-t border-sand-100 flex flex-wrap gap-1.5">
+                                  {m.recommended_product_ids.map(pid => (
+                                    <span key={pid} className="px-2 py-0.5 rounded-full bg-accent-100 text-accent-800 text-[10px] font-bold">
+                                      {pid}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))
                       )}
                     </div>
                   </div>
@@ -2517,36 +2660,64 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            {filteredAudit.length === 0 ? (
+            {paginatedAudit.length === 0 ? (
               <div className="text-center py-12 text-sand-500 text-xs border border-dashed border-sand-200 rounded-2xl">
                 No audit log entries recorded yet.
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-2xl border border-sand-200">
-                <table className="w-full text-left text-xs text-sand-800">
-                  <thead className="bg-sand-100 text-primary-950 uppercase text-[10px] tracking-wider border-b border-sand-200">
-                    <tr>
-                      <th className="p-3.5">Timestamp</th>
-                      <th className="p-3.5">Action</th>
-                      <th className="p-3.5">Record Type</th>
-                      <th className="p-3.5">Record ID</th>
-                      <th className="p-3.5">Metadata</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-sand-200 font-mono text-[11px]">
-                    {filteredAudit.map(a => (
-                      <tr key={a.id} className="hover:bg-sand-50/80 transition-colors">
-                        <td className="p-3.5 text-sand-600">{new Date(a.timestamp).toLocaleString()}</td>
-                        <td className="p-3.5 font-bold text-primary-950">{a.action}</td>
-                        <td className="p-3.5">{a.record_type}</td>
-                        <td className="p-3.5 text-sand-500">{a.record_id || 'N/A'}</td>
-                        <td className="p-3.5 text-sand-600 text-[10px] font-sans">
-                          {a.metadata ? JSON.stringify(a.metadata) : '—'}
-                        </td>
+              <div className="space-y-4">
+                <div className="overflow-x-auto rounded-2xl border border-sand-200">
+                  <table className="w-full text-left text-xs text-sand-800">
+                    <thead className="bg-sand-100 text-primary-950 uppercase text-[10px] tracking-wider border-b border-sand-200">
+                      <tr>
+                        <th className="p-3.5">Timestamp</th>
+                        <th className="p-3.5">Admin</th>
+                        <th className="p-3.5">Action</th>
+                        <th className="p-3.5">Target Entity</th>
+                        <th className="p-3.5">Target ID</th>
+                        <th className="p-3.5">Details / Diff</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-sand-200 font-mono text-[11px]">
+                      {paginatedAudit.map(a => (
+                        <tr key={a.id} className="hover:bg-sand-50/80 transition-colors">
+                          <td className="p-3.5 text-sand-600 whitespace-nowrap">{new Date(a.created_at || a.timestamp).toLocaleString()}</td>
+                          <td className="p-3.5 text-sand-700">{a.admin_email || 'admin'}</td>
+                          <td className="p-3.5 font-bold text-primary-950">{a.action}</td>
+                          <td className="p-3.5">{a.target_entity || a.record_type}</td>
+                          <td className="p-3.5 text-sand-500">{a.target_id || a.record_id || 'N/A'}</td>
+                          <td className="p-3.5 text-sand-600 text-[10px] font-sans max-w-xs break-words">
+                            {(a.details || a.metadata) ? JSON.stringify(a.details || a.metadata) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {totalAuditPages > 1 && (
+                  <div className="flex items-center justify-between text-xs">
+                    <button
+                      type="button"
+                      disabled={safeAuditPage <= 1}
+                      onClick={() => setAuditPage(p => Math.max(1, p - 1))}
+                      className="px-3 py-1.5 rounded-lg border border-sand-200 disabled:opacity-40 hover:bg-sand-100"
+                    >
+                      Prev
+                    </button>
+                    <span className="text-sand-600 font-mono text-[11px]">
+                      Page {safeAuditPage} / {totalAuditPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={safeAuditPage >= totalAuditPages}
+                      onClick={() => setAuditPage(p => Math.min(totalAuditPages, p + 1))}
+                      className="px-3 py-1.5 rounded-lg border border-sand-200 disabled:opacity-40 hover:bg-sand-100"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -62,6 +62,7 @@ export interface CRMMessage {
   sender: MessageSender;
   message_content: string;
   recommended_product_ids?: string[];
+  metadata?: Record<string, any>;
   created_at: string;
 }
 
@@ -166,7 +167,12 @@ export interface AdminUser {
 export interface AdminAuditLog {
   id: string;
   admin_user_id?: string | null;
+  admin_email?: string;
   action: string;
+  target_entity?: string;
+  target_id?: string | null;
+  details?: Record<string, any>;
+  created_at?: string;
   record_type: string;
   record_id?: string | null;
   metadata?: Record<string, any>;
